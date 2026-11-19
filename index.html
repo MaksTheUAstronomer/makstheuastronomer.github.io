@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b111d">
-  <meta name="description" content="Maksym Mohorian studies the chemistry of gas and dust in evolved binary systems - from stellar surfaces to circumbinary discs. Explore an animated cut-away of an evolved binary system.">
+  <meta name="description" content="Maksym Mohorian studies the chemistry of gas and dust in evolved binary systems - from stellar surfaces to circumbinary discs. Explore an animated model of an evolved binary system.">
   <title>Dr. Maksym Mohorian</title>
   <link rel="icon" href="data:,">
   <style>
@@ -186,29 +186,43 @@
       aspect-ratio: 1180 / 510;
     }
     .disc-foot {
-      margin-top: 0.85rem; padding: 0.82rem 1.05rem;
-      display: flex; align-items: center; flex-wrap: wrap; gap: 0.35rem 1.1rem;
+      margin-top: 0.85rem; padding: 1rem 1.1rem;
       background: #0d1728ed; border: 1px solid var(--edge); border-radius: 0.7rem;
     }
-    #disc-caption { color: #c5d3e1; font-size: 0.9rem; flex: 1 1 25rem; }
-    .tracers { display: flex; align-items: center; gap: 0.07rem; flex-wrap: wrap; }
-    .tracer-label { color: #a9b9cb; margin-right: 0.28rem; font-size: 0.85rem; }
-    .tracers button {
-      display: inline-flex; align-items: center; gap: 0.3rem; color: #d6e0e9; background: transparent;
-      border: 1px solid transparent; border-radius: 0.35rem; min-height: 2.15rem; padding: 0.19rem 0.38rem;
-      font-size: 0.88rem; cursor: pointer;
+    .disc-controls {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem 1.1rem;
     }
-    .tracers button::before { content: ''; width: 0.37rem; height: 0.37rem; border-radius: 50%; background: var(--ink); }
-    .tracers button:hover { background: #203346; }
-    .tracers button[aria-pressed='true'] { border-color: var(--ink); color: #f7fbff; }
-    .disc-science { width: 100%; color: #b7c8d5; }
+    .disc-field { display: grid; align-content: start; gap: 0.35rem; min-width: 0; }
+    .disc-field label { color: #e2eaf2; font-size: 0.91rem; font-weight: 600; }
+    .disc-field select {
+      min-width: 0; width: 100%; min-height: 2.5rem; padding: 0.35rem 0.62rem;
+      border: 1px solid #718aa462; border-radius: 0.4rem; color: var(--text);
+      background: #172438; font: inherit; font-size: 0.9rem;
+    }
+    .disc-field :is(select, input):focus-visible { outline: 2px solid var(--link); outline-offset: 3px; }
+    .breakup-control { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.25rem 0.6rem; }
+    .breakup-control output { color: var(--link); font: 600 0.95rem/1.4 var(--sans); font-variant-numeric: tabular-nums; }
+    #breakup-chance { width: 100%; min-height: 1.5rem; margin: 0; accent-color: var(--link); }
+    #breakup-summary { color: #adbdce; font-size: 0.82rem; }
+    .disc-notes {
+      margin-top: 0.85rem; padding-top: 0.67rem; border-top: 1px solid var(--edge);
+      color: #c5d3e1; font-size: 0.9rem; line-height: 1.55;
+    }
+    .disc-notes p + p { margin-top: 0.5rem; }
+    .disc-notes strong { color: #f3efea; }
+    .note-sources { display: inline-flex; flex-wrap: wrap; column-gap: 0.7rem; font-size: 0.84rem; }
+    .disc-science { margin-top: 0.62rem; color: #b7c8d5; }
     .disc-science summary { width: fit-content; cursor: pointer; font-size: 0.85rem; }
     .disc-science summary::marker { color: var(--link); }
-    .disc-references { max-width: 74ch; padding-block: 0.7rem 0.15rem; }
+    .disc-references { max-width: 87ch; padding-block: 0.62rem 0.15rem; font-size: 0.89rem; }
+    .disc-references p + p { margin-top: 0.48rem; }
     .disc-reference-links {
       display: flex; flex-wrap: wrap; gap: 0.32rem 1.08rem;
       list-style: none; padding: 0.62rem 0 0; margin: 0.68rem 0 0; border-top: 1px solid var(--edge);
-      font-size: 0.91rem;
+      font-size: 0.88rem;
+    }
+    @media (max-width: 680px) {
+      .disc-controls { grid-template-columns: minmax(0, 1fr); }
     }
     .no-script { position: fixed; z-index: 9; inset: 40% 10% auto; color: var(--text); background: #102035; padding: 1rem; }
 
@@ -258,7 +272,7 @@
   </style>
 </head>
 <body data-page="system">
-  <canvas id="disc-scene" role="img" aria-label="Animated cutaway of a post-AGB binary. Warm gas streams flow through L₂ and L₃. The smaller primary shines more brightly, and a small disc encircles the companion beneath two conical jet lobes."></canvas>
+  <canvas id="disc-scene" role="img" aria-label="Animated post-AGB binary surrounded by a circumbinary disc. Warm gas streams flow through L₂ and L₃. The smaller primary shines more brightly, and a small disc encircles the companion beneath two conical jet lobes."></canvas>
   <div class="vignette" aria-hidden="true"></div>
   <a class="skip-link" href="#system-links">Skip to the system links</a>
 
@@ -387,39 +401,182 @@
     <section class="disc-page" id="page-disc" aria-labelledby="disc-title" hidden>
       <div class="disc-title">
         <h1 id="disc-title" tabindex="-1">Playground</h1>
-        <p>From the warm inner rim to colder gas and ice farther out.</p>
+        <p>Explore molecular tracers, disc structure and dust collisions.</p>
       </div>
       <figure class="disc-figure">
         <canvas id="playground-scene" width="1180" height="510" role="img"
           aria-label="Animated cross-section of the circumbinary disc with layers of gas, dust and ice."
-          aria-describedby="disc-caption"></canvas>
+          aria-describedby="disc-caption disc-region-caption"></canvas>
       </figure>
       <div class="disc-foot">
-        <p id="disc-caption" aria-live="polite">Grains grow, settle, fragment and mix upward throughout the disc. A faint wind rises from its surfaces.</p>
-        <div class="tracers" role="group" aria-label="Highlight gas tracers">
-          <span class="tracer-label">Gas tracers</span>
-          <button type="button" data-species="co" style="--ink:#79e1cb" aria-pressed="false">CO</button>
-          <button type="button" data-species="13co" style="--ink:#8fbafa" aria-pressed="false" aria-label="Carbon monoxide-13">¹³CO</button>
-          <button type="button" data-species="oh" style="--ink:#c0a5f0" aria-pressed="false">OH</button>
-          <button type="button" data-species="sio" style="--ink:#f3b779" aria-pressed="false">SiO</button>
-          <button type="button" data-species="so" style="--ink:#c3d786" aria-pressed="false">SO</button>
-          <button type="button" data-species="so2" style="--ink:#f7a6b7" aria-pressed="false">SO₂</button>
-          <button type="button" data-species="h2s" style="--ink:#6cc9ec" aria-pressed="false">H₂S</button>
+        <div class="disc-controls">
+          <div class="disc-field">
+            <label for="molecular-tracer">Molecular tracer</label>
+            <select id="molecular-tracer" aria-controls="playground-scene disc-caption">
+              <option value="">Overview of the gas and dust</option>
+              <optgroup label="Reported around post-AGB binaries">
+                <option value="co">¹²CO (Carbon monoxide)</option>
+                <option value="13co">¹³CO (Carbon monoxide with carbon-13)</option>
+                <option value="c18o">C¹⁸O (Carbon monoxide with oxygen-18)</option>
+                <option value="c17o">C¹⁷O (Carbon monoxide with oxygen-17)</option>
+                <option value="hcn">HCN (Hydrogen cyanide)</option>
+                <option value="h13cn">H¹³CN (Hydrogen cyanide with carbon-13)</option>
+                <option value="hcop">HCO⁺ (Formyl ion)</option>
+                <option value="cs">CS (Carbon monosulfide)</option>
+                <option value="sis">SiS (Silicon monosulfide)</option>
+                <option value="sio">SiO (Silicon monoxide)</option>
+                <option value="29sio">²⁹SiO (Silicon monoxide with silicon-29)</option>
+                <option value="30sio">³⁰SiO (Silicon monoxide with silicon-30)</option>
+                <option value="so2">SO₂ (Sulfur dioxide)</option>
+                <option value="so">SO (Sulfur monoxide)</option>
+                <option value="h2o">H₂O (Water vapour)</option>
+                <option value="co2">CO₂ (Carbon dioxide gas)</option>
+                <option value="13co2">¹³CO₂ (Carbon dioxide with carbon-13, gas)</option>
+              </optgroup>
+              <optgroup label="Bulk gas and rare CO in young discs">
+                <option value="h2">H₂ (Molecular hydrogen)</option>
+                <option value="hd">HD (Hydrogen deuteride)</option>
+                <option value="13c17o">¹³C¹⁷O (Carbon monoxide with carbon-13 and oxygen-17)</option>
+                <option value="13c18o">¹³C¹⁸O (Carbon monoxide with carbon-13 and oxygen-18)</option>
+              </optgroup>
+              <optgroup label="Irradiated gas in young discs">
+                <option value="oh">OH (Hydroxyl)</option>
+                <option value="cn">CN (Cyano radical)</option>
+                <option value="c15n">C¹⁵N (Cyano with nitrogen-15)</option>
+                <option value="chp">CH⁺ (Methylidyne ion)</option>
+                <option value="c2h">C₂H (Ethynyl radical)</option>
+                <option value="c2d">C₂D (Deuterated ethynyl)</option>
+                <option value="c3h2">c-C₃H₂ (Cyclopropenylidene)</option>
+              </optgroup>
+              <optgroup label="Ions and nitrogen chemistry in young discs">
+                <option value="h13cop">H¹³CO⁺ (Formyl ion with carbon-13)</option>
+                <option value="dcop">DCO⁺ (Deuterated formyl ion)</option>
+                <option value="n2hp">N₂H⁺ (Diazenylium)</option>
+                <option value="n2dp">N₂D⁺ (Deuterated diazenylium)</option>
+                <option value="dcn">DCN (Deuterated hydrogen cyanide)</option>
+                <option value="hc15n">HC¹⁵N (Hydrogen cyanide with nitrogen-15)</option>
+                <option value="hnc">HNC (Hydrogen isocyanide)</option>
+                <option value="dnc">DNC (Deuterated hydrogen isocyanide)</option>
+                <option value="nh3">NH₃ (Ammonia gas)</option>
+                <option value="no">NO (Nitric oxide)</option>
+              </optgroup>
+              <optgroup label="Sulfur-bearing gas in young discs">
+                <option value="c34s">C³⁴S (Carbon monosulfide with sulfur-34)</option>
+                <option value="13cs">¹³CS (Carbon monosulfide with carbon-13)</option>
+                <option value="h2cs">H₂CS (Thioformaldehyde)</option>
+                <option value="h2s">H₂S (Hydrogen sulfide)</option>
+              </optgroup>
+              <optgroup label="Warm gas and water isotopes in young discs">
+                <option value="hdo">HDO (Singly deuterated water vapour)</option>
+                <option value="h218o">H₂¹⁸O (Water vapour with oxygen-18)</option>
+                <option value="d2o">D₂O (Doubly deuterated water vapour)</option>
+                <option value="c2h2">C₂H₂ (Acetylene)</option>
+                <option value="13cch2">¹³CCH₂ (Acetylene with carbon-13)</option>
+                <option value="ch3">CH₃ (Methyl radical)</option>
+                <option value="ch4">CH₄ (Methane gas)</option>
+                <option value="c2h4">C₂H₄ (Ethylene)</option>
+                <option value="c2h6">C₂H₆ (Ethane)</option>
+                <option value="c3h4">CH₃CCH (Propyne)</option>
+                <option value="c4h2">C₄H₂ (Diacetylene)</option>
+                <option value="c6h6">C₆H₆ (Benzene)</option>
+              </optgroup>
+              <optgroup label="Other organic gas in young discs">
+                <option value="h2co">H₂CO (Formaldehyde)</option>
+                <option value="hdco">HDCO (Singly deuterated formaldehyde)</option>
+                <option value="d2co">D₂CO (Doubly deuterated formaldehyde)</option>
+                <option value="hc3n">HC₃N (Cyanoacetylene)</option>
+                <option value="ch3cn">CH₃CN (Acetonitrile)</option>
+                <option value="ch3oh">CH₃OH (Methanol gas)</option>
+                <option value="hcooh">HCOOH (Formic acid)</option>
+                <option value="ch3och3">CH₃OCH₃ (Dimethyl ether)</option>
+                <option value="ch3ocho">CH₃OCHO (Methyl formate)</option>
+                <option value="ch3cho">CH₃CHO (Acetaldehyde)</option>
+                <option value="acetone">CH₃COCH₃ (Acetone)</option>
+              </optgroup>
+              <optgroup label="Molecular ices in young discs">
+                <option value="ice-water">H₂O ice</option>
+                <option value="ice-co2">CO₂ ice</option>
+                <option value="ice-co">CO ice</option>
+                <option value="ice-13co2">¹³CO₂ ice</option>
+                <option value="ice-nh3">NH₃ ice</option>
+                <option value="ice-ocn">OCN⁻ ice</option>
+                <option value="ice-ocs">OCS ice</option>
+                <option value="ice-methanol">CH₃OH ice</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="disc-field">
+            <label for="disc-feature">Disc feature</label>
+            <select id="disc-feature" aria-controls="playground-scene disc-region-caption">
+              <option value="">Choose a feature to highlight</option>
+              <optgroup label="Inner and outer structure">
+                <option value="cavity">Inner dust cavity</option>
+                <option value="sublimation">Dust sublimation rim</option>
+                <option value="warm-inner">Warm inner disc</option>
+                <option value="carbon-front">Possible carbon-grain destruction front</option>
+                <option value="dust-extent">Millimetre dust edge</option>
+                <option value="outer-taper">Outer gas taper</option>
+              </optgroup>
+              <optgroup label="Vertical structure and flow">
+                <option value="flaring">Flared disc atmosphere</option>
+                <option value="uv-surface">UV-irradiated surface</option>
+                <option value="scattering">Small-grain scattering surface</option>
+                <option value="co-surface">Upper ¹²CO emitting surface</option>
+                <option value="molecular-layer">Shielded molecular layer</option>
+                <option value="deep-gas">Deep gas traced by rare CO</option>
+                <option value="midplane">Shielded midplane</option>
+                <option value="settled-dust">Settled millimetre grains</option>
+                <option value="disc-wind">Molecular surface outflow</option>
+              </optgroup>
+              <optgroup label="Snow surfaces and radial substructure">
+                <option value="water-snow">Water snow surface</option>
+                <option value="co2-snow">CO₂ snow surface</option>
+                <option value="co-snow">CO snow surface</option>
+                <option value="cold-reservoir">Cold ice reservoir</option>
+                <option value="photo-desorb">Possible photodesorption layer</option>
+                <option value="dust-gap">Dust gap</option>
+                <option value="dust-ring">Dust rings</option>
+                <option value="pressure-trap">Possible pressure trap</option>
+                <option value="ice-release">Warm ice-release zone</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="disc-field">
+            <div class="breakup-control">
+              <label for="breakup-chance">Breakup at first midplane crossing</label>
+              <output id="breakup-value" for="breakup-chance">75%</output>
+            </div>
+            <input type="range" id="breakup-chance" min="10" max="100" step="1" value="75" aria-valuetext="75%"
+              aria-describedby="breakup-summary" aria-controls="playground-scene">
+            <p id="breakup-summary">25% pass through and oscillate before breaking up.</p>
+          </div>
+        </div>
+        <div class="disc-notes">
+          <p id="disc-caption" aria-live="polite">Grains settle, fragment and mix. A faint wind rises from both disc faces.</p>
+          <p id="disc-region-caption" aria-live="polite" hidden></p>
         </div>
         <details class="disc-science">
           <summary>Science behind the disc</summary>
           <div class="disc-references">
-            <p>¹²CO traces a higher molecular layer than ¹³CO in the exoALMA observations. The other tracers mark illustrative environments. Refractory material condenses near the inner rim, and CO ice forms in the cooler outer disc. Small wisps show a schematic surface wind. Sizes and times are schematic.</p>
+            <p>The figure combines examples from protoplanetary discs and evolved post-AGB binaries. Each tracer names its observational context. Positions, widths and colours represent schematic emitting layers or ice reservoirs. Actual locations depend on the system, transition and local temperature, shielding and optical depth.</p>
+            <p>Where gas drag is weak enough for a grain to overshoot the midplane, drag damps each subsequent swing. The slider sets an illustrative first-crossing breakup probability. Surviving aggregates break up at a later crossing and fine fragments can mix upward. The animation compresses different physical timescales into one loop.</p>
             <ul class="disc-reference-links" role="list">
+              <li><a href="https://arxiv.org/abs/2309.05685">Öberg, Facchini &amp; Anderson 2023</a></li>
               <li><a href="https://arxiv.org/abs/2504.19902">exoALMA V</a></li>
+              <li><a href="https://arxiv.org/abs/2109.06268">MAPS I</a></li>
+              <li><a href="https://doi.org/10.1051/0004-6361/202556445">Gallardo Cava et al. 2026</a></li>
+              <li><a href="https://arxiv.org/abs/2202.02106">Gallardo Cava et al. 2022</a></li>
+              <li><a href="https://arxiv.org/abs/1606.07238">Bujarrabal et al. 2016</a></li>
+              <li><a href="https://arxiv.org/abs/1310.6361">Malek &amp; Cami 2014</a></li>
+              <li><a href="https://arxiv.org/abs/2304.12028">Corporaal et al. 2023</a></li>
+              <li><a href="https://arxiv.org/abs/1603.03023">Hillen et al. 2016</a></li>
+              <li><a href="https://arxiv.org/abs/1812.04041">DSHARP II</a></li>
               <li><a href="https://arxiv.org/abs/1812.04044">DSHARP VI</a></li>
-              <li><a href="https://arxiv.org/abs/0908.1692">Kama et al.</a></li>
-              <li><a href="https://doi.org/10.1007/s11214-016-0256-1">Birnstiel et al.</a></li>
-              <li><a href="https://doi.org/10.1038/s41550-024-02203-0">Irradiated OH</a></li>
-              <li><a href="https://doi.org/10.1051/0004-6361/202141057">SO and SO₂</a></li>
-              <li><a href="https://doi.org/10.1051/0004-6361/201833766">H₂S</a></li>
-              <li><a href="https://arxiv.org/abs/astro-ph/0701284">Shock-tracing SiO</a></li>
-              <li><a href="https://doi.org/10.1038/s41550-024-02385-7">Disc winds</a></li>
+              <li><a href="https://arxiv.org/abs/2309.07817">Sturm et al. 2023</a></li>
+              <li><a href="https://arxiv.org/abs/1110.5567">Öberg, Murray-Clay &amp; Bergin 2011</a></li>
+              <li><a href="https://doi.org/10.1038/s41550-024-02385-7">Pascucci et al. 2025</a></li>
+              <li><a href="https://doi.org/10.1007/s11214-016-0256-1">Birnstiel, Fang &amp; Johansen 2016</a></li>
+              <li><a href="https://arxiv.org/abs/2108.00878">Vericel et al. 2021</a></li>
             </ul>
           </div>
         </details>
@@ -617,16 +774,15 @@
       for (let index = 0; index < 1300; index++) {
         const t = random();
         const radius = lerp(disc.inner, disc.outer, t);
-        const angle = lerp(startAngle, endAngle, random());
+        const angle = TAU * random();
         const arcLength = 0.016 + 0.27 * random() ** 2;
-        const end = Math.min(endAngle, angle + arcLength);
         const opacity = Math.max(1, Math.round(90 * (0.012 + 0.14 * random() ** 3) * (1 - 0.41 * t))) / 90;
         const width = Math.round((0.46 + 2.8 * random() ** 3) * 3) / 3;
         const color = index % 6 === 0 ? '#71a5d3' : '#faa26f';
         const key = `${color}/${opacity}/${width}`;
         if (!bins.has(key)) bins.set(key, { path: new Path2D(), opacity, width, color });
         const { path } = bins.get(key);
-        const points = discArc(radius, angle, end);
+        const points = discArc(radius, angle, angle + arcLength);
         path.moveTo(...points[0]);
         for (let point = 1; point < points.length; point++) path.lineTo(...points[point]);
       }
@@ -639,10 +795,7 @@
       ctx.globalAlpha = 1;
     }
 
-    // The near sector is removed all the way down through the disc thickness.
-    const disc = { x: 578, y: 282, inner: 192, outer: 438, nearRight: 0.98, nearLeft: 2.19 };
-    const startAngle = disc.nearLeft;
-    const endAngle = disc.nearRight + TAU;
+    const disc = { x: 578, y: 282, inner: 192, outer: 438 };
     // Co-rotating circular Roche geometry. x and y here are in the orbital plane.
     const separation = 113;
     const secondaryMassFraction = 0.42;
@@ -692,13 +845,36 @@
       return 13 + 27 * radial ** 1.27 + 1.8 * Math.sin(angle * 5 + radial * 16);
     }
 
-    function discArc(radius, start = startAngle, end = endAngle, vertical = 1) {
+    function discArc(radius, start = 0, end = TAU, vertical = 1) {
       const count = Math.max(3, Math.ceil(Math.abs(end - start) / 0.036));
       return Array.from({ length: count + 1 }, (_, index) => {
         const angle = lerp(start, end, index / count);
         return projected(radius, angle, vertical * discHeight(radius, angle));
       });
     }
+
+    function appendPolygon(path, points, clockwise = true) {
+      const area = points.reduce((sum, [x, y], index) => {
+        const [nextX, nextY] = points[(index + 1) % points.length];
+        return sum + x * nextY - nextX * y;
+      }, 0);
+      const contour = (area >= 0) === clockwise ? points : points.slice().reverse();
+      path.moveTo(...contour[0]);
+      for (let index = 1; index < contour.length; index++) path.lineTo(...contour[index]);
+      path.closePath();
+    }
+
+    const outerDiscContour = discArc(disc.outer);
+    const discSurface = new Path2D();
+    appendPolygon(discSurface, outerDiscContour);
+    appendPolygon(discSurface, discArc(disc.inner), false);
+    // The near outer wall and the far wall inside the cavity face the viewer.
+    const discBottom = -0.61;
+    const outerDiscWall = [...discArc(disc.outer, 0, Math.PI), ...discArc(disc.outer, Math.PI, 0, discBottom)];
+    const innerDiscWall = [...discArc(disc.inner, Math.PI, TAU), ...discArc(disc.inner, TAU, Math.PI, discBottom)];
+    const discFootprint = new Path2D(discSurface);
+    appendPolygon(discFootprint, outerDiscWall);
+    appendPolygon(discFootprint, innerDiscWall);
 
     const radialColors = [
       [0, [237, 151, 104]], [0.07, [158, 90, 75]], [0.19, [128, 70, 63]],
@@ -713,38 +889,29 @@
       return rgb0.map((channel, i) => lerp(channel, rgb1[i], (value - p0) / (p1 - p0)));
     }
 
-    function outerEdgeGradient(ctx) {
+    function paintOuterEdge(ctx) {
       const gradient = ctx.createLinearGradient(0, 290, 0, 464);
       gradient.addColorStop(0, '#334158');
       gradient.addColorStop(0.60, '#202c42');
       gradient.addColorStop(1, '#0e1728');
-      return gradient;
-    }
-
-    function paintOuterEdge(ctx) {
-      const edgeGradient = outerEdgeGradient(ctx);
-      for (const [start, end] of [[0, disc.nearRight], [disc.nearLeft, Math.PI]]) {
-        trace(ctx, [...discArc(disc.outer, start, end), ...discArc(disc.outer, end, start, -0.61)], true);
-        ctx.fillStyle = edgeGradient;
-        ctx.fill();
-        for (let index = 1; index < 11; index++) {
-          const z = lerp(-0.59, 0.99, index / 10);
-          trace(ctx, discArc(disc.outer, start, end, z));
-          ctx.lineWidth = index === 4 ? 1.3 : 0.70;
-          ctx.strokeStyle = index === 4 ? '#9a7b7651' : '#91a7c21e';
-          ctx.stroke();
-        }
+      trace(ctx, outerDiscWall, true);
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      for (let index = 1; index < 11; index++) {
+        const z = lerp(-0.59, 0.99, index / 10);
+        trace(ctx, discArc(disc.outer, 0, Math.PI, z));
+        ctx.lineWidth = index === 4 ? 1.3 : 0.70;
+        ctx.strokeStyle = index === 4 ? '#9a7b7651' : '#91a7c21e';
+        ctx.stroke();
       }
     }
 
     function paintDiscSurface(ctx, detail) {
       const random = seededRandom(314159);
-      const shape = [...discArc(disc.outer), ...discArc(disc.inner, endAngle, startAngle)];
-      trace(ctx, shape, true);
       ctx.fillStyle = '#352d3e';
-      ctx.fill();
+      ctx.fill(discSurface);
       ctx.save();
-      ctx.clip();
+      ctx.clip(discSurface);
       const colors = detail ? 145 : 101;
       for (let index = 0; index < colors; index++) {
         const t = index / (colors - 1);
@@ -771,11 +938,11 @@
         paintDiscStreaks(ctx, random);
         const dark = [27, 24, 38];
         const copper = [250, 171, 130];
-        paintSpeckles(ctx, shape, plot => {
+        paintSpeckles(ctx, outerDiscContour, plot => {
           for (let index = 0; index < 41000; index++) {
             const t = random();
             const radius = lerp(disc.inner, disc.outer, t);
-            const angle = lerp(startAngle, endAngle, random());
+            const angle = TAU * random();
             const [x, y] = projected(radius, angle, discHeight(radius, angle));
             const density = 0.70 + 0.30 * Math.sin(angle * 13 + t * 64);
             const strength = density * (0.018 + 0.43 * random() ** 3) * (1 - t * 0.38);
@@ -790,9 +957,6 @@
       innerRim.addColorStop(0, '#bb735f');
       innerRim.addColorStop(0.45, '#ffb37f');
       innerRim.addColorStop(1, '#ffd5a4');
-      trace(ctx, [...discArc(disc.inner, startAngle, endAngle), ...discArc(disc.inner, endAngle, startAngle, 0.04)], true);
-      ctx.fillStyle = '#bf82632a';
-      ctx.fill();
       trace(ctx, discArc(disc.inner + 1.8));
       ctx.strokeStyle = '#f797685d';
       ctx.lineWidth = 6;
@@ -806,98 +970,14 @@
       ctx.stroke();
     }
 
-    function wallCurve(angle, zFactor, reverse = false) {
-      const samples = Array.from({ length: 46 }, (_, index) => {
-        const radius = lerp(disc.inner, disc.outer, index / 45);
-        const height = discHeight(radius, angle) * (zFactor + 0.022 * Math.sin(index * 0.72));
-        return projected(radius, angle, height);
-      });
-      return reverse ? samples.reverse() : samples;
-    }
-
-    function paintCutWall(ctx, angle, right, detail) {
-      const random = seededRandom(right ? 3302 : 3301);
-      const lens = ctx.createLinearGradient(0, 317, 0, 464);
-      lens.addColorStop(0, '#7c4e44');
-      lens.addColorStop(0.41, '#613c3d');
-      lens.addColorStop(0.74, '#412c38');
-      lens.addColorStop(1, '#1d2236');
-      const shape = [...wallCurve(angle, 1), ...wallCurve(angle, -0.61, true)];
-      trace(ctx, shape, true);
-      ctx.fillStyle = lens;
-      ctx.fill();
-      ctx.save();
-      ctx.clip();
-      if (detail) {
-        const copper = [250, 160, 116];
-        paintSpeckles(ctx, shape, plot => {
-          for (let index = 0; index < 5200; index++) {
-            const radius = lerp(disc.inner, disc.outer, random());
-            const z = lerp(-0.61, 1, random());
-            const [x, y] = projected(radius, angle, z * discHeight(radius, angle));
-            const aligned = Math.max(0, 1 - Math.abs(z) * 1.9);
-            const alpha = 0.04 + (0.20 + aligned * 0.35) * random() ** 3;
-            const size = 0.3 + 1.5 * random() ** 2;
-            plot(x, y, size * 1.6, size * 0.65, copper, alpha);
-          }
-        });
-      }
-      for (let index = 0; index < 25; index++) {
-        const z = lerp(-0.58, 0.98, index / 24);
-        const nearPlane = Math.exp(-z * z * 30);
-        trace(ctx, wallCurve(angle, z));
-        ctx.lineWidth = 0.6 + nearPlane * 1.4;
-        ctx.strokeStyle = `rgba(243, 169, 120, ${0.055 + nearPlane * 0.21})`;
-        ctx.stroke();
-      }
-      ctx.restore();
-      trace(ctx, wallCurve(angle, 1));
-      ctx.strokeStyle = '#f5b78e94';
-      ctx.lineWidth = 1.15;
-      ctx.stroke();
-      trace(ctx, wallCurve(angle, -0.60));
-      ctx.strokeStyle = '#8c708263';
-      ctx.lineWidth = 0.8;
-      ctx.stroke();
-    }
-
-    function paintCutWalls(ctx, detail) {
-      const angles = [disc.nearLeft, disc.nearRight];
-      ctx.fillStyle = outerEdgeGradient(ctx);
-      for (const angle of angles) {
-        trace(ctx, [...wallCurve(angle, 1), ...wallCurve(angle, -0.61, true)], true);
-        ctx.fill();
-      }
-
-      // Fade the warm cross-cut material into the colour of the outer wall.
-      const [left, right] = angles.map(angle => projected(disc.outer, angle)[0]);
-      const width = right - left;
-      const buffer = document.createElement('canvas');
-      buffer.width = Math.ceil(width * ctx.canvas.width / WIDTH);
-      buffer.height = ctx.canvas.height;
-      const walls = buffer.getContext('2d');
-      const scale = buffer.width / width;
-      walls.setTransform(scale, 0, 0, buffer.height / HEIGHT, -left * scale, 0);
-      paintCutWall(walls, angles[0], false, detail);
-      paintCutWall(walls, angles[1], true, detail);
-      const fade = walls.createLinearGradient(left, 0, right, 0);
-      const reach = 36 / width;
-      fade.addColorStop(0, '#fff0');
-      fade.addColorStop(reach, '#fff');
-      fade.addColorStop(1 - reach, '#fff');
-      fade.addColorStop(1, '#fff0');
-      walls.globalCompositeOperation = 'destination-in';
-      walls.fillStyle = fade;
-      walls.fillRect(left, 0, width, HEIGHT);
-      ctx.drawImage(buffer, left, 0, width, HEIGHT);
-    }
-
     function paintBinaryBackdrop(ctx, detail) {
       glow(ctx, disc.x, 319, 574, 155, '#ad604b', 0.15);
       glow(ctx, disc.x, 177, 530, 130, '#696280', 0.10);
       paintOuterEdge(ctx);
+      trace(ctx, innerDiscWall, true);
+      ctx.fillStyle = '#79514b';
+      ctx.fill();
       paintDiscSurface(ctx, detail);
-      paintCutWalls(ctx, detail);
     }
 
     function polarBinaryPoint(radius, azimuth) {
@@ -1280,6 +1360,15 @@
       return reverse ? points.reverse() : points;
     }
 
+    const sliceDustRings = [0.47, 0.76];
+
+    function sliceDustDensity(radius) {
+      const gap = Math.exp(-(((radius - 0.363) / 0.029) ** 2));
+      const rings = sliceDustRings.reduce((density, ring) => density + Math.exp(-(((radius - ring) / 0.026) ** 2)), 0);
+      const outerTaper = smooth(0.84, 0.97, radius);
+      return (0.85 - 0.57 * gap + 0.37 * rings) * (1 - 0.77 * outerTaper);
+    }
+
     const warmth = [
       [0, '#c36e50'], [0.13, '#9c5348'], [0.39, '#824d54'],
       [0.72, '#655576'], [0.91, '#4e648c'], [1, '#35475f']
@@ -1324,7 +1413,8 @@
             const alpha = (0.035 + (0.25 + 0.22 * nearPlane) * random() ** 3) * (1 - 0.45 * Math.abs(z));
             const rust = x < 510 || index % 7 === 0 || Math.abs(z) < 0.07;
             const size = lerp(0.19, nearPlane > 0.3 ? 1.65 : 1.13, random() ** 3);
-            plot(x, y, size * (1.2 + nearPlane * 0.42), size, rust ? warm : cool, rust ? alpha : alpha * 0.62);
+            const stratifiedAlpha = alpha * lerp(1, sliceDustDensity(radialFraction(x)), nearPlane);
+            plot(x, y, size * (1.2 + nearPlane * 0.42), size, rust ? warm : cool, rust ? stratifiedAlpha : stratifiedAlpha * 0.62);
           }
         });
       }
@@ -1349,8 +1439,10 @@
         const x = lerp(slice.inner + 3, slice.outer - 4, random());
         const offset = (random() * 2 - 1) ** 3 * 23;
         const r = 0.4 + 1.5 * random() ** 3;
+        ctx.globalAlpha = clamp(sliceDustDensity(radialFraction(x)));
         dot(ctx, x, sliceMidplane(x) + offset, r, index % 5 === 0 ? '#ffbc8a8c' : '#c68a794b');
       }
+      ctx.globalAlpha = 1;
     }
 
     function surfaceOutflowPoint(source, t) {
@@ -1478,98 +1570,267 @@
       ctx.globalAlpha = alpha;
     }
 
-    // Heights are fractions of the drawn disc atmosphere. The CO bands illustrate
-    // relative line-emission heights. The other bands represent example environments.
-    const gasProfiles = {
-      co: {
-        color: '#79e1cb', radial: [0.018, 0.988], height: [0.79, 0.87], spread: 0.055, count: 154,
-        caption: 'CO traces an upper molecular layer, close to the irradiated surface.'
-      },
-      '13co': {
-        color: '#8fbafa', radial: [0.025, 0.973], height: [0.46, 0.58], spread: 0.066, count: 132,
-        caption: '¹³CO traces a deeper molecular layer, below the main CO emission surface.'
-      },
-      oh: {
-        color: '#c0a5f0', radial: [0.008, 0.30], height: [0.94, 0.91], spread: 0.045, count: 48,
-        caption: 'OH marks an irradiated inner surface where ultraviolet light can dissociate water.'
-      },
-      sio: {
-        color: '#f3b779', radial: [0.012, 0.115], height: [0.29, 0.46], spread: 0.13, count: 23,
-        caption: 'SiO marks possible shocks near the inner rim. Its location here is schematic.'
-      },
-      so: {
-        color: '#c3d786', radial: [0.17, 0.75], height: [0.56, 0.51], spread: 0.079, count: 63,
-        caption: 'SO traces an example warm molecular band. Its distribution varies among discs.'
-      },
-      so2: {
-        color: '#f7a6b7', radial: [0.29, 0.51], height: [0.36, 0.43], spread: 0.074, count: 38,
-        caption: 'SO₂ marks a warm band where sublimating ices can feed sulfur chemistry.'
-      },
-      h2s: {
-        color: '#6cc9ec', radial: [0.59, 0.94], height: [0.29, 0.33], spread: 0.058, count: 54,
-        caption: 'H₂S marks a cooler outer molecular band. The illustrated height is schematic.'
-      }
+    // These are display coordinates inferred from example environments.
+    const tracerEnvironments = {
+      "surfaceCO": [[0.018, 0.988], [0.79, 0.87], 0.055, 142],
+      "lowerCO": [[0.025, 0.973], [0.46, 0.58], 0.066, 121],
+      "deepCO": [[0.03, 0.83], [0.25, 0.45], 0.071, 103],
+      "thinCO": [[0.04, 0.72], [0.15, 0.37], 0.064, 94],
+      "bulkGas": [[0.026, 0.96], [0.35, 0.45], 0.26, 134],
+      "hotOH": [[0.011, 0.37], [0.94, 0.88], 0.045, 62],
+      "surfaceUV": [[0.085, 0.94], [0.63, 0.75], 0.086, 94],
+      "warmH2": [[0.035, 0.92], [0.81, 0.89], 0.09, 120],
+      "carbonRadical": [[0.2, 0.88], [0.31, 0.42], 0.072, 91],
+      "rimShock": [[0.012, 0.13], [0.29, 0.46], 0.13, 54],
+      "innerDense": [[0.02, 0.27], [0.28, 0.38], 0.075, 75],
+      "warmSulfur": [[0.16, 0.73], [0.53, 0.5], 0.08, 86],
+      "sulfurGas": [[0.068, 0.96], [0.48, 0.62], 0.08, 113],
+      "sulfurRare": [[0.12, 0.83], [0.4, 0.52], 0.08, 90],
+      "outerCool": [[0.58, 0.96], [0.25, 0.36], 0.065, 84],
+      "outerRing": [[0.44, 0.89], [0.23, 0.36], 0.075, 85],
+      "coldCOIon": [[0.6, 0.96], [0.08, 0.25], 0.072, 86],
+      "coldDeuterium": [[0.67, 0.98], [0.055, 0.18], 0.055, 78],
+      "ionLayer": [[0.085, 0.95], [0.37, 0.55], 0.09, 107],
+      "ionDeep": [[0.1, 0.83], [0.27, 0.44], 0.09, 94],
+      "nitrile": [[0.04, 0.83], [0.31, 0.45], 0.075, 100],
+      "nitrileInner": [[0.045, 0.47], [0.22, 0.34], 0.068, 89],
+      "acetonitrile": [[0.045, 0.45], [0.1, 0.22], 0.066, 89],
+      "outerOrganic": [[0.28, 0.88], [0.3, 0.43], 0.092, 92],
+      "warmWater": [[0.01, 0.195], [0.31, 0.5], 0.12, 77],
+      "isotopeWater": [[0.017, 0.21], [0.18, 0.28], 0.093, 68],
+      "warmCO2": [[0.035, 0.35], [0.36, 0.55], 0.106, 89],
+      "hotHydrocarbon": [[0.022, 0.205], [0.34, 0.57], 0.092, 74],
+      "iceTrap": [[0.27, 0.53], [0.32, 0.44], 0.085, 82],
+      "burstOrganic": [[0.16, 0.5], [0.2, 0.34], 0.09, 85],
+      "formaldehyde": [[0.15, 0.93], [0.28, 0.44], 0.11, 109],
+      "deuteratedH2CO": [[0.37, 0.93], [0.19, 0.35], 0.09, 86],
+      "waterIce": [[0.19, 0.94], [0.11, 0.22], 0.092, 112],
+      "co2Ice": [[0.34, 0.97], [0.08, 0.2], 0.079, 99],
+      "coIce": [[0.59, 0.98], [0.044, 0.17], 0.067, 89],
+      "mixedIce": [[0.29, 0.94], [0.1, 0.18], 0.079, 96]
     };
 
-    function tracerSamples() {
-      const random = seededRandom(503092);
-      return Object.entries(gasProfiles).map(([key, profile]) => {
-        const { color, radial, height, spread, count } = profile;
-        const points = Array.from({ length: count }, (_, index) => {
-          const t = (index + random()) / count;
-          const r = lerp(...radial, t);
-          const side = index % 2 ? -1 : 1;
-          const a = wrap(index * 0.618034 + random() * 0.07);
-          const z = side * clamp(lerp(...height, t) + spread * (random() + random() - 1) * 1.75, 0.09, 0.97);
-          return { r, a, z, offset: TAU * random(), size: 0.55 + 1.24 * random() ** 2 };
-        });
-        const bandLines = [-1, 1].map(side => {
-          const line = new Path2D();
-          for (let step = 0; step <= 40; step++) {
-            const t = step / 40;
-            const x = lerp(slice.inner, slice.outer, lerp(...radial, t));
-            const y = layerY(x, side * lerp(...height, t));
-            if (step === 0) line.moveTo(x, y);
-            else line.lineTo(x, y);
-          }
-          return line;
-        });
-        return { key, color, radial, spread, points, bandLines };
+    const discSources = {
+      "evolvedCO": ["Gallardo Cava et al. 2026", "https://doi.org/10.1051/0004-6361/202556445"],
+      "evolvedSurvey": ["Gallardo Cava et al. 2022", "https://arxiv.org/abs/2202.02106"],
+      "rectangle": ["Bujarrabal et al. 2016", "https://arxiv.org/abs/1606.07238"],
+      "hr4049": ["Malek & Cami 2014", "https://arxiv.org/abs/1310.6361"],
+      "exoalma": ["exoALMA V", "https://arxiv.org/abs/2504.19902"],
+      "maps": ["MAPS I", "https://arxiv.org/abs/2109.06268"],
+      "mapsLayers": ["MAPS IV", "https://arxiv.org/abs/2109.06217"],
+      "mapsOrganics": ["MAPS VI", "https://arxiv.org/abs/2109.06391"],
+      "mapsLarge": ["MAPS IX", "https://arxiv.org/abs/2109.06319"],
+      "mapsD": ["MAPS X", "https://arxiv.org/abs/2109.06462"],
+      "mapsCN": ["MAPS XI", "https://arxiv.org/abs/2109.06694"],
+      "mapsS": ["MAPS XII", "https://arxiv.org/abs/2109.06286"],
+      "mapsIon": ["MAPS XIII", "https://arxiv.org/abs/2109.06419"],
+      "review": ["Öberg, Facchini & Anderson 2023", "https://arxiv.org/abs/2309.05685"],
+      "loomis": ["Loomis et al. 2020", "https://arxiv.org/abs/2006.16187"],
+      "leGal": ["Le Gal et al. 2019", "https://arxiv.org/abs/1903.11105"],
+      "coDouble17": ["Booth et al. 2019", "https://arxiv.org/abs/1908.05045"],
+      "coDouble18": ["Qi et al. 2026", "https://arxiv.org/abs/2601.02593"],
+      "hd": ["Bergin et al. 2013", "https://doi.org/10.1038/nature11805"],
+      "digitH2": ["Meeus et al. 2012", "https://doi.org/10.1051/0004-6361/201219225"],
+      "digitch": ["Fedele et al. 2013", "https://doi.org/10.1051/0004-6361/201321118"],
+      "oh": ["Zannese et al. 2024", "https://doi.org/10.1038/s41550-024-02203-0"],
+      "sio": ["Lee et al. 2007", "https://arxiv.org/abs/astro-ph/0701284"],
+      "cyanide": ["Guzmán et al. 2017", "https://arxiv.org/abs/1701.07510"],
+      "cn15": ["Hily-Blant et al. 2017", "https://arxiv.org/abs/1706.10095"],
+      "dco": ["Huang et al. 2017", "https://arxiv.org/abs/1701.01735"],
+      "hnc": ["Graninger et al. 2015", "https://arxiv.org/abs/1506.03820"],
+      "n2h": ["van ’t Hoff et al. 2017", "https://arxiv.org/abs/1610.06788"],
+      "nh3": ["Salinas et al. 2016", "https://arxiv.org/abs/1604.00323"],
+      "h2s": ["Phuong et al. 2018", "https://doi.org/10.1051/0004-6361/201833766"],
+      "sulfurTrap": ["Booth et al. 2021, Oph IRS 48", "https://doi.org/10.1051/0004-6361/202141057"],
+      "no": ["Leemker et al. 2023", "https://arxiv.org/abs/2303.00768"],
+      "warmCO2": ["Grant et al. 2023, GW Lup", "https://arxiv.org/abs/2212.08047"],
+      "hydrocarbon": ["Arabhavi et al. 2024", "https://arxiv.org/abs/2406.14293"],
+      "acetylene": ["Tabone et al. 2023", "https://arxiv.org/abs/2304.05954"],
+      "water": ["Perotti et al. 2023", "https://pubmed.ncbi.nlm.nih.gov/37488359/"],
+      "waterD": ["Tobin et al. 2023", "https://doi.org/10.1038/s41586-022-05676-z"],
+      "waterD2": ["Heavy water in V883 Ori", "https://doi.org/10.1038/s41550-025-02663-y"],
+      "h2co": ["Hernández-Vera et al. 2024", "https://arxiv.org/abs/2404.06133"],
+      "dFormaldehyde": ["FAUST XVII", "https://arxiv.org/abs/2407.04813"],
+      "methanol": ["Booth et al. 2021, HD 100546", "https://doi.org/10.1038/s41550-021-01352-w"],
+      "formic": ["Favre et al. 2018", "https://arxiv.org/abs/1807.05768"],
+      "complexTrap": ["Booth et al. 2022, Oph IRS 48", "https://arxiv.org/abs/2203.02936"],
+      "outburstOrganics": ["Lee et al. 2019, V883 Ori", "https://doi.org/10.1038/s41550-018-0680-0"],
+      "outburstSurvey": ["Yamato et al., V883 Ori", "https://arxiv.org/abs/2312.01300"],
+      "ices": ["Sturm et al. 2023", "https://arxiv.org/abs/2309.07817"],
+      "soot": ["van Dishoeck et al. 2023, JWST", "https://arxiv.org/abs/2307.11817"],
+      "snowlines": ["Öberg, Murray-Clay & Bergin 2011", "https://arxiv.org/abs/1110.5567"],
+      "nomura": ["Nomura et al. 2016", "https://arxiv.org/abs/1512.05440"],
+      "rim": ["Hillen et al. 2016", "https://arxiv.org/abs/1603.03023"],
+      "kama": ["Kama, Min & Dominik 2009", "https://arxiv.org/abs/0908.1692"],
+      "cavity": ["Corporaal et al. 2023", "https://arxiv.org/abs/2304.12028"],
+      "scattering": ["Andrych et al. 2024", "https://doi.org/10.1093/mnras/stae2406"],
+      "dsharpRings": ["DSHARP II", "https://arxiv.org/abs/1812.04041"],
+      "dsharpTraps": ["DSHARP VI", "https://arxiv.org/abs/1812.04044"],
+      "settled": ["Villenave et al. 2022", "https://arxiv.org/abs/2204.00640"],
+      "taper": ["Trapman et al. 2019", "https://arxiv.org/abs/1903.06190"],
+      "winds": ["Pascucci et al. 2025", "https://doi.org/10.1038/s41550-024-02385-7"],
+      "birnstiel": ["Birnstiel, Fang & Johansen 2016", "https://doi.org/10.1007/s11214-016-0256-1"],
+      "damping": ["Vericel et al. 2021", "https://arxiv.org/abs/2108.00878"]
+    };
+
+    const molecularTracers = {
+      "co": {"label": "¹²CO", "name": "Carbon monoxide", "environment": "surfaceCO", "color": "#79e1cb", "note": "Maps rotating gas and an outflow in the Red Rectangle. Its higher emitting surface here follows the pattern measured in young discs.", "refs": ["rectangle", "exoalma", "evolvedCO"]},
+      "13co": {"label": "¹³CO", "name": "Carbon monoxide with carbon-13", "environment": "lowerCO", "color": "#8fbafa", "note": "Resolved in the Red Rectangle disc and outflow. The lower emitting layer shown here follows exoALMA.", "refs": ["rectangle", "exoalma"]},
+      "c18o": {"label": "C¹⁸O", "name": "Carbon monoxide with oxygen-18", "environment": "deepCO", "color": "#8fbafa", "note": "Reported in the Red Rectangle and 89 Her. It can probe deeper gas than ¹²CO when optical depth and chemistry allow.", "refs": ["evolvedSurvey", "mapsLayers"]},
+      "c17o": {"label": "C¹⁷O", "name": "Carbon monoxide with oxygen-17", "environment": "thinCO", "color": "#8fbafa", "note": "The Red Rectangle has resolved C¹⁷O emission tracing its rotating disc. The deep band is illustrative.", "refs": ["rectangle"]},
+      "hcn": {"label": "HCN", "name": "Hydrogen cyanide", "environment": "nitrile", "color": "#8fbafa", "note": "Reported tentatively in the Red Rectangle and 89 Her. HCN is firmly detected in MAPS young discs, where its emission shows radial and vertical structure.", "refs": ["evolvedSurvey", "mapsOrganics"]},
+      "h13cn": {"label": "H¹³CN", "name": "Hydrogen cyanide with carbon-13", "environment": "innerDense", "color": "#8fbafa", "note": "In the Red Rectangle, ALMA line profiles place the abundant H¹³CN in the dense inner Keplerian disc.", "refs": ["rectangle"]},
+      "hcop": {"label": "HCO⁺", "name": "Formyl ion", "environment": "ionLayer", "color": "#8fbafa", "note": "Detected toward R Sct. Its narrow line is consistent with a disc contribution. Young-disc studies use HCO⁺ to probe ionization, which also depends on CO and electron abundance.", "refs": ["evolvedSurvey", "mapsIon"]},
+      "cs": {"label": "CS", "name": "Carbon monosulfide", "environment": "sulfurGas", "color": "#8fbafa", "note": "A narrow CS line was reported in 89 Her. The lower molecular layer in the figure follows the exoALMA CS emission surfaces.", "refs": ["evolvedSurvey", "exoalma"]},
+      "sis": {"label": "SiS", "name": "Silicon monosulfide", "environment": "innerDense", "color": "#8fbafa", "note": "Narrow SiS emission in 89 Her was attributed to the rotating disc from its line shape. Its vertical placement in the figure is schematic.", "refs": ["evolvedSurvey"]},
+      "sio": {"label": "SiO", "name": "Silicon monoxide", "environment": "rimShock", "color": "#f3b779", "note": "SiO is reported in selected evolved nebulae, including AI CMi and R Sct. The inner-rim highlight illustrates a possible shock environment, informed by shocked HH 212 gas.", "refs": ["evolvedSurvey", "sio"]},
+      "29sio": {"label": "²⁹SiO", "name": "Silicon monoxide with silicon-29", "environment": "rimShock", "color": "#8fbafa", "note": "Thermal ²⁹SiO was reported toward AI CMi and R Sct. The narrow R Sct profile matches the narrow component of CO.", "refs": ["evolvedSurvey"]},
+      "30sio": {"label": "³⁰SiO", "name": "Silicon monoxide with silicon-30", "environment": "rimShock", "color": "#8fbafa", "note": "Thermal ³⁰SiO was reported in R Sct. The rare SiO isotopologues help characterize the gas in evolved environments with a detected SiO spectrum.", "refs": ["evolvedSurvey"]},
+      "so2": {"label": "SO₂", "name": "Sulfur dioxide", "environment": "iceTrap", "color": "#f7a6b7", "note": "SO₂ was reported with a composite profile toward the outflow-dominated evolved nebula AI CMi. The specific warm ice-release overlay follows the young Oph IRS 48 dust-trap example.", "refs": ["evolvedSurvey", "sulfurTrap"]},
+      "so": {"label": "SO", "name": "Sulfur monoxide", "environment": "warmSulfur", "color": "#c3d786", "note": "Narrow SO emission in the Red Rectangle suggests a disc contribution. Oph IRS 48 gives a young-disc example of SO associated with a warm dust trap.", "refs": ["evolvedSurvey", "sulfurTrap"]},
+      "h2o": {"label": "H₂O", "name": "Water vapour", "environment": "warmWater", "color": "#8fbafa", "note": "Infrared H₂O emission in HR 4049 provides an evolved example. PDS 70 shows warm water vapour in the terrestrial planet-forming region of a young disc.", "refs": ["hr4049", "water"]},
+      "co2": {"label": "CO₂", "name": "Carbon dioxide gas", "environment": "warmCO2", "color": "#8fbafa", "note": "Strong infrared CO₂ emission is seen in the evolved HR 4049 circumbinary disc. JWST also detects CO₂ in the warm inner disc of GW Lup.", "refs": ["hr4049", "warmCO2"]},
+      "13co2": {"label": "¹³CO₂", "name": "Carbon dioxide with carbon-13, gas", "environment": "warmCO2", "color": "#8fbafa", "note": "The rare carbon dioxide isotopologue helps constrain the CO₂ column where the main bands saturate. Compare the infrared studies of HR 4049 and GW Lup.", "refs": ["hr4049", "warmCO2"]},
+      "h2": {"label": "H₂", "name": "Molecular hydrogen", "environment": "warmH2", "color": "#b3d8ff", "note": "H₂ is the main molecular gas constituent. The highlight follows warm emitting gas in the atmosphere. Infrared H₂ lines are reported in young Herbig discs.", "refs": ["digitH2", "review"]},
+      "hd": {"label": "HD", "name": "Hydrogen deuteride", "environment": "bulkGas", "color": "#b3d8ff", "note": "Herschel detected HD in TW Hya. It follows the H₂ reservoir, with rotational line brightness strongly sensitive to gas temperature.", "refs": ["hd"]},
+      "13c17o": {"label": "¹³C¹⁷O", "name": "Carbon monoxide with carbon-13 and oxygen-17", "environment": "thinCO", "color": "#b3d8ff", "note": "ALMA detected this rare CO isotopologue in HD 163296 to probe gas at low line optical depth.", "refs": ["coDouble17"]},
+      "13c18o": {"label": "¹³C¹⁸O", "name": "Carbon monoxide with carbon-13 and oxygen-18", "environment": "thinCO", "color": "#b3d8ff", "note": "This rare isotopologue has been used with C¹⁷O and C¹⁸O to constrain CO isotope ratios in HD 163296.", "refs": ["coDouble18"]},
+      "oh": {"label": "OH", "name": "Hydroxyl", "environment": "hotOH", "color": "#c0a5f0", "note": "In irradiated d203-506, infrared OH emission is linked to ultraviolet photodissociation of water.", "refs": ["oh"]},
+      "cn": {"label": "CN", "name": "Cyano radical", "environment": "surfaceUV", "color": "#c0a5f0", "note": "MAPS finds vertically distinct CN and HCN emitting regions. CN responds to UV-driven chemistry and can also extend far out in radius.", "refs": ["mapsCN"]},
+      "c15n": {"label": "C¹⁵N", "name": "Cyano with nitrogen-15", "environment": "surfaceUV", "color": "#c0a5f0", "note": "Measured with CN lines in TW Hya to constrain nitrogen isotope ratios. Its schematic overlay shares the CN layer.", "refs": ["cn15"]},
+      "chp": {"label": "CH⁺", "name": "Methylidyne ion", "environment": "hotOH", "color": "#c0a5f0", "note": "Herschel detected CH⁺ in Herbig discs including HD 100546. Formation favours hot gas or UV-excited H₂, motivating an irradiated surface overlay.", "refs": ["digitch"]},
+      "c2h": {"label": "C₂H", "name": "Ethynyl radical", "environment": "carbonRadical", "color": "#c0a5f0", "note": "MAPS resolves C₂H rings. Several discs have low measured C₂H emitting heights. Its brightness responds to irradiation and the available gas-phase carbon.", "refs": ["mapsOrganics", "mapsLayers"]},
+      "c2d": {"label": "C₂D", "name": "Deuterated ethynyl", "environment": "carbonRadical", "color": "#c0a5f0", "note": "Detected in the LkCa 15 and MWC 480 spectral-line survey. The overlay shares the ethynyl-family environment.", "refs": ["loomis"]},
+      "c3h2": {"label": "c-C₃H₂", "name": "Cyclopropenylidene", "environment": "outerOrganic", "color": "#c0a5f0", "note": "MAPS mapped this cyclic hydrocarbon in young discs. Its radial extent can exceed that of the larger nitriles.", "refs": ["mapsLarge"]},
+      "h13cop": {"label": "H¹³CO⁺", "name": "Formyl ion with carbon-13", "environment": "ionDeep", "color": "#eab0e6", "note": "The rarer formyl ion helps constrain HCO⁺ where the main transition is optically thick.", "refs": ["mapsIon"]},
+      "dcop": {"label": "DCO⁺", "name": "Deuterated formyl ion", "environment": "outerRing", "color": "#eab0e6", "note": "Resolved DCO⁺ rings trace deuterium chemistry. Both warm and cold formation channels can contribute.", "refs": ["dco", "mapsD"]},
+      "n2hp": {"label": "N₂H⁺", "name": "Diazenylium", "environment": "coldCOIon", "color": "#eab0e6", "note": "Gas-phase CO destroys N₂H⁺, so it can brighten beyond the CO snowline. The bright emission ring can also be offset from the midplane snowline.", "refs": ["n2h", "nh3"]},
+      "n2dp": {"label": "N₂D⁺", "name": "Deuterated diazenylium", "environment": "coldDeuterium", "color": "#eab0e6", "note": "MAPS uses N₂D⁺ relative to N₂H⁺ to diagnose low-temperature deuterium fractionation.", "refs": ["mapsD"]},
+      "dcn": {"label": "DCN", "name": "Deuterated hydrogen cyanide", "environment": "nitrileInner", "color": "#eab0e6", "note": "MAPS resolves DCN/HCN structure. DCN can remain abundant at radii where warm deuterium chemistry contributes.", "refs": ["mapsD"]},
+      "hc15n": {"label": "HC¹⁵N", "name": "Hydrogen cyanide with nitrogen-15", "environment": "nitrileInner", "color": "#eab0e6", "note": "ALMA observations of HC¹⁵N and H¹³CN in discs including V4046 Sgr constrain nitrogen isotope ratios.", "refs": ["cyanide"]},
+      "hnc": {"label": "HNC", "name": "Hydrogen isocyanide", "environment": "outerCool", "color": "#eab0e6", "note": "HNC is seen in TW Hya and HD 163296. The TW Hya ring is consistent with more efficient HNC destruction at warmer inner radii.", "refs": ["hnc"]},
+      "dnc": {"label": "DNC", "name": "Deuterated hydrogen isocyanide", "environment": "outerCool", "color": "#eab0e6", "note": "The LkCa 15 and MWC 480 survey reported DNC. The example shares the cool HNC-family band.", "refs": ["loomis"]},
+      "nh3": {"label": "NH₃", "name": "Ammonia gas", "environment": "outerCool", "color": "#eab0e6", "note": "Herschel detected gas-phase ammonia toward the TW Hya disc. This illustration places the gas in a cool shielded region.", "refs": ["nh3"]},
+      "no": {"label": "NO", "name": "Nitric oxide", "environment": "iceTrap", "color": "#eab0e6", "note": "NO was detected in the Oph IRS 48 dust trap, where release of nitrogen-bearing ices may contribute to its gas-phase chemistry.", "refs": ["no"]},
+      "c34s": {"label": "C³⁴S", "name": "Carbon monosulfide with sulfur-34", "environment": "sulfurRare", "color": "#efcc8c", "note": "Detected in the LkCa 15 and MWC 480 spectral survey. This rarer CS variant helps probe optical depth and the sulfur reservoir.", "refs": ["loomis", "mapsS"]},
+      "13cs": {"label": "¹³CS", "name": "Carbon monosulfide with carbon-13", "environment": "sulfurRare", "color": "#efcc8c", "note": "The LkCa 15 and MWC 480 survey reported ¹³CS. It is shown sharing the lower CS molecular layer.", "refs": ["loomis", "mapsS"]},
+      "h2cs": {"label": "H₂CS", "name": "Thioformaldehyde", "environment": "outerOrganic", "color": "#efcc8c", "note": "Reported in MWC 480. Its ratio to CS helps probe how sulfur is distributed among gas-phase species.", "refs": ["leGal", "loomis"]},
+      "h2s": {"label": "H₂S", "name": "Hydrogen sulfide", "environment": "outerCool", "color": "#6cc9ec", "note": "Detected in the GG Tau A circumbinary ring around young stars, motivating a cooler dense-gas example.", "refs": ["h2s"]},
+      "hdo": {"label": "HDO", "name": "Singly deuterated water vapour", "environment": "isotopeWater", "color": "#ffb68e", "note": "Resolved in the outbursting V883 Ori disc. Together with H₂¹⁸O, HDO constrains the deuterium enrichment of water.", "refs": ["waterD"]},
+      "h218o": {"label": "H₂¹⁸O", "name": "Water vapour with oxygen-18", "environment": "isotopeWater", "color": "#ffb68e", "note": "In V883 Ori, this rarer form of water provides an estimate of the gas-phase H₂O column.", "refs": ["waterD"]},
+      "d2o": {"label": "D₂O", "name": "Doubly deuterated water vapour", "environment": "isotopeWater", "color": "#ffb68e", "note": "Detected as gas in outburst-heated V883 Ori. Its deuterium enrichment records the history of the sublimated icy reservoir.", "refs": ["waterD2"]},
+      "c2h2": {"label": "C₂H₂", "name": "Acetylene", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Infrared acetylene emission is detected in GW Lup and can be especially strong in carbon-rich young inner discs such as J1605−2338.", "refs": ["warmCO2", "acetylene"]},
+      "13cch2": {"label": "¹³CCH₂", "name": "Acetylene with carbon-13", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Detected with acetylene in the JWST spectrum of J1605−2338, helping constrain the abundant parent molecule.", "refs": ["acetylene"]},
+      "ch3": {"label": "CH₃", "name": "Methyl radical", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "JWST detected CH₃ in the unusually carbon-rich inner disc of ISO-ChaI 147.", "refs": ["hydrocarbon"]},
+      "ch4": {"label": "CH₄", "name": "Methane gas", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Methane is part of the warm hydrocarbon inventory inferred from JWST spectroscopy of ISO-ChaI 147.", "refs": ["hydrocarbon"]},
+      "c2h4": {"label": "C₂H₄", "name": "Ethylene", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Detected by JWST in ISO-ChaI 147. The overlay shows a schematic warm inner zone.", "refs": ["hydrocarbon"]},
+      "c2h6": {"label": "C₂H₆", "name": "Ethane", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "JWST detected ethane in the warm carbon-rich inner disc of ISO-ChaI 147.", "refs": ["hydrocarbon"]},
+      "c3h4": {"label": "CH₃CCH", "name": "Propyne", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "The JWST spectrum of ISO-ChaI 147 shows propyne, a three-carbon hydrocarbon.", "refs": ["hydrocarbon"]},
+      "c4h2": {"label": "C₄H₂", "name": "Diacetylene", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Diacetylene is seen in the carbon-rich inner disc of J1605−2338 alongside acetylene and benzene.", "refs": ["acetylene"]},
+      "c6h6": {"label": "C₆H₆", "name": "Benzene", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Infrared benzene bands are found in carbon-rich inner discs including ISO-ChaI 147. The highlight shares the warm hydrocarbon zone.", "refs": ["hydrocarbon", "acetylene"]},
+      "h2co": {"label": "H₂CO", "name": "Formaldehyde", "environment": "formaldehyde", "color": "#f1b6c3", "note": "Observed across young discs. HD 163296 shows emission above the midplane, with ice chemistry and gas-phase routes both relevant across systems.", "refs": ["mapsOrganics", "h2co"]},
+      "hdco": {"label": "HDCO", "name": "Singly deuterated formaldehyde", "environment": "deuteratedH2CO", "color": "#f1b6c3", "note": "Detected in the young IRS 63 disc and a streamer feeding it. Its vertical position in this illustration is schematic.", "refs": ["dFormaldehyde"]},
+      "d2co": {"label": "D₂CO", "name": "Doubly deuterated formaldehyde", "environment": "deuteratedH2CO", "color": "#f1b6c3", "note": "Detected in the young IRS 63 disc and used to probe deuteration of formaldehyde.", "refs": ["dFormaldehyde"]},
+      "hc3n": {"label": "HC₃N", "name": "Cyanoacetylene", "environment": "nitrileInner", "color": "#f1b6c3", "note": "MAPS resolves this larger nitrile. The compact band here represents its often centrally concentrated emission.", "refs": ["mapsLarge"]},
+      "ch3cn": {"label": "CH₃CN", "name": "Acetonitrile", "environment": "acetonitrile", "color": "#f1b6c3", "note": "MAPS finds acetonitrile at lower relative heights than HC₃N in its analysis, sometimes close to the midplane.", "refs": ["mapsLarge"]},
+      "ch3oh": {"label": "CH₃OH", "name": "Methanol gas", "environment": "iceTrap", "color": "#f1b6c3", "note": "Warm gas-phase methanol in HD 100546 has been interpreted as sublimated organic-rich ice. Its illustrated position represents an example release zone.", "refs": ["methanol"]},
+      "hcooh": {"label": "HCOOH", "name": "Formic acid", "environment": "outerOrganic", "color": "#f1b6c3", "note": "Gas-phase formic acid was reported toward TW Hya. The overlay illustrates a shielded region for molecular organics.", "refs": ["formic"]},
+      "ch3och3": {"label": "CH₃OCH₃", "name": "Dimethyl ether", "environment": "iceTrap", "color": "#f1b6c3", "note": "Detected in the Oph IRS 48 dust trap. Ice release is a proposed route to its observed gas-phase emission.", "refs": ["complexTrap"]},
+      "ch3ocho": {"label": "CH₃OCHO", "name": "Methyl formate", "environment": "burstOrganic", "color": "#f1b6c3", "note": "Detected in outburst-heated V883 Ori, where organic-rich ices release molecules into the gas.", "refs": ["outburstSurvey"]},
+      "ch3cho": {"label": "CH₃CHO", "name": "Acetaldehyde", "environment": "burstOrganic", "color": "#f1b6c3", "note": "Detected in V883 Ori, where a stellar outburst enables observations of sublimated organics farther out in the disc.", "refs": ["outburstOrganics", "outburstSurvey"]},
+      "acetone": {"label": "CH₃COCH₃", "name": "Acetone", "environment": "burstOrganic", "color": "#f1b6c3", "note": "Reported in the heated regions of V883 Ori, providing an example of observable organic gas after ice release.", "refs": ["outburstOrganics"]},
+      "ice-water": {"label": "H₂O ice", "name": "Water ice", "environment": "waterIce", "color": "#b8d5ff", "note": "JWST observed water ice in HH 48 NE. The highlight follows cold shielded grains outside the illustrative water snow surface.", "refs": ["ices", "snowlines"]},
+      "ice-co2": {"label": "CO₂ ice", "name": "Carbon dioxide ice", "environment": "co2Ice", "color": "#b8d5ff", "note": "CO₂ ice absorption is observed in HH 48 NE. In this schematic its reservoir starts farther out than water ice.", "refs": ["ices", "snowlines"]},
+      "ice-co": {"label": "CO ice", "name": "Carbon monoxide ice", "environment": "coIce", "color": "#b8d5ff", "note": "CO ice absorption is observed in HH 48 NE. The overlay shows the cold midplane reservoir beyond the illustrative CO snow surface.", "refs": ["ices", "nomura"]},
+      "ice-13co2": {"label": "¹³CO₂ ice", "name": "Carbon dioxide ice with carbon-13", "environment": "co2Ice", "color": "#b8d5ff", "note": "The rarer carbon isotope appears in HH 48 NE ice absorption and provides a more transparent probe of the CO₂ ice column.", "refs": ["ices"]},
+      "ice-nh3": {"label": "NH₃ ice", "name": "Ammonia ice", "environment": "mixedIce", "color": "#b8d5ff", "note": "Ammonia ice contributes weak absorption in HH 48 NE. Its highlight illustrates ice on shielded grains.", "refs": ["ices"]},
+      "ice-ocn": {"label": "OCN⁻ ice", "name": "Cyanate in ice", "environment": "mixedIce", "color": "#b8d5ff", "note": "The OCN⁻ absorption signature in HH 48 NE traces an ion in solid ice mixtures.", "refs": ["ices"]},
+      "ice-ocs": {"label": "OCS ice", "name": "Carbonyl sulfide ice", "environment": "mixedIce", "color": "#b8d5ff", "note": "HH 48 NE shows a weak feature assigned to solid OCS. The schematic overlay follows the shielded ice reservoir.", "refs": ["ices"]},
+      "ice-methanol": {"label": "CH₃OH ice", "name": "Methanol ice reservoir", "environment": "mixedIce", "color": "#b8d5ff", "note": "Gas-phase methanol in warm discs and after outbursts provides evidence for an icy reservoir. Here the highlight illustrates that inferred solid phase.", "refs": ["methanol", "outburstOrganics"]}
+    };
+
+    const discFeatures = {
+      "cavity": {"name": "Inner dust cavity", "style": "zone", "color": "#f6b17d", "radial": [-0.092, 0.003], "height": [-0.8, 1.12], "note": "A depleted dust region interior to the bright rim. Post-AGB transition discs can have dust rims well outside the sublimation radius.", "refs": ["cavity", "rim"]},
+      "sublimation": {"name": "Dust sublimation rim", "style": "zone", "color": "#f6b17d", "radial": [0.003, 0.054], "height": [-0.91, 1.015], "note": "An irradiated inner wall can mark the radius at which solid dust survives. Near-infrared interferometry resolved a hot dust rim around IRAS 08544−4431.", "refs": ["rim", "kama"]},
+      "warm-inner": {"name": "Warm inner disc", "style": "paired", "color": "#f6b17d", "radial": [0.035, 0.23], "height": [0.16, 0.64], "note": "Warm, dense gas near the inner rim can emit water, CO₂ and nitriles. HR 4049 and the Red Rectangle illustrate different tracers of the inner evolved disc.", "refs": ["hr4049", "rectangle"]},
+      "carbon-front": {"name": "Possible carbon-grain destruction front", "style": "snow", "color": "#f6b17d", "radial": [0.06, 0.095], "height": [-0.46, 0.46], "note": "Some carbon-rich young inner discs show strong hydrocarbons consistent with destruction of carbonaceous solids. The location is an illustrative hypothesis.", "refs": ["soot", "acetylene"]},
+      "dust-extent": {"name": "Millimetre dust edge", "style": "zone", "color": "#f6b17d", "radial": [0.84, 0.91], "height": [-0.13, 0.13], "note": "The observable millimetre dust disc can end inward of the CO-emitting region. Grain evolution and line optical depth both affect the apparent size contrast.", "refs": ["taper", "settled"]},
+      "outer-taper": {"name": "Outer gas taper", "style": "zone", "color": "#f6b17d", "radial": [0.88, 0.998], "height": [-0.89, 1.0], "note": "The outer gas disc fades as its column density falls. CO shielding, line opacity and sensitivity influence the observed edge.", "refs": ["taper"]},
+      "flaring": {"name": "Flared disc atmosphere", "style": "paired", "color": "#a1dcf3", "radial": [0.41, 0.986], "height": [0.83, 0.994], "note": "The geometrical thickness of the illustrated disc grows with radius. Scattered-light and CO-emission surfaces sample different parts of that atmosphere.", "refs": ["scattering", "exoalma"]},
+      "uv-surface": {"name": "UV-irradiated surface", "style": "paired", "color": "#a1dcf3", "radial": [0.033, 0.97], "height": [0.903, 1.012], "note": "Ultraviolet radiation processing the surface drives dissociation and photochemistry. Irradiated OH in d203-506 is one example.", "refs": ["review", "oh"]},
+      "scattering": {"name": "Small-grain scattering surface", "style": "paired", "color": "#a1dcf3", "radial": [0.09, 0.92], "height": [0.77, 0.906], "note": "Fine grains above the midplane scatter starlight. SPHERE polarimetry traces illuminated dust around the evolved binary IRAS 08544−4431.", "refs": ["scattering", "settled"]},
+      "co-surface": {"name": "Upper ¹²CO emitting surface", "style": "paired", "color": "#a1dcf3", "radial": [0.04, 0.974], "height": [0.755, 0.895], "note": "The main CO line becomes optically thick relatively high in the young discs studied by exoALMA. The emitting surface is a line-dependent observational layer.", "refs": ["exoalma", "mapsLayers"]},
+      "molecular-layer": {"name": "Shielded molecular layer", "style": "paired", "color": "#a1dcf3", "radial": [0.045, 0.957], "height": [0.36, 0.68], "note": "Shielding lets molecules survive below the exposed surface while gas remains warm enough to emit. ¹³CO and CS trace lower layers than ¹²CO in exoALMA.", "refs": ["review", "exoalma"]},
+      "deep-gas": {"name": "Deep gas traced by rare CO", "style": "paired", "color": "#a1dcf3", "radial": [0.04, 0.83], "height": [0.135, 0.383], "note": "Rarer CO lines can probe deeper layers when the gas is shielded and warm enough to keep CO in the gas phase. The Red Rectangle C¹⁷O map traces its rotating disc.", "refs": ["mapsLayers", "coDouble17", "rectangle"]},
+      "midplane": {"name": "Shielded midplane", "style": "zone", "color": "#a1dcf3", "radial": [0.026, 0.98], "height": [-0.092, 0.092], "note": "Dense gas near the equatorial plane is well shielded from direct UV. Cold parts of this region can hold substantial molecular ice.", "refs": ["review", "ices"]},
+      "settled-dust": {"name": "Settled millimetre grains", "style": "zone", "color": "#a1dcf3", "radial": [0.035, 0.885], "height": [-0.04, 0.04], "note": "Large grains can concentrate in a thin layer around the midplane. Oph 163131 gives an observational example of strong settling.", "refs": ["settled", "birnstiel"]},
+      "disc-wind": {"name": "Molecular surface outflow", "style": "wind", "color": "#a1dcf3", "radial": [0, 1], "height": [0, 1], "note": "The wisps illustrate gas leaving both disc faces. CO traces a rotating disc and outflow in the Red Rectangle. JWST resolves molecular winds from some young discs.", "refs": ["rectangle", "winds"]},
+      "water-snow": {"name": "Water snow surface", "style": "snow", "color": "#b3d8ff", "radial": [0.17, 0.28], "height": [-0.72, 0.72], "note": "The midplane water snowline is the intersection of this surface with the midplane. Outburst-heated V883 Ori enables direct gas-phase water mapping on disc scales.", "refs": ["snowlines", "waterD"]},
+      "co2-snow": {"name": "CO₂ snow surface", "style": "snow", "color": "#b3d8ff", "radial": [0.34, 0.46], "height": [-0.68, 0.68], "note": "CO₂ generally freezes at cooler locations than water under comparable conditions. Mixed ices and local pressure can shift the boundary.", "refs": ["snowlines", "ices"]},
+      "co-snow": {"name": "CO snow surface", "style": "snow", "color": "#b3d8ff", "radial": [0.59, 0.79], "height": [-0.59, 0.59], "note": "CO freezes in the cold lower disc. CO isotopologues and N₂H⁺ offer complementary constraints, and the N₂H⁺ emission peak may lie beyond the midplane snowline.", "refs": ["nomura", "n2h"]},
+      "cold-reservoir": {"name": "Cold ice reservoir", "style": "zone", "color": "#b3d8ff", "radial": [0.6, 0.972], "height": [-0.215, 0.215], "note": "Volatiles on grain surfaces make a distinct solid reservoir. The CO-ice absorption in HH 48 NE motivates this example.", "refs": ["ices", "snowlines"]},
+      "photo-desorb": {"name": "Possible photodesorption layer", "style": "paired", "color": "#b3d8ff", "radial": [0.57, 0.97], "height": [0.29, 0.469], "note": "Photons can release molecules from ice where light reaches grain surfaces. Some exoALMA discs show CO temperature signatures consistent with non-thermal desorption.", "refs": ["exoalma", "review"]},
+      "dust-gap": {"name": "Dust gap", "style": "zone", "color": "#b3d8ff", "radial": [0.327, 0.398], "height": [-0.127, 0.127], "note": "An annulus with reduced dust continuum, inspired by DSHARP gaps. Gas density and dust brightness can vary independently.", "refs": ["dsharpRings"]},
+      "dust-ring": {"name": "Dust rings", "style": "rings", "color": "#b3d8ff", "radial": [0.42, 0.79], "height": [-0.112, 0.112], "note": "Enhanced continuum rings are common in young discs. Scattered-light substructure is also seen around evolved binaries, including IRAS 08544−4431.", "refs": ["dsharpRings", "scattering"]},
+      "pressure-trap": {"name": "Possible pressure trap", "style": "zone", "color": "#b3d8ff", "radial": [0.438, 0.507], "height": [-0.087, 0.087], "note": "A radial pressure maximum can retain drifting grains in a narrow ring. This is one interpretation of some DSHARP rings, illustrated here at the first dust ring.", "refs": ["dsharpTraps"]},
+      "ice-release": {"name": "Warm ice-release zone", "style": "paired", "color": "#b3d8ff", "radial": [0.27, 0.53], "height": [0.236, 0.505], "note": "In Oph IRS 48 a warm, asymmetric dust trap emits molecules including SO₂ and dimethyl ether. The cross-section illustrates a slice through such a local environment.", "refs": ["sulfurTrap", "complexTrap", "no"]}
+    };
+
+    // Keep the original seven particle fields for the overview and homepage.
+    const overviewGasProfiles = [
+      { color: '#79e1cb', radial: [0.018, 0.988], height: [0.79, 0.87], spread: 0.055, count: 154 },
+      { color: '#8fbafa', radial: [0.025, 0.973], height: [0.46, 0.58], spread: 0.066, count: 132 },
+      { color: '#c0a5f0', radial: [0.008, 0.30], height: [0.94, 0.91], spread: 0.045, count: 48 },
+      { color: '#f3b779', radial: [0.012, 0.115], height: [0.29, 0.46], spread: 0.13, count: 23 },
+      { color: '#c3d786', radial: [0.17, 0.75], height: [0.56, 0.51], spread: 0.079, count: 63 },
+      { color: '#f7a6b7', radial: [0.29, 0.51], height: [0.36, 0.43], spread: 0.074, count: 38 },
+      { color: '#6cc9ec', radial: [0.59, 0.94], height: [0.29, 0.33], spread: 0.058, count: 54 }
+    ];
+
+    function makeTracerField(profile, random, minimumHeight = 0.09) {
+      const { color, radial, height, spread, count } = profile;
+      const points = Array.from({ length: count }, (_, index) => {
+        const t = (index + random()) / count;
+        const r = lerp(...radial, t);
+        const side = index % 2 ? -1 : 1;
+        const a = wrap(index * 0.618034 + random() * 0.07);
+        const z = side * clamp(lerp(...height, t) + spread * (random() + random() - 1) * 1.75, minimumHeight, 0.97);
+        return { r, a, z, offset: TAU * random(), size: 0.55 + 1.24 * random() ** 2 };
       });
+      const bandLines = [-1, 1].map(side => {
+        const line = new Path2D();
+        for (let step = 0; step <= 40; step++) {
+          const t = step / 40;
+          const x = lerp(slice.inner, slice.outer, lerp(...radial, t));
+          const y = layerY(x, side * lerp(...height, t));
+          if (step === 0) line.moveTo(x, y);
+          else line.lineTo(x, y);
+        }
+        return line;
+      });
+      return { color, radial, spread, points, bandLines };
+    }
+
+    function tracerField(key) {
+      if (tracerFields.has(key)) return tracerFields.get(key);
+      const { color, environment } = molecularTracers[key];
+      const [radial, height, spread, count] = tracerEnvironments[environment];
+      const ice = key.startsWith('ice-');
+      const field = makeTracerField({ color, radial, height, spread, count }, seededRandom(503092), ice ? 0.015 : 0.038);
+      field.ice = ice;
+      tracerFields.set(key, field);
+      return field;
     }
 
     function systemPoint(radial, theta, z) {
       const radius = lerp(disc.inner + 2, disc.outer - 2, clamp(radial));
-      const angle = lerp(startAngle, endAngle, clamp(theta));
+      const angle = TAU * theta;
       return projected(radius, angle, z * discHeight(radius, angle));
     }
 
     function slicePoint(radial, _theta, z) {
       const x = lerp(slice.inner + 2, slice.outer - 2, clamp(radial));
       return [x, layerY(x, z)];
-    }
-
-    function appendPolygon(path, points) {
-      const area = points.reduce((sum, [x, y], index) => {
-        const [nextX, nextY] = points[(index + 1) % points.length];
-        return sum + x * nextY - nextX * y;
-      }, 0);
-      const clockwise = area >= 0 ? points : points.slice().reverse();
-      path.moveTo(...clockwise[0]);
-      for (let index = 1; index < clockwise.length; index++) path.lineTo(...clockwise[index]);
-      path.closePath();
-    }
-
-    function makeDiscFootprint() {
-      const path = new Path2D();
-      appendPolygon(path, [...discArc(disc.outer), ...discArc(disc.inner, endAngle, startAngle)]);
-      for (const [start, end] of [[0, disc.nearRight], [disc.nearLeft, Math.PI]]) {
-        appendPolygon(path, [...discArc(disc.outer, start, end), ...discArc(disc.outer, end, start, -0.61)]);
-      }
-      appendPolygon(path, [...wallCurve(disc.nearLeft, 1), ...wallCurve(disc.nearLeft, -0.61, true)]);
-      appendPolygon(path, [...wallCurve(disc.nearRight, 1, true), ...wallCurve(disc.nearRight, -0.61)]);
-      appendPolygon(path, [...discArc(disc.inner, endAngle, startAngle), ...discArc(disc.inner, startAngle, endAngle, 0.10)]);
-      return path;
     }
 
     function paintTracerBands(ctx, field, opacity) {
@@ -1601,23 +1862,25 @@
     function paintTracers(ctx, angle, selected, projection, sectional) {
       ctx.save();
       ctx.globalCompositeOperation = 'screen';
-      for (const field of gasField) {
-        const highlighted = field.key === selected;
-        const opacity = selected ? (highlighted ? 0.91 : 0.075) : (sectional ? 0.50 : 0.36);
-        if (sectional) paintTracerBands(ctx, field, opacity * (highlighted ? 0.52 : 0.19));
+      const selectedField = selected ? tracerField(selected) : null;
+      for (const field of selectedField ? [...gasField, selectedField] : gasField) {
+        const highlighted = field === selectedField;
+        const opacity = selected ? (highlighted ? 0.91 : 0.060) : (sectional ? 0.50 : 0.36);
+        if (sectional) paintTracerBands(ctx, field, opacity * (highlighted ? 0.54 : 0.19));
         for (const sample of field.points) {
           const drift = angle + sample.offset;
           const r = sample.r + 0.009 * Math.sin(drift);
           const orbital = wrap(sample.a + angle / TAU);
           const azimuth = sectional ? sample.a : orbital;
-          const cutFade = sectional ? 1 : smooth(0, 0.042, orbital) * (1 - smooth(0.958, 1, orbital));
-          const z = sample.z + 0.035 * Math.sin(2 * angle + sample.offset);
+          const z = sample.z + (field.ice ? 0.014 : 0.035) * Math.sin(2 * angle + sample.offset);
           const [x, y] = projection(r, azimuth, z);
           const flicker = 0.69 + 0.31 * Math.sin(3 * angle + sample.offset);
-          const light = opacity * flicker * cutFade * discEdgeFade(r) * (z < 0 && !sectional ? 0.57 : 1);
+          const light = opacity * flicker * discEdgeFade(r) * (z < 0 && !sectional ? 0.57 : 1);
           const radius = sample.size * (highlighted ? 1.28 : 1) * (sectional ? 1 : 0.82);
           glow(ctx, x, y, radius * 7.2, radius * (sectional ? 4.2 : 2.9), field.color, light * 0.57);
-          if (highlighted || sample.size > 1.05) {
+          if (field.ice) {
+            grain(ctx, x, y, radius * 1.45, sample.offset + angle, true, light);
+          } else if (highlighted || sample.size > 1.05) {
             ctx.globalAlpha = light * 0.73;
             dot(ctx, x, y, radius * 0.49, field.color);
             ctx.globalAlpha = 1;
@@ -1649,20 +1912,83 @@
           });
         }
       }
-      return tracks;
+      return assignCrossingTracks(tracks);
     }
 
     const impactPhase = 0.62;
+    const settlingStart = 0.28;
     const coldStart = 0.59;
     const warmEnd = 0.18;
 
-    function drawGrowingGrain(ctx, track, p, projection, scale) {
-      const alpha = discEdgeFade(track.r) * smooth(0, 0.075, p) * (1 - smooth(impactPhase, impactPhase + 0.025, p));
-      const settling = smooth(0.28, impactPhase, p);
+    // Use a seeded shuffle of uniformly spaced thresholds. Changing the
+    // probability changes the cohort without rerolling grains every frame.
+    function assignCrossingTracks(tracks) {
+      const random = seededRandom(791423);
+      const ranks = tracks.slice();
+      for (let i = ranks.length - 1; i > 0; i--) {
+        const j = Math.floor(random() * (i + 1));
+        [ranks[i], ranks[j]] = [ranks[j], ranks[i]];
+      }
+      for (const [index, track] of ranks.entries()) {
+        track.crossingRoll = (index + 0.5) / ranks.length;
+        track.firstCrossing = lerp(0.48, 0.54, random());
+        track.lastCrossing = track.firstCrossing + lerp(0.255, 0.308, random());
+        track.halfSwings = 4 + Math.floor(3 * random());
+        track.damping = lerp(1.6, 2.7, random());
+        track.arrivalSlope = lerp(3.65, 5.25, random());
+      }
+      return tracks;
+    }
+
+    function verticalLoft(track) {
+      return track.r > coldStart ? track.loft * 0.59 : track.loft;
+    }
+
+    function settlingFraction(track, p, crossing, passThrough) {
+      if (!passThrough) return smooth(settlingStart, crossing, p);
+      const time = clamp((p - settlingStart) / (crossing - settlingStart));
+      return 0.45 * smooth(0, 1, time) + 0.55 * time ** (track.arrivalSlope / 0.55);
+    }
+
+    function oscillationHeight(track, p) {
+      const duration = track.lastCrossing - track.firstCrossing;
+      const t = clamp((p - track.firstCrossing) / duration);
+      const frequency = Math.PI * track.halfSwings;
+      // Match the grain's vertical velocity just before the first crossing.
+      const speedAtCrossing = verticalLoft(track) * track.arrivalSlope / (track.firstCrossing - settlingStart);
+      const amplitude = speedAtCrossing * duration / frequency;
+      return -track.side * amplitude * Math.exp(-track.damping * t) * Math.sin(frequency * t);
+    }
+
+    function drawOscillatingGrain(ctx, track, p, projection, scale) {
+      const opacity = discEdgeFade(track.r) * (1 - smooth(track.lastCrossing, track.lastCrossing + 0.022, p));
+      const z = oscillationHeight(track, p);
+      const [x, y] = projection(track.r, track.a, z);
+      const icy = track.r > coldStart;
+      const size = scale * track.size;
+      const trailStart = Math.max(track.firstCrossing, p - 0.026);
+      const trail = Array.from({ length: 6 }, (_, index) => {
+        const time = lerp(trailStart, p, index / 5);
+        return projection(track.r, track.a, oscillationHeight(track, time));
+      });
+      ctx.save();
+      ctx.globalAlpha = opacity * 0.35;
+      ctx.strokeStyle = icy ? ICE : GOLD;
+      ctx.lineWidth = Math.max(0.7, size * 0.85);
+      trace(ctx, trail);
+      ctx.stroke();
+      ctx.restore();
+      grain(ctx, x, y, size * 3.6, track.spin + p * 3.6, icy, opacity);
+    }
+
+    function drawGrowingGrain(ctx, track, p, projection, scale, crossing, passThrough) {
+      const breakupFade = passThrough ? 1 : 1 - smooth(crossing, crossing + 0.025, p);
+      const alpha = discEdgeFade(track.r) * smooth(0, 0.075, p) * breakupFade;
+      const settling = settlingFraction(track, p, crossing, passThrough);
       const growth = smooth(0.09, 0.47, p);
       const icy = track.r > coldStart;
       const rimCondensation = track.r < warmEnd;
-      const layer = icy ? track.loft * 0.59 : track.loft;
+      const layer = verticalLoft(track);
       const inwardTravel = Math.min(track.drift, 0.994 - track.r);
       const r = track.r + inwardTravel * (1 - settling);
       const theta = track.a + 0.013 * Math.sin(track.spin + 5 * p) * (1 - settling);
@@ -1696,7 +2022,7 @@
       }
       const trailOpacity = alpha * growth * 0.43 * smooth(0.025, 0.16, settling) * (1 - smooth(0.81, 0.98, settling));
       if (trailOpacity > 0.002) {
-        const earlier = smooth(0.28, impactPhase, p - 0.032);
+        const earlier = settlingFraction(track, p - 0.032, crossing, passThrough);
         const [trailX, trailY] = projection(track.r + inwardTravel * (1 - earlier), theta, track.side * layer * (1 - earlier));
         ctx.globalAlpha = trailOpacity;
         ctx.strokeStyle = icy ? ICE : GOLD;
@@ -1708,15 +2034,15 @@
       grain(ctx, x, y, size * lerp(0.76, 3.6, growth), track.spin + p * 3.6, icy, alpha);
 
       const approach = smooth(0.46, impactPhase, p);
-      const partnerAlpha = alpha * smooth(0.43, 0.52, p) * 0.88;
+      const partnerAlpha = passThrough ? 0 : alpha * smooth(0.43, 0.52, p) * 0.88;
       if (partnerAlpha > 0.01) {
         const [x2, y2] = projection(track.r - track.drift * (1 - approach), track.a + 0.020 * (1 - approach), -track.side * 0.036 * (1 - approach));
         grain(ctx, x2, y2, size * 2.58, track.spin - 2 * p, icy, partnerAlpha);
       }
     }
 
-    function drawFragmentingGrain(ctx, track, p, projection, scale) {
-      const sinceImpact = clamp((p - impactPhase) / (1 - impactPhase));
+    function drawFragmentingGrain(ctx, track, p, projection, scale, breakup) {
+      const sinceImpact = clamp((p - breakup) / (1 - breakup));
       const icy = track.r > coldStart;
       const color = icy ? ICE : GOLD;
       const size = scale * track.size;
@@ -1754,14 +2080,21 @@
       const scale = sectional ? 1.12 : 0.68;
       for (const track of dustTracks) {
         const p = wrap(phase + track.offset);
-        if (p < impactPhase + 0.025) drawGrowingGrain(ctx, track, p, projection, scale);
-        if (p >= impactPhase) drawFragmentingGrain(ctx, track, p, projection, scale);
+        const passThrough = sectional && track.crossingRoll >= breakupChance;
+        const firstCrossing = passThrough ? track.firstCrossing : impactPhase;
+        const breakup = passThrough ? track.lastCrossing : firstCrossing;
+        if (p < firstCrossing + (passThrough ? 0 : 0.025)) {
+          drawGrowingGrain(ctx, track, p, projection, scale, firstCrossing, passThrough);
+        }
+        if (passThrough && p >= firstCrossing && p < breakup + 0.022) {
+          drawOscillatingGrain(ctx, track, p, projection, scale);
+        }
+        if (p >= breakup) drawFragmentingGrain(ctx, track, p, projection, scale, breakup);
       }
     }
 
     function paintDiscActivity(ctx, phase, selected, sectional) {
-      // The annular view projects both the gas and the grains through the cutaway.
-      // Clip that overlay to the body of the disc so it cannot cross the cavity.
+      // Clip the annular overlay to the projected disc and preserve the cavity.
       const projection = sectional ? slicePoint : systemPoint;
       ctx.save();
       if (!sectional) ctx.clip(discFootprint);
@@ -1785,9 +2118,10 @@
 
     const stars = { primary: starTexture(primary.radius, true), companion: starTexture(companion.radius, false) };
     const grains = { rock: makeGrainAtlas(2369, false), ice: makeGrainAtlas(5011, true) };
-    const gasField = tracerSamples();
+    const overviewTracerRandom = seededRandom(503092);
+    const gasField = overviewGasProfiles.map(profile => makeTracerField(profile, overviewTracerRandom));
+    const tracerFields = new Map();
     const dustTracks = makeDustTracks();
-    const discFootprint = makeDiscFootprint();
     const sliceFootprint = new Path2D();
     appendPolygon(sliceFootprint, [...sliceCurve(1.04), ...sliceCurve(-0.93, true)]);
     const surfaceOutflow = makeSurfaceOutflow();
@@ -1804,7 +2138,12 @@
     const playbackButton = document.querySelector('#playback');
     const playbackLabel = document.querySelector('#play-label');
     const discCaption = document.querySelector('#disc-caption');
-    const speciesButtons = [...document.querySelectorAll('[data-species]')];
+    const discRegionCaption = document.querySelector('#disc-region-caption');
+    const tracerSelect = document.querySelector('#molecular-tracer');
+    const featureSelect = document.querySelector('#disc-feature');
+    const breakupControl = document.querySelector('#breakup-chance');
+    const breakupValue = document.querySelector('#breakup-value');
+    const breakupSummary = document.querySelector('#breakup-summary');
     const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
     const hitContext = circleCanvas(1).getContext('2d');
     const backdrops = new Map();
@@ -1826,7 +2165,7 @@
       disc: discFocus
     };
     const hotspots = [...map.querySelectorAll('[data-destination]')];
-    const defaultCaption = 'Grains grow, settle, fragment and mix upward throughout the disc. A faint wind rises from its surfaces.';
+    const defaultCaption = discCaption.textContent;
     let route = routeFromUrl();
     let camera;
     let transition = null;
@@ -1835,6 +2174,8 @@
     let paintedSystemFrame = false;
     let playgroundLayout;
     let selectedSpecies = '';
+    let selectedFeature = null;
+    let breakupChance;
     let hovered = '';
     let clock = 0;
     let frameRequest = 0;
@@ -2001,12 +2342,69 @@
       return cached.buffer;
     }
 
+    function sliceCoordinates(radius, height) {
+      const x = lerp(slice.inner, slice.outer, radius);
+      return [x, layerY(x, height)];
+    }
+
+    function paintDiscFeature(ctx, feature) {
+      const { style, color, radial, height } = feature;
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 1.5;
+      if (style === 'snow') {
+        const points = Array.from({ length: 41 }, (_, index) => {
+          const z = lerp(...height, index / 40);
+          const r = lerp(...radial, (Math.abs(z) / height[1]) ** 1.72);
+          return sliceCoordinates(r, z);
+        });
+        ctx.setLineDash([5, 4]);
+        trace(ctx, points);
+        ctx.stroke();
+        dot(ctx, ...sliceCoordinates(radial[0], 0), 3.4, color);
+      } else if (style === 'wind') {
+        ctx.globalAlpha = 0.74;
+        ctx.setLineDash([4, 5]);
+        for (const points of surfaceOutflow.strands) {
+          trace(ctx, points);
+          ctx.stroke();
+        }
+      } else {
+        const windows = style === 'rings' ? sliceDustRings.map(radius => [radius - 0.023, radius + 0.023]) : [radial];
+        const levels = style === 'paired' ? [height, [-height[1], -height[0]]] : [height];
+        for (const [left, right] of windows) {
+          for (const [lower, upper] of levels) {
+            const near = Array.from({ length: 44 }, (_, index) => sliceCoordinates(lerp(left, right, index / 43), lower));
+            const far = Array.from({ length: 44 }, (_, index) => sliceCoordinates(lerp(right, left, index / 43), upper));
+            trace(ctx, [...near, ...far], true);
+            ctx.globalAlpha = 0.105;
+            ctx.fill();
+            ctx.globalAlpha = 0.84;
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.restore();
+    }
+
+    function paintDiscFeatureLabel(ctx, feature) {
+      ctx.save();
+      ctx.font = '600 16px system-ui, sans-serif';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = feature.color;
+      ctx.fillRect(102, 54, 2.8, 17);
+      ctx.fillStyle = '#f3efea';
+      ctx.fillText(feature.name, 115, 63);
+      ctx.restore();
+    }
+
     function paintSliceLabels(ctx) {
       paintSliceBaseline(ctx);
       const items = [
         { x: 103, y: 112, text: 'Irradiated surface', ink: GOLD, line: [[103, 129], [221, 129], [364, 244]] },
-        { x: 918, y: 97, text: 'Cool CO ice region', ink: ICE, line: [[918, 114], [886, 114], [850, 267]] },
-        { x: 930, y: 389, text: 'Dust-rich midplane', ink: GOLD, line: [[930, 373], [858, 373], [771, 307]] }
+        { x: 918, y: 97, text: 'Cool CO ice region', ink: ICE, line: [[918, 114], [886, 114], [850, layerY(850, 0.09)]] },
+        { x: 930, y: 389, text: 'Dust-rich midplane', ink: GOLD, line: [[930, 373], [858, 373], [771, layerY(771, 0)]] }
       ];
       ctx.save();
       ctx.font = '500 13px system-ui, sans-serif';
@@ -2059,7 +2457,12 @@
       paintDiscOutflow(ctx, phase);
       ctx.drawImage(backdrop('disc', scale), 0, 0, WIDTH, HEIGHT);
       paintDiscActivity(ctx, phase, selectedSpecies, true);
-      if (width >= 820) paintSliceLabels(ctx);
+      if (selectedFeature) {
+        paintDiscFeature(ctx, selectedFeature);
+        if (width >= 540) paintDiscFeatureLabel(ctx, selectedFeature);
+      } else if (width >= 820) {
+        paintSliceLabels(ctx);
+      }
     }
 
     function paintFrame() {
@@ -2230,15 +2633,51 @@
       if (target) openPage(target, point);
     });
     description.addEventListener('toggle', paintFrame);
-    for (const chip of speciesButtons) {
-      chip.addEventListener('click', () => {
-        const key = chip.dataset.species;
-        selectedSpecies = selectedSpecies === key ? '' : key;
-        for (const button of speciesButtons) button.setAttribute('aria-pressed', String(button.dataset.species === selectedSpecies));
-        discCaption.textContent = selectedSpecies ? gasProfiles[selectedSpecies].caption : defaultCaption;
-        paintFrame();
-      });
+    function showDiscNote(paragraph, entry, fallback = '') {
+      paragraph.hidden = !entry && !fallback;
+      if (!entry) {
+        paragraph.textContent = fallback;
+        return;
+      }
+
+      const name = document.createElement('strong');
+      name.textContent = entry.name;
+      const references = document.createElement('span');
+      references.className = 'note-sources';
+      for (const reference of entry.refs) {
+        const [title, url] = discSources[reference];
+        const link = document.createElement('a');
+        link.href = url;
+        link.textContent = title;
+        references.append(link);
+      }
+      paragraph.replaceChildren(name, `. ${entry.note} `, references);
     }
+
+    function updateTracer() {
+      selectedSpecies = tracerSelect.value;
+      showDiscNote(discCaption, molecularTracers[selectedSpecies], defaultCaption);
+      paintFrame();
+    }
+
+    function updateDiscFeature() {
+      selectedFeature = discFeatures[featureSelect.value] ?? null;
+      showDiscNote(discRegionCaption, selectedFeature);
+      paintFrame();
+    }
+
+    function updateBreakupChance() {
+      const chance = breakupControl.valueAsNumber;
+      breakupChance = chance / 100;
+      breakupValue.value = `${chance}%`;
+      breakupControl.setAttribute('aria-valuetext', `${chance}%`);
+      breakupSummary.textContent = `${100 - chance}% pass through and oscillate before breaking up.`;
+      paintFrame();
+    }
+
+    tracerSelect.addEventListener('change', updateTracer);
+    featureSelect.addEventListener('change', updateDiscFeature);
+    breakupControl.addEventListener('input', updateBreakupChance);
     function syncHash() { openPage(routeFromUrl(), null, false); }
     window.addEventListener('popstate', syncHash);
     window.addEventListener('hashchange', syncHash);
@@ -2260,6 +2699,9 @@
       }
       setPlayback(!event.matches);
     });
+    updateBreakupChance();
+    if (tracerSelect.value) updateTracer();
+    if (featureSelect.value) updateDiscFeature();
     showPage();
     fitCanvases();
     setPlayback(playing);
