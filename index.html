@@ -14,6 +14,7 @@
       --text: #f3efea;
       --quiet: #adbdce;
       --mint: #a1e5dc;
+      --link: #ffc995;
       --edge: #8da6bd3d;
       --gutter: clamp(1.25rem, 5.1vw, 6rem);
       --serif: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', 'Bitstream Charter', Georgia, serif;
@@ -26,10 +27,10 @@
     body { margin: 0; color: var(--text); font: 1rem/1.58 var(--sans); min-height: 100svh; }
     button, summary, a { -webkit-tap-highlight-color: transparent; }
     button { font: inherit; }
-    a { color: var(--mint); text-underline-offset: 0.22em; }
-    a:hover { color: #e5fff9; }
+    a { color: var(--link); text-underline-offset: 0.22em; }
+    a:hover { color: #ffe5c9; }
     a:focus-visible, button:focus-visible, summary:focus-visible {
-      outline: 2px solid var(--mint); outline-offset: 4px;
+      outline: 2px solid var(--link); outline-offset: 4px;
     }
     h1, h2, p { margin: 0; }
     h1 { font: 400 clamp(3.55rem, 7.4vw, 7.05rem)/0.99 var(--serif); letter-spacing: -0.066em; }
@@ -120,7 +121,7 @@
     .system-description { position: relative; }
     .system-description > summary { list-style: none; justify-content: flex-start; }
     .system-description > summary::-webkit-details-marker { display: none; }
-    .system-description > summary::before { content: '+'; color: var(--mint); font: 1.06rem/1 var(--mono); }
+    .system-description > summary::before { content: '+'; color: var(--link); font: 1.06rem/1 var(--mono); }
     .system-description[open] > summary::before { content: '−'; }
     .description-panel {
       position: absolute; bottom: calc(100% + 0.8rem); left: 0; width: min(36rem, calc(100vw - 2 * var(--gutter)));
@@ -130,7 +131,7 @@
     .description-panel p { margin-top: 0.68rem; color: #c4d2df; }
     .bibliography { margin-top: 0.95rem; padding-top: 0.75rem; border-top: 1px solid var(--edge); }
     .bibliography summary { width: fit-content; cursor: pointer; color: #f2eadf; font-weight: 600; }
-    .bibliography summary::marker { color: var(--mint); }
+    .bibliography summary::marker { color: var(--link); }
     .bibliography h3 { margin: 1rem 0 0.45rem; color: #eac8aa; font-size: 0.98rem; }
     .bibliography dl { margin: 0; font-size: 0.89rem; }
     .bibliography dl > div + div { margin-top: 0.65rem; }
@@ -151,6 +152,7 @@
     .reading-panel > .text-link { display: inline-block; margin-top: 1rem; }
     .text-link { font-size: 0.93rem; }
     .cv-panel { max-width: 32rem; }
+    .cv-field { color: #a9c6d2; font-size: 0.95rem; }
     .cv-panel h2 { padding-top: 0.86rem; border-top: 1px solid var(--edge); }
     .cv-list { margin: 0.7rem 0 0; }
     .cv-list > div + div { margin-top: 0.8rem; }
@@ -182,9 +184,13 @@
     .tracers button[aria-pressed='true'] { border-color: var(--ink); color: #f7fbff; }
     .disc-science { width: 100%; color: #b7c8d5; }
     .disc-science summary { width: fit-content; cursor: pointer; font-size: 0.85rem; }
-    .disc-science summary::marker { color: var(--mint); }
+    .disc-science summary::marker { color: var(--link); }
     .disc-references { max-width: 74ch; padding-block: 0.7rem 0.15rem; }
-    .disc-references p + p { margin-top: 0.45rem; }
+    .disc-reference-links {
+      display: flex; flex-wrap: wrap; gap: 0.32rem 1.08rem;
+      list-style: none; padding: 0.62rem 0 0; margin: 0.68rem 0 0; border-top: 1px solid var(--edge);
+      font-size: 0.91rem;
+    }
     .no-script { position: fixed; z-index: 9; inset: 40% 10% auto; color: var(--text); background: #102035; padding: 1rem; }
 
     .page-enter { animation: page-enter 340ms ease-out both; }
@@ -275,7 +281,7 @@
           <div class="description-panel">
             <h2>A post-AGB binary</h2>
             <p>Two warm gas streams curve with the disc’s rotation. They enter the cavity through L₂ beyond the companion and L₃ beyond the primary, feeding the circumsecondary disc and the post-AGB star, respectively.</p>
-            <p>The smaller, brighter star is the post-AGB primary. The companion’s bipolar jet starts at its poles and opens into a broad lobe on each side. A faint wind rises from the disc surfaces in the cross-section.</p>
+            <p>The smaller, brighter star is the post-AGB primary. The companion is embedded in a small accretion disc. Each lobe of its bipolar jet widens directly from a point just beyond a pole. A faint wind rises from the disc surfaces in the cross-section.</p>
             <p>Sizes, temperatures and times are schematic. The cross-section uses molecular tracers and dust processes studied in younger discs as a guide.</p>
             <details class="bibliography">
               <summary>Studies and what they informed</summary>
@@ -285,7 +291,7 @@
                 <div><dt>Oomen et al. (2019)</dt><dd>Stellar evolution models with gas re-accretion motivated the stream feeding the post-AGB primary. <a href="https://doi.org/10.1051/0004-6361/201935853" aria-label="Paper by Oomen and colleagues">Paper</a></dd></div>
                 <div><dt>Bollen, Kamath, De Marco, Van Winckel &amp; Wardle (2020)</dt><dd>Their accretion and jet mass-loss estimates motivated the link between re-accretion, a circumsecondary disc and its outflow. <a href="https://doi.org/10.1051/0004-6361/202038414" aria-label="2020 paper by Bollen and colleagues">Paper</a></dd></div>
                 <div><dt>Bollen et al. (2022)</dt><dd>The fitted jet geometries and angular density contrasts inspired broad lobes with brighter limbs. Both illustrated lobes use the same opening angle. <a href="https://arxiv.org/abs/2208.08752" aria-label="2022 paper by Bollen and colleagues">Paper</a></dd></div>
-                <div><dt>De Prins et al. (2024)</dt><dd>Magnetohydrodynamic models of a wind launched by the companion’s accretion disc informed the jet’s location and axis. Its narrow visible bases mark the companion’s poles. <a href="https://doi.org/10.1051/0004-6361/202449631" aria-label="Paper by De Prins and colleagues">Paper</a></dd></div>
+                <div><dt>De Prins et al. (2024)</dt><dd>Magnetohydrodynamic models of a wind launched by the companion’s accretion disc informed the jet’s location and axis. The illustrated cones start just beyond the companion’s poles. <a href="https://doi.org/10.1051/0004-6361/202449631" aria-label="Paper by De Prins and colleagues">Paper</a></dd></div>
                 <div><dt>Andrych et al. (2024)</dt><dd>Scattered-light images of IRAS 08544−4431 inspired the radial structure in the dusty circumbinary disc. <a href="https://doi.org/10.1093/mnras/stae2406" aria-label="Paper by Andrych and colleagues">Paper</a></dd></div>
                 <div><dt>Mohorian et al. (2025)</dt><dd>Refractory depletion in stars with faint discs motivates the picture of processed gas returning to the star while solids are retained in the disc. <a href="https://doi.org/10.1017/pasa.2025.10117" aria-label="2025 faint-disc paper by Mohorian and colleagues">Paper</a></dd></div>
                 <div><dt>Pourmand et al. (2025)</dt><dd>Their study of gravitational instability in post-AGB discs provides the second-generation planet-formation context for showing early grain evolution. <a href="https://doi.org/10.1017/pasa.2025.10125" aria-label="Paper by Pourmand and colleagues">Paper</a></dd></div>
@@ -335,7 +341,7 @@
     <section class="detail" id="page-cv" aria-labelledby="cv-title" hidden>
       <article class="reading-panel cv-panel">
         <h1 id="cv-title" tabindex="-1">CV</h1>
-        <p class="lead">Maksym Mohorian · Astrophysics</p>
+        <p class="lead">Maksym Mohorian<br><span class="cv-field">Astrophysics</span></p>
         <div class="text-links">
           <a class="text-link" href="https://orcid.org/0000-0002-7453-2945">ORCID and publications</a>
           <a class="text-link" href="https://researchers.mq.edu.au/en/persons/maksym-mohorian/">University profile</a>
@@ -348,8 +354,8 @@
         </dl>
         <h2>Selected observing programmes</h2>
         <dl class="cv-list">
-          <div><dt>2025 · Australia Telescope Compact Array</dt><dd>Co-led ATCA-BRIDGES, a 148.5-hour programme on gas and dust around evolved systems.</dd></div>
-          <div><dt>2023 · Anglo-Australian Telescope</dt><dd>Led a 2dF+HERMES search for post-AGB stars.</dd></div>
+          <div><dt>Australia Telescope Compact Array (2025)</dt><dd>Co-led ATCA-BRIDGES, a 148.5-hour programme on gas and dust around evolved systems.</dd></div>
+          <div><dt>Anglo-Australian Telescope (2023)</dt><dd>Led a 2dF+HERMES search for post-AGB stars.</dd></div>
         </dl>
         <h2>Teaching and service</h2>
         <ul class="cv-service">
@@ -381,7 +387,17 @@
           <summary>Science behind the disc</summary>
           <div class="disc-references">
             <p>¹²CO traces a higher molecular layer than ¹³CO in the exoALMA observations. The other tracers mark illustrative environments. Refractory material condenses near the inner rim, and CO ice forms in the cooler outer disc. Small wisps show a schematic surface wind. Sizes and times are schematic.</p>
-            <p><a href="https://arxiv.org/abs/2504.19902">exoALMA V</a> · <a href="https://arxiv.org/abs/1812.04044">DSHARP VI</a> · <a href="https://arxiv.org/abs/0908.1692">Kama et al.</a> · <a href="https://doi.org/10.1007/s11214-016-0256-1">Birnstiel et al.</a> · <a href="https://doi.org/10.1038/s41550-024-02203-0">Irradiated OH</a> · <a href="https://doi.org/10.1051/0004-6361/202141057">SO and SO₂</a> · <a href="https://doi.org/10.1051/0004-6361/201833766">H₂S</a> · <a href="https://arxiv.org/abs/astro-ph/0701284">Shock-tracing SiO</a> · <a href="https://doi.org/10.1038/s41550-024-02385-7">Disc winds</a></p>
+            <ul class="disc-reference-links" role="list">
+              <li><a href="https://arxiv.org/abs/2504.19902">exoALMA V</a></li>
+              <li><a href="https://arxiv.org/abs/1812.04044">DSHARP VI</a></li>
+              <li><a href="https://arxiv.org/abs/0908.1692">Kama et al.</a></li>
+              <li><a href="https://doi.org/10.1007/s11214-016-0256-1">Birnstiel et al.</a></li>
+              <li><a href="https://doi.org/10.1038/s41550-024-02203-0">Irradiated OH</a></li>
+              <li><a href="https://doi.org/10.1051/0004-6361/202141057">SO and SO₂</a></li>
+              <li><a href="https://doi.org/10.1051/0004-6361/201833766">H₂S</a></li>
+              <li><a href="https://arxiv.org/abs/astro-ph/0701284">Shock-tracing SiO</a></li>
+              <li><a href="https://doi.org/10.1038/s41550-024-02385-7">Disc winds</a></li>
+            </ul>
           </div>
         </details>
       </div>
@@ -1008,72 +1024,67 @@
       ctx.restore();
     }
 
-    // The two lobes share a narrow launch neck and the same outer opening angle.
-    const windLength = 222;
-    const windTilt = 0.095;
-    const windPole = companion.radius * 0.82;
+    const windLength = 211;
+    const windStart = companion.radius + 7;
+    const windTilt = 0.085;
     const windSlope = Math.tan(34 * Math.PI / 180);
     const windColor = '#78d7da';
 
-    function windPoint(lobe, t, throughWall, azimuth) {
+    function windPoint(lobe, t, lateral = 0) {
       const distance = windLength * t;
-      const neckLength = 12;
-      const flareLength = 36;
-      const blend = clamp((distance - neckLength) / flareLength);
-      const flare = flareLength * (blend ** 3 - blend ** 4 / 2)
-        + Math.max(0, distance - neckLength - flareLength);
-      const thickness = lerp(0.45, 3.4, smooth(0, 0.31, t));
-      const radius = 3.2 + windSlope * flare + thickness * throughWall;
-      const axial = windPole + distance;
-      return [companion.x + lobe * windTilt * axial + radius * Math.cos(azimuth),
-        companion.y - lobe * axial + 0.22 * radius * Math.sin(azimuth)];
+      return [companion.x + distance * (lobe * windTilt + lateral * windSlope),
+        companion.y - lobe * (windStart + distance)];
     }
 
     function makeWindRays() {
-      const rays = [];
-      for (const lobe of [-1, 1]) {
-        for (let index = 0; index < 32; index++) {
-          const azimuth = index / 32 * TAU;
-          const ray = new Path2D();
-          ray.moveTo(...windPoint(lobe, 0, 0, azimuth));
-          for (let j = 1; j <= 48; j++) ray.lineTo(...windPoint(lobe, j / 48, 0, azimuth));
-          rays.push({ lobe, ray, edge: Math.abs(Math.cos(azimuth)) ** 6 });
-        }
-      }
-      return rays;
+      const rng = seededRandom(31864);
+      return Array.from({ length: 25 }, (_, index) => ({
+        lateral: lerp(-0.95, 0.95, (index + 0.35 * rng()) / 24.35),
+        opacity: lerp(0.018, 0.084, rng() ** 1.4),
+        width: lerp(0.44, 1.65, rng() ** 2)
+      }));
     }
 
     function makeWindParticles() {
       const rng = seededRandom(41852);
       return Array.from({ length: 145 }, () => ({
-        depth: lerp(-1, 1, rng()), azimuth: rng() * TAU, phase: rng(), speed: rng() < 0.56 ? 2 : 3,
+        radius: Math.sqrt(rng()) * 0.98, azimuth: rng() * TAU, phase: rng(), speed: rng() < 0.56 ? 2 : 3,
         size: lerp(1.06, 3.5, rng() ** 2), jitter: rng() * TAU
       }));
     }
 
     function paintWindStructure(ctx, lobe) {
-      const gradient = ctx.createLinearGradient(companion.x, companion.y, companion.x, companion.y - lobe * (windLength + windPole));
-      gradient.addColorStop(0, '#a9f2f273');
-      gradient.addColorStop(0.16, '#8fe5e4d4');
-      gradient.addColorStop(0.45, '#76cbdcb6');
-      gradient.addColorStop(0.73, '#65b3d377');
-      gradient.addColorStop(1, '#315b8500');
-      for (let section = 1; section < 11; section++) {
-        const t = section / 11;
-        const fade = Math.sin(Math.PI * t) ** 0.82;
-        for (const azimuth of [0.09, Math.PI - 0.08]) {
-          const [x, y] = windPoint(lobe, t, 0, azimuth);
-          const spread = smooth(0.10, 0.74, t);
-          glow(ctx, x, y, lerp(5, 34, spread), lerp(9, 36, spread), windColor, 0.29 * fade);
-        }
+      const apex = windPoint(lobe, 0);
+      const [, end] = windPoint(lobe, 1);
+      const haze = ctx.createLinearGradient(0, apex[1], 0, end);
+      haze.addColorStop(0, '#9eeded3d');
+      haze.addColorStop(0.045, '#8ce1e555');
+      haze.addColorStop(0.25, '#73c2d04f');
+      haze.addColorStop(0.58, '#5c9fbc3d');
+      haze.addColorStop(0.81, '#568caa21');
+      haze.addColorStop(1, '#4a729a00');
+
+      // The full lobe opens linearly from its apex. Taper its edge opacity.
+      ctx.fillStyle = haze;
+      for (const [width, alpha] of [[1, 0.10], [0.982, 0.18], [0.960, 0.23], [0.931, 0.32], [0.902, 0.41]]) {
+        trace(ctx, [apex, windPoint(lobe, 1, -width), windPoint(lobe, 1, width)], true);
+        ctx.globalAlpha = alpha;
+        ctx.fill();
       }
+
+      const strands = ctx.createLinearGradient(0, apex[1], 0, end);
+      strands.addColorStop(0, '#abedef00');
+      strands.addColorStop(0.095, '#a8edf3b5');
+      strands.addColorStop(0.46, '#87d6e2b3');
+      strands.addColorStop(0.77, '#639dc969');
+      strands.addColorStop(1, '#5483a900');
+      ctx.strokeStyle = strands;
       ctx.lineCap = 'round';
-      ctx.strokeStyle = gradient;
-      for (const line of windRays) {
-        if (line.lobe !== lobe) continue;
-        ctx.globalAlpha = 0.022 + 0.115 * line.edge;
-        ctx.lineWidth = 0.65 + 0.83 * line.edge;
-        ctx.stroke(line.ray);
+      for (const ray of windRays) {
+        trace(ctx, [apex, windPoint(lobe, 1, ray.lateral)]);
+        ctx.globalAlpha = ray.opacity * (1 + Math.abs(ray.lateral) ** 5);
+        ctx.lineWidth = ray.width;
+        ctx.stroke();
       }
       ctx.globalAlpha = 1;
     }
@@ -1081,41 +1092,104 @@
     function paintWind(ctx, lobe, phase) {
       ctx.save();
       ctx.globalCompositeOperation = 'screen';
-      const rect = [companion.x - 210, companion.y + (lobe > 0 ? -286 : -9), 420, 295];
+      const [x, pole] = windPoint(lobe, 0);
+      const rect = [x - 178, lobe > 0 ? pole - windLength - 3 : pole - 3, 356, windLength + 6];
       drawArtwork(ctx, lobe > 0 ? 'north-wind' : 'south-wind', rect, paintWindStructure, lobe);
       const angle = TAU * phase;
       for (const particle of windParticles) {
         const t = wrap(particle.phase + phase * particle.speed + (lobe < 0 ? 0.23 : 0));
         const rise = t * (0.75 + 0.25 * t);
         const azimuth = particle.azimuth + 0.20 * rise + 0.055 * Math.sin(angle * 2 + particle.jitter);
-        const fade = Math.sin(Math.PI * t) ** 0.84 * (1 - 0.48 * t);
-        const edge = Math.abs(Math.cos(azimuth)) ** 4;
-        const light = fade * (0.37 + edge * 0.48);
-        const [x, y] = windPoint(lobe, rise, particle.depth, azimuth);
+        const lateral = particle.radius * Math.cos(azimuth);
+        const fade = smooth(0, 0.07, rise) * (1 - smooth(0.59, 1, rise));
+        const light = fade * (0.32 + Math.abs(lateral) ** 4 * 0.38);
+        const [x, y] = windPoint(lobe, rise, lateral);
         const radius = particle.size + 1.08 * t;
-        const axialSpread = lerp(0.67, 1.72, smooth(0.05, 0.36, rise));
-        glow(ctx, x, y, radius * axialSpread, radius * 1.6, windColor, light);
-        if (edge > 0.59 && particle.size > 2.16) {
-          ctx.globalAlpha = light * 0.65;
-          dot(ctx, x, y, radius * 0.34, '#b7eded');
+        glow(ctx, x, y, radius * 1.35, radius * 1.6, windColor, light);
+        if (particle.size > 2.15) {
+          ctx.globalAlpha = light * 0.54;
+          dot(ctx, x, y, radius * 0.33, '#b7eded');
           ctx.globalAlpha = 1;
         }
       }
       ctx.restore();
     }
 
-    function paintCompanionDisc(ctx) {
+    const companionDisc = { inner: companion.radius + 1.5, outer: 49, inclination: 0.36 };
+    const companionDiscBounds = [companion.x - 55, companion.y - 27, 110, 55];
+
+    function companionDiscPoint(radius, angle, height = 1) {
+      const t = (radius - companionDisc.inner) / (companionDisc.outer - companionDisc.inner);
+      const thickness = 1.8 + 3.0 * t ** 1.28 + 0.32 * Math.sin(angle * 4 + 2 * t);
+      const x = radius * Math.cos(angle);
+      return [companion.x + x,
+        companion.y + companionDisc.inclination * radius * Math.sin(angle) + 0.016 * x - height * thickness];
+    }
+
+    function companionDiscArc(radius, start, end, height = 1) {
+      const segments = Math.max(3, Math.ceil(Math.abs(end - start) * 14));
+      return Array.from({ length: segments + 1 }, (_, index) =>
+        companionDiscPoint(radius, lerp(start, end, index / segments), height));
+    }
+
+    function paintCompanionDisc(ctx, near) {
+      const { inner, outer } = companionDisc;
+      const start = near ? 0 : Math.PI;
+      const end = start + Math.PI;
+      const surface = [...companionDiscArc(outer, start, end), ...companionDiscArc(inner, end, start)];
+
+      if (near) {
+        // The near side's cool outer wall covers the lower part of the star.
+        for (let index = 0; index < 12; index++) {
+          const depth = index / 11;
+          const z = lerp(0.92, -0.83, depth);
+          const radius = outer - 2.1 * depth;
+          trace(ctx, companionDiscArc(radius, start, end, z));
+          ctx.lineWidth = 1.9;
+          ctx.strokeStyle = index % 3 === 0 ? '#735961' : '#402d3a';
+          ctx.globalAlpha = 0.43 * (1 - smooth(0.42, 1, depth));
+          ctx.stroke();
+        }
+      }
+
+      for (let index = 0; index <= 41; index++) {
+        const t = index / 41;
+        const radius = lerp(inner, outer, t);
+        const [r, g, b] = rgbAt(radialColors, t * 0.86);
+        const striation = 0.87 + 0.08 * Math.cos(t * 35) + 0.08 * Math.sin(t * 81);
+        const light = (near ? 0.96 : 0.84) * striation;
+        ctx.strokeStyle = `rgb(${r * light}, ${g * light}, ${b * (0.56 + 0.44 * light)})`;
+        ctx.lineWidth = 1.85;
+        ctx.globalAlpha = smooth(0, 0.10, t) * (1 - smooth(0.78, 1, t));
+        trace(ctx, companionDiscArc(radius, start, end));
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+
       ctx.save();
-      ctx.translate(companion.x, companion.y + 4);
-      ctx.rotate(0.015);
-      glow(ctx, 0, 0, 59, 24, '#efaf77', 0.32);
-      for (let index = 0; index < 17; index++) {
-        const t = index / 16;
-        const radius = lerp(companion.radius + 3, 44, t);
-        ctx.beginPath();
-        ctx.ellipse(0, 0, radius, radius * 0.33, 0, 0, TAU);
-        ctx.strokeStyle = index % 4 === 1 ? '#ffd7a2ca' : `rgba(213, 131, 92, ${0.64 - t * 0.45})`;
-        ctx.lineWidth = 1.8;
+      trace(ctx, surface, true);
+      ctx.clip();
+      const random = seededRandom(near ? 3897 : 9450);
+      const warm = [250, 178, 130];
+      const cool = [133, 162, 208];
+      paintSpeckles(ctx, surface, plot => {
+        for (let index = 0; index < 770; index++) {
+          const t = random();
+          const angle = lerp(start, end, random());
+          const [x, y] = companionDiscPoint(lerp(inner, outer, t), angle);
+          const opacity = (0.02 + 0.44 * random() ** 3) * smooth(0, 0.16, t) * (1 - smooth(0.69, 1, t));
+          const size = lerp(0.25, 0.95, random() ** 2);
+          plot(x, y, 1.6 * size, size, t < 0.68 ? warm : cool, opacity);
+        }
+      });
+      for (let index = 0; index < 76; index++) {
+        const t = lerp(0.09, 0.86, random());
+        const first = lerp(start, end, random());
+        const last = Math.min(end, first + 0.07 + 0.43 * random() ** 2);
+        trace(ctx, companionDiscArc(lerp(inner, outer, t), first, last));
+        ctx.globalAlpha = 0.026 + 0.21 * random() ** 2;
+        ctx.lineWidth = 0.49 + 1.15 * random() ** 2;
+        ctx.strokeStyle = t < 0.65 ? '#f9ac77' : '#809ab7';
         ctx.stroke();
       }
       ctx.restore();
@@ -1720,17 +1794,17 @@
       cv: { title: 'CV | Maksym Mohorian', page: document.querySelector('#page-cv') },
       disc: { title: 'Disc cross-section | Maksym Mohorian', page: document.querySelector('#page-disc') }
     };
-    const jetFocus = windPoint(1, 0.44, 0.80, 0.25);
+    const jetFocus = windPoint(1, 0.46, 0.75);
     const discFocus = projected(325, 0.035, discHeight(325, 0.035));
     const destinations = {
       about: [primary.x, primary.y],
-      leisure: [companion.x, companion.y + 6],
+      leisure: [companion.x, companion.y - 2],
       cv: jetFocus,
       disc: discFocus
     };
     const hotspots = [...map.querySelectorAll('[data-destination]')];
     const canvasLabels = {
-      system: 'Animated cutaway of a post-AGB binary. Warm gas streams flow through L₂ and L₃. The smaller primary shines more brightly, and two broad jet lobes emerge from the companion’s poles.',
+      system: 'Animated cutaway of a post-AGB binary. Warm gas streams flow through L₂ and L₃. The smaller primary shines more brightly, and a small disc encircles the companion beneath two conical jet lobes.',
       disc: 'Animated vertical cross-section of the circumbinary disc. Grains grow, settle, fragment and mix upward. CO traces an upper layer, with ¹³CO below it. A faint wind flows from the disc surfaces.'
     };
     const defaultCaption = 'Grains grow, settle, fragment and mix upward throughout the disc. A faint wind rises from its surfaces.';
@@ -1795,15 +1869,17 @@
       const padding = Math.min(12, 5 / layout.base);
       if (Math.hypot(x - primary.x, y - primary.y) <= primary.radius + padding) return 'about';
       const onCompanion = Math.hypot(x - companion.x, y - companion.y) <= companion.radius + padding;
-      const onCompanionDisc = ((x - companion.x) / (44 + padding)) ** 2 + ((y - companion.y - 5) / (14 + padding)) ** 2 <= 1;
+      const nearDiscHeight = companionDisc.outer * companionDisc.inclination + 3;
+      const onCompanionDisc = ((x - companion.x) / (companionDisc.outer + padding)) ** 2
+        + ((y - companion.y) / (nearDiscHeight + padding)) ** 2 <= 1;
       if (onCompanion || onCompanionDisc) return 'leisure';
       const onDisc = hitContext.isPointInPath(discFootprint, x, y);
       const lobe = y < companion.y ? 1 : -1;
       const height = Math.abs(y - companion.y);
-      const t = (height - windPole) / windLength;
-      if (t > 0.095 && t < 0.89 && (lobe > 0 || !onDisc)) {
-        const [left] = windPoint(lobe, t, 1, Math.PI);
-        const [right] = windPoint(lobe, t, 1, 0);
+      const t = (height - windStart) / windLength;
+      if (t > 0.028 && t < 0.89 && (lobe > 0 || !onDisc)) {
+        const [left] = windPoint(lobe, t, -1);
+        const [right] = windPoint(lobe, t, 1);
         if (x > left - padding && x < right + padding) return 'cv';
       }
       return onDisc ? 'disc' : '';
@@ -1953,8 +2029,9 @@
         if (paintedFirstFrame) paintDiscActivity(ctx, phase, '', false);
         paintStreams(ctx, phase);
         paintWind(ctx, 1, phase);
-        drawArtwork(ctx, 'companion-disc', [companion.x - 65, companion.y - 24, 130, 56], paintCompanionDisc);
+        drawArtwork(ctx, 'companion-disc-far', companionDiscBounds, paintCompanionDisc, false);
         paintStars(ctx, phase);
+        drawArtwork(ctx, 'companion-disc-near', companionDiscBounds, paintCompanionDisc, true);
         if (description.open && route === 'system' && !transition) paintLagrangePoints(ctx, scale);
       }
     }
