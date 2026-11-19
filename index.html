@@ -128,8 +128,16 @@
       border-radius: 0.65rem; background: #101c2ef5; box-shadow: 0 1.5rem 3rem #03070d9c;
     }
     .description-panel p { margin-top: 0.68rem; color: #c4d2df; }
-    .description-sources, .text-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin-top: 0.8rem; }
-    .description-sources a { font-size: 0.88rem; }
+    .bibliography { margin-top: 0.95rem; padding-top: 0.75rem; border-top: 1px solid var(--edge); }
+    .bibliography summary { width: fit-content; cursor: pointer; color: #f2eadf; font-weight: 600; }
+    .bibliography summary::marker { color: var(--mint); }
+    .bibliography h3 { margin: 1rem 0 0.45rem; color: #eac8aa; font-size: 0.98rem; }
+    .bibliography dl { margin: 0; font-size: 0.89rem; }
+    .bibliography dl > div + div { margin-top: 0.65rem; }
+    .bibliography dt { color: #e5edf5; font-weight: 600; }
+    .bibliography dd { margin: 0.12rem 0 0; color: #c4d2df; }
+    .bibliography a { white-space: nowrap; }
+    .text-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin-top: 0.8rem; }
 
     .detail {
       display: flex; align-items: flex-start; padding: clamp(8rem, 16vh, 13rem) var(--gutter) 4.5rem;
@@ -251,7 +259,7 @@
         <a class="hotspot" data-destination="about" href="#about" aria-label="Primary star, About me" style="--ink:#ffc995">
           <span class="hotspot-mark" aria-hidden="true"></span><span class="hotspot-label" aria-hidden="true">About me</span>
         </a>
-        <a class="hotspot" data-destination="leisure" href="#leisure" aria-label="Companion, Leisure" style="--ink:#aad9f7">
+        <a class="hotspot" data-destination="leisure" href="#leisure" aria-label="Companion, Leisure" style="--ink:#eba96f">
           <span class="hotspot-mark" aria-hidden="true"></span><span class="hotspot-label" aria-hidden="true">Leisure</span>
         </a>
         <a class="hotspot" data-destination="cv" href="#cv" aria-label="Bipolar jet, CV" style="--ink:#9be4dc">
@@ -266,13 +274,39 @@
           <summary class="control">System description</summary>
           <div class="description-panel">
             <h2>A post-AGB binary</h2>
-            <p>Gas enters the cavity through L₂ beyond the companion and L₃ beyond the primary. The stream through L₁ carries gas from the companion’s side toward the primary. The warm streams curve in the direction of disc rotation. The three points are drawn for an illustrative circular binary.</p>
-            <p>The outflow is collimated near the companion’s poles and fans out into broad lobes with denser, slower walls and faster, more tenuous inner flow.</p>
-            <div class="description-sources">
-              <a href="https://arxiv.org/abs/0911.2032">Hanawa et al.</a>
-              <a href="https://arxiv.org/abs/2208.08752">Bollen et al.</a>
-              <a href="https://doi.org/10.1051/0004-6361/202449631">De Prins et al.</a>
-            </div>
+            <p>Two warm gas streams curve with the disc’s rotation. They enter the cavity through L₂ beyond the companion and L₃ beyond the primary, feeding the circumsecondary disc and the post-AGB star, respectively.</p>
+            <p>The smaller, brighter star is the post-AGB primary. The companion’s bipolar jet starts at its poles and opens into a broad lobe on each side. A faint wind rises from the disc surfaces in the cross-section.</p>
+            <p>Sizes, temperatures and times are schematic. The cross-section uses molecular tracers and dust processes studied in younger discs as a guide.</p>
+            <details class="bibliography">
+              <summary>Studies and what they informed</summary>
+              <h3>Binary, disc and jet</h3>
+              <dl>
+                <div><dt>Hanawa, Ochi &amp; Ando (2010)</dt><dd>Binary accretion calculations inspired the two prograde streams through the outer Lagrange points. <a href="https://arxiv.org/abs/0911.2032" aria-label="Paper by Hanawa, Ochi and Ando">Paper</a></dd></div>
+                <div><dt>Oomen et al. (2019)</dt><dd>Stellar evolution models with gas re-accretion motivated the stream feeding the post-AGB primary. <a href="https://doi.org/10.1051/0004-6361/201935853" aria-label="Paper by Oomen and colleagues">Paper</a></dd></div>
+                <div><dt>Bollen, Kamath, De Marco, Van Winckel &amp; Wardle (2020)</dt><dd>Their accretion and jet mass-loss estimates motivated the link between re-accretion, a circumsecondary disc and its outflow. <a href="https://doi.org/10.1051/0004-6361/202038414" aria-label="2020 paper by Bollen and colleagues">Paper</a></dd></div>
+                <div><dt>Bollen et al. (2022)</dt><dd>The fitted jet geometries and angular density contrasts inspired broad lobes with brighter limbs. Both illustrated lobes use the same opening angle. <a href="https://arxiv.org/abs/2208.08752" aria-label="2022 paper by Bollen and colleagues">Paper</a></dd></div>
+                <div><dt>De Prins et al. (2024)</dt><dd>Magnetohydrodynamic models of a wind launched by the companion’s accretion disc informed the jet’s location and axis. Its narrow visible bases mark the companion’s poles. <a href="https://doi.org/10.1051/0004-6361/202449631" aria-label="Paper by De Prins and colleagues">Paper</a></dd></div>
+                <div><dt>Andrych et al. (2024)</dt><dd>Scattered-light images of IRAS 08544−4431 inspired the radial structure in the dusty circumbinary disc. <a href="https://doi.org/10.1093/mnras/stae2406" aria-label="Paper by Andrych and colleagues">Paper</a></dd></div>
+                <div><dt>Mohorian et al. (2025)</dt><dd>Refractory depletion in stars with faint discs motivates the picture of processed gas returning to the star while solids are retained in the disc. <a href="https://doi.org/10.1017/pasa.2025.10117" aria-label="2025 faint-disc paper by Mohorian and colleagues">Paper</a></dd></div>
+                <div><dt>Pourmand et al. (2025)</dt><dd>Their study of gravitational instability in post-AGB discs provides the second-generation planet-formation context for showing early grain evolution. <a href="https://doi.org/10.1017/pasa.2025.10125" aria-label="Paper by Pourmand and colleagues">Paper</a></dd></div>
+              </dl>
+              <h3>Dust and the disc wind</h3>
+              <dl>
+                <div><dt>Kama, Min &amp; Dominik (2009)</dt><dd>Their models of dust sublimation in irradiated discs informed the warm inner rim and the condensation of refractory material just outside it. <a href="https://arxiv.org/abs/0908.1692" aria-label="Paper by Kama, Min and Dominik">Paper</a></dd></div>
+                <div><dt>Nomura et al. (2016)</dt><dd>The link between features in TW Hya and its CO snow line motivated the cooler CO ice region farther from the binary. <a href="https://arxiv.org/abs/1512.05440" aria-label="Paper by Nomura and colleagues">Paper</a></dd></div>
+                <div><dt>Birnstiel, Fang &amp; Johansen (2016)</dt><dd>The review informed grain growth, vertical settling, collisions and fragmentation. Turbulent mixing lifts fine fragments for the next cycle. <a href="https://doi.org/10.1007/s11214-016-0256-1" aria-label="Paper by Birnstiel, Fang and Johansen">Paper</a></dd></div>
+                <div><dt>Dullemond et al. (2018, DSHARP VI)</dt><dd>Narrow millimetre rings studied as possible dust traps motivated the enhanced radial dust bands. <a href="https://arxiv.org/abs/1812.04044" aria-label="DSHARP VI paper by Dullemond and colleagues">Paper</a></dd></div>
+                <div><dt>Pascucci et al. (2025)</dt><dd>Spatially resolved winds from young discs inspired the faint outward flow from both disc faces in the cross-section. <a href="https://doi.org/10.1038/s41550-024-02385-7" aria-label="Paper by Pascucci and colleagues">Paper</a></dd></div>
+              </dl>
+              <h3>Molecular tracers</h3>
+              <dl>
+                <div><dt>Galloway-Sprietsma et al. (2025, exoALMA V)</dt><dd>Measured emitting surfaces informed the placement of ¹²CO above ¹³CO in the disc atmosphere. <a href="https://arxiv.org/abs/2504.19902" aria-label="exoALMA V paper by Galloway-Sprietsma and colleagues">Paper</a></dd></div>
+                <div><dt>Zannese et al. (2024)</dt><dd>OH emission from water photodissociation in d203-506 inspired the OH tracer in the irradiated surface. <a href="https://doi.org/10.1038/s41550-024-02203-0" aria-label="Paper by Zannese and colleagues">Paper</a></dd></div>
+                <div><dt>Booth et al. (2021)</dt><dd>SO and SO₂ emission linked to sublimating ices in Oph IRS 48 motivated the sulphur-bearing tracers in warm gas. <a href="https://doi.org/10.1051/0004-6361/202141057" aria-label="Paper by Booth and colleagues">Paper</a></dd></div>
+                <div><dt>Phuong et al. (2018)</dt><dd>H₂S detected in the cold dense ring of GG Tau A motivated its placement in the outer molecular disc. <a href="https://doi.org/10.1051/0004-6361/201833766" aria-label="Paper by Phuong and colleagues">Paper</a></dd></div>
+                <div><dt>Lee et al. (2007)</dt><dd>SiO in shocked gas in HH 212 inspired SiO as a possible tracer of shocks near the inner rim. <a href="https://arxiv.org/abs/astro-ph/0701284" aria-label="Paper by Lee and colleagues">Paper</a></dd></div>
+              </dl>
+            </details>
           </div>
         </details>
         <p class="home-hint">Select a part of the system to explore.</p>
@@ -332,7 +366,7 @@
         <p>From the warm inner rim to colder gas and ice farther out.</p>
       </div>
       <div class="disc-foot">
-        <p id="disc-caption" aria-live="polite">Grains grow, settle, fragment and mix upward throughout the disc.</p>
+        <p id="disc-caption" aria-live="polite">Grains grow, settle, fragment and mix upward throughout the disc. A faint wind rises from its surfaces.</p>
         <div class="tracers" role="group" aria-label="Highlight gas tracers">
           <span class="tracer-label">Gas tracers</span>
           <button type="button" data-species="co" style="--ink:#79e1cb" aria-pressed="false">CO</button>
@@ -346,8 +380,8 @@
         <details class="disc-science">
           <summary>Science behind the disc</summary>
           <div class="disc-references">
-            <p>¹²CO traces a higher molecular layer than ¹³CO in the exoALMA observations. The other tracers mark illustrative environments. Refractory material condenses near the inner rim, and CO ice forms in the cooler outer disc. Sizes and times are schematic.</p>
-            <p><a href="https://arxiv.org/abs/2504.19902">exoALMA V</a> · <a href="https://arxiv.org/abs/1812.04044">DSHARP VI</a> · <a href="https://arxiv.org/abs/0908.1692">Kama et al.</a> · <a href="https://doi.org/10.1007/s11214-016-0256-1">Birnstiel et al.</a> · <a href="https://doi.org/10.1038/s41550-024-02203-0">Irradiated OH</a> · <a href="https://doi.org/10.1051/0004-6361/202141057">SO and SO₂</a> · <a href="https://doi.org/10.1051/0004-6361/201833766">H₂S</a> · <a href="https://arxiv.org/abs/astro-ph/0701284">Shock-tracing SiO</a></p>
+            <p>¹²CO traces a higher molecular layer than ¹³CO in the exoALMA observations. The other tracers mark illustrative environments. Refractory material condenses near the inner rim, and CO ice forms in the cooler outer disc. Small wisps show a schematic surface wind. Sizes and times are schematic.</p>
+            <p><a href="https://arxiv.org/abs/2504.19902">exoALMA V</a> · <a href="https://arxiv.org/abs/1812.04044">DSHARP VI</a> · <a href="https://arxiv.org/abs/0908.1692">Kama et al.</a> · <a href="https://doi.org/10.1007/s11214-016-0256-1">Birnstiel et al.</a> · <a href="https://doi.org/10.1038/s41550-024-02203-0">Irradiated OH</a> · <a href="https://doi.org/10.1051/0004-6361/202141057">SO and SO₂</a> · <a href="https://doi.org/10.1051/0004-6361/201833766">H₂S</a> · <a href="https://arxiv.org/abs/astro-ph/0701284">Shock-tracing SiO</a> · <a href="https://doi.org/10.1038/s41550-024-02385-7">Disc winds</a></p>
           </div>
         </details>
       </div>
@@ -363,7 +397,6 @@
     const HEIGHT = 510;
     const TAU = 2 * Math.PI;
     const LOOP_SECONDS = 24;
-    const AQUA = '#75cff0';
     const GOLD = '#f6b17d';
     const ICE = '#b3d8ff';
 
@@ -602,11 +635,10 @@
       return (lower + upper) / 2 * separation;
     }
 
-    const primary = starAt(xPrimary, 25);
-    const companion = starAt(xSecondary, 8.1);
+    const primary = starAt(xPrimary, 16);
+    const companion = starAt(xSecondary, 22);
     const mu = secondaryMassFraction;
     const lagrangePoints = [
-      { name: 'L₁', x: collinearRoot(-mu + 1e-6, 1 - mu - 1e-6) },
       { name: 'L₂', x: collinearRoot(1 - mu + 1e-6, 2) },
       { name: 'L₃', x: collinearRoot(-2, -mu - 1e-6) }
     ];
@@ -642,11 +674,16 @@
       return rgb0.map((channel, i) => lerp(channel, rgb1[i], (value - p0) / (p1 - p0)));
     }
 
+    function outerEdgeGradient(ctx) {
+      const gradient = ctx.createLinearGradient(0, 290, 0, 464);
+      gradient.addColorStop(0, '#334158');
+      gradient.addColorStop(0.60, '#202c42');
+      gradient.addColorStop(1, '#0e1728');
+      return gradient;
+    }
+
     function paintOuterEdge(ctx) {
-      const edgeGradient = ctx.createLinearGradient(0, 290, 0, 464);
-      edgeGradient.addColorStop(0, '#334158');
-      edgeGradient.addColorStop(0.60, '#202c42');
-      edgeGradient.addColorStop(1, '#0e1728');
+      const edgeGradient = outerEdgeGradient(ctx);
       for (const [start, end] of [[0, disc.nearRight], [disc.nearLeft, Math.PI]]) {
         trace(ctx, [...discArc(disc.outer, start, end), ...discArc(disc.outer, end, start, -0.61)], true);
         ctx.fillStyle = edgeGradient;
@@ -785,53 +822,73 @@
       ctx.stroke();
     }
 
+    function paintCutWalls(ctx, detail) {
+      const angles = [disc.nearLeft, disc.nearRight];
+      ctx.fillStyle = outerEdgeGradient(ctx);
+      for (const angle of angles) {
+        trace(ctx, [...wallCurve(angle, 1), ...wallCurve(angle, -0.61, true)], true);
+        ctx.fill();
+      }
+
+      // Fade the warm cross-cut material into the colour of the outer wall.
+      const [left, right] = angles.map(angle => projected(disc.outer, angle)[0]);
+      const width = right - left;
+      const buffer = document.createElement('canvas');
+      buffer.width = Math.ceil(width * ctx.canvas.width / WIDTH);
+      buffer.height = ctx.canvas.height;
+      const walls = buffer.getContext('2d');
+      const scale = buffer.width / width;
+      walls.setTransform(scale, 0, 0, buffer.height / HEIGHT, -left * scale, 0);
+      paintCutWall(walls, angles[0], false, detail);
+      paintCutWall(walls, angles[1], true, detail);
+      const fade = walls.createLinearGradient(left, 0, right, 0);
+      const reach = 36 / width;
+      fade.addColorStop(0, '#fff0');
+      fade.addColorStop(reach, '#fff');
+      fade.addColorStop(1 - reach, '#fff');
+      fade.addColorStop(1, '#fff0');
+      walls.globalCompositeOperation = 'destination-in';
+      walls.fillStyle = fade;
+      walls.fillRect(left, 0, width, HEIGHT);
+      ctx.drawImage(buffer, left, 0, width, HEIGHT);
+    }
+
     function paintBinaryBackdrop(ctx, detail) {
       glow(ctx, disc.x, 319, 574, 155, '#ad604b', 0.15);
       glow(ctx, disc.x, 177, 530, 130, '#696280', 0.10);
       paintOuterEdge(ctx);
       paintDiscSurface(ctx, detail);
-      paintCutWall(ctx, disc.nearLeft, false, detail);
-      paintCutWall(ctx, disc.nearRight, true, detail);
+      paintCutWalls(ctx, detail);
     }
 
     function polarBinaryPoint(radius, azimuth) {
       return binaryPoint(radius * Math.cos(azimuth), radius * Math.sin(azimuth));
     }
 
-    function streamRadius(start, end, slopeStart, slopeEnd, t) {
-      const t2 = t * t;
-      const t3 = t2 * t;
-      return (2 * t3 - 3 * t2 + 1) * start + (t3 - 2 * t2 + t) * slopeStart
-        + (-2 * t3 + 3 * t2) * end + (t3 - t2) * slopeEnd;
-    }
-
-    function makeStream(point, crossingAngle, entry, landing, color, width) {
-      const crossing = [Math.abs(point.x), crossingAngle];
-      const radii = [entry[0], crossing[0], landing[0]];
-      const angles = [entry[1], crossing[1], landing[1]];
-      const leftSlope = (radii[1] - radii[0]) / (angles[1] - angles[0]);
-      const rightSlope = (radii[2] - radii[1]) / (angles[2] - angles[1]);
-      const passageSlope = leftSlope * rightSlope > 0 ? 2 / (1 / leftSlope + 1 / rightSlope) : 0;
-      const slopes = [leftSlope * 0.24, passageSlope, rightSlope * 0.64];
+    function makeStream(point, entrySweep, landingRadius, bend, color, width) {
+      const rim = disc.inner + 2;
+      const span = rim - landingRadius;
+      const crossing = (rim - Math.abs(point.x)) / span;
+      const angleAtPoint = point.x > 0 ? 0 : Math.PI;
+      const inletAngle = angleAtPoint - entrySweep;
+      const azimuthScale = entrySweep / -Math.expm1(-bend * crossing);
       const samples = [];
-      const steps = 52;
+      const steps = 70;
       let travelTime = 0;
 
-      // Particles retain a prograde tangential component. In the schematic
-      // timing, r² dθ/dt is constant along the centre of each stream.
+      // Both sides of the saddle sample the same analytic spiral. Radius
+      // decreases while azimuth advances, including at the saddle point.
       for (let i = 0; i <= steps * 2; i++) {
-        const segment = i <= steps ? 0 : 1;
-        const fraction = (i - segment * steps) / steps;
-        const swept = angles[segment + 1] - angles[segment];
-        const r = streamRadius(radii[segment], radii[segment + 1], slopes[segment] * swept, slopes[segment + 1] * swept, fraction);
-        const angle = angles[segment] + fraction * swept;
+        const q = i <= steps ? crossing * i / steps : lerp(crossing, 1, (i - steps) / steps);
+        const r = rim - span * q;
+        const angle = inletAngle - azimuthScale * Math.expm1(-bend * q);
         const [x, y] = polarBinaryPoint(r, angle);
         const previous = samples.at(-1);
+        // Integrate r² dθ to set the display time along each sampled centreline.
         if (previous) travelTime += (angle - previous.angle) * (previous.r ** 2 + r ** 2) / 2;
         samples.push({ x, y, r, angle, time: travelTime });
       }
-      for (let index = 0; index < samples.length; index++) {
-        const sample = samples[index];
+      for (const [index, sample] of samples.entries()) {
         const ahead = samples[Math.min(samples.length - 1, index + 1)];
         const behind = samples[Math.max(0, index - 1)];
         const dx = ahead.x - behind.x;
@@ -840,17 +897,16 @@
         sample.nx = -dy / tangent;
         sample.ny = dx / tangent;
         sample.time /= travelTime;
-        const fraction = index / (samples.length - 1);
-        const waist = 1 - 0.23 * Math.exp(-((fraction - 0.50) ** 2) / 0.0048);
-        sample.width = width * (0.42 + 0.58 * Math.sin(Math.PI * fraction) ** 0.65) * waist;
+        const progress = (rim - sample.r) / span;
+        const envelope = smooth(0, 0.23, progress) * (1 - smooth(0.79, 1, progress));
+        sample.width = width * lerp(0.05, 1, envelope);
       }
       return { name: point.name, color, samples, crossingTime: samples[steps].time };
     }
 
     const streamPaths = [
-      makeStream(lagrangePoints[0], 0, [59, -0.45], [50, 2.84], '#ffab75', 7.5),
-      makeStream(lagrangePoints[1], 0, [disc.inner + 2, -0.83], [81, 0.42], '#fd785d', 11.3),
-      makeStream(lagrangePoints[2], Math.PI, [disc.inner + 2, Math.PI - 0.85], [63, Math.PI + 0.36], '#f5785e', 10.6)
+      makeStream(lagrangePoints[0], 0.79, 81, 2.05, '#fd785d', 11.3),
+      makeStream(lagrangePoints[1], 0.73, 49, 2.50, '#f5785e', 10.6)
     ];
 
     function offsetStream(sample, offset) {
@@ -876,6 +932,8 @@
     }
 
     function paintStreamRibbons(ctx) {
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
       for (const route of streamPaths) {
         const start = route.samples[0];
         const end = route.samples.at(-1);
@@ -950,17 +1008,22 @@
       ctx.restore();
     }
 
-    // Each lobe opens beyond a narrow neck at the companion's projected pole.
+    // The two lobes share a narrow launch neck and the same outer opening angle.
     const windLength = 222;
     const windTilt = 0.095;
-    const windPole = companion.radius * 0.78;
+    const windPole = companion.radius * 0.82;
+    const windSlope = Math.tan(34 * Math.PI / 180);
     const windColor = '#78d7da';
 
-    function windPoint(lobe, t, launch, azimuth) {
+    function windPoint(lobe, t, throughWall, azimuth) {
       const distance = windLength * t;
-      const beyondNeck = Math.max(0, distance - 21);
-      const flare = beyondNeck ** 2 / (beyondNeck + 32);
-      const radius = lerp(1.2, 4.45, launch) + distance * 0.017 + flare * lerp(0.24, 0.78, launch);
+      const neckLength = 12;
+      const flareLength = 36;
+      const blend = clamp((distance - neckLength) / flareLength);
+      const flare = flareLength * (blend ** 3 - blend ** 4 / 2)
+        + Math.max(0, distance - neckLength - flareLength);
+      const thickness = lerp(0.45, 3.4, smooth(0, 0.31, t));
+      const radius = 3.2 + windSlope * flare + thickness * throughWall;
       const axial = windPole + distance;
       return [companion.x + lobe * windTilt * axial + radius * Math.cos(azimuth),
         companion.y - lobe * axial + 0.22 * radius * Math.sin(azimuth)];
@@ -969,13 +1032,12 @@
     function makeWindRays() {
       const rays = [];
       for (const lobe of [-1, 1]) {
-        for (let index = 0; index < 30; index++) {
-          const azimuth = index / 30 * TAU;
-          const launch = index % 7 === 0 ? 0.32 : 0.78 + (index % 5) * 0.055;
+        for (let index = 0; index < 32; index++) {
+          const azimuth = index / 32 * TAU;
           const ray = new Path2D();
-          ray.moveTo(...windPoint(lobe, 0, launch, azimuth));
-          for (let j = 1; j <= 44; j++) ray.lineTo(...windPoint(lobe, j / 44, launch, azimuth));
-          rays.push({ lobe, ray, launch, edge: Math.abs(Math.cos(azimuth)) ** 5 });
+          ray.moveTo(...windPoint(lobe, 0, 0, azimuth));
+          for (let j = 1; j <= 48; j++) ray.lineTo(...windPoint(lobe, j / 48, 0, azimuth));
+          rays.push({ lobe, ray, edge: Math.abs(Math.cos(azimuth)) ** 6 });
         }
       }
       return rays;
@@ -983,14 +1045,10 @@
 
     function makeWindParticles() {
       const rng = seededRandom(41852);
-      return Array.from({ length: 145 }, () => {
-        const sheath = rng() > 0.21;
-        return {
-          sheath, launch: sheath ? lerp(0.67, 1, rng()) : lerp(0.15, 0.49, rng()),
-          azimuth: rng() * TAU, phase: rng(), speed: sheath ? 2 + Math.floor(rng() * 2) : 5 + Math.floor(rng() * 2),
-          size: lerp(1.06, 3.5, rng() ** 2), jitter: rng() * TAU
-        };
-      });
+      return Array.from({ length: 145 }, () => ({
+        depth: lerp(-1, 1, rng()), azimuth: rng() * TAU, phase: rng(), speed: rng() < 0.56 ? 2 : 3,
+        size: lerp(1.06, 3.5, rng() ** 2), jitter: rng() * TAU
+      }));
     }
 
     function paintWindStructure(ctx, lobe) {
@@ -1003,20 +1061,18 @@
       for (let section = 1; section < 11; section++) {
         const t = section / 11;
         const fade = Math.sin(Math.PI * t) ** 0.82;
-        for (const azimuth of [0.20, Math.PI - 0.17]) {
-          const [x, y] = windPoint(lobe, t, 0.93, azimuth);
-          const spread = smooth(0.09, 0.70, t);
-          glow(ctx, x, y, lerp(6, 42, spread), lerp(10, 42, spread), windColor, 0.30 * fade);
-          if (t > 0.22) glow(ctx, x, y, 10 + 8 * t, 11 + 12 * t, '#579ac1', 0.15 * fade);
+        for (const azimuth of [0.09, Math.PI - 0.08]) {
+          const [x, y] = windPoint(lobe, t, 0, azimuth);
+          const spread = smooth(0.10, 0.74, t);
+          glow(ctx, x, y, lerp(5, 34, spread), lerp(9, 36, spread), windColor, 0.29 * fade);
         }
       }
       ctx.lineCap = 'round';
       ctx.strokeStyle = gradient;
       for (const line of windRays) {
         if (line.lobe !== lobe) continue;
-        const shell = line.launch > 0.65;
-        ctx.globalAlpha = shell ? 0.039 + 0.16 * line.edge : 0.022;
-        ctx.lineWidth = shell ? 0.95 + 0.72 * line.edge : 0.69;
+        ctx.globalAlpha = 0.022 + 0.115 * line.edge;
+        ctx.lineWidth = 0.65 + 0.83 * line.edge;
         ctx.stroke(line.ray);
       }
       ctx.globalAlpha = 1;
@@ -1025,23 +1081,23 @@
     function paintWind(ctx, lobe, phase) {
       ctx.save();
       ctx.globalCompositeOperation = 'screen';
-      const rect = [companion.x - 215, companion.y + (lobe > 0 ? -273 : -13), 430, 286];
+      const rect = [companion.x - 210, companion.y + (lobe > 0 ? -286 : -9), 420, 295];
       drawArtwork(ctx, lobe > 0 ? 'north-wind' : 'south-wind', rect, paintWindStructure, lobe);
       const angle = TAU * phase;
       for (const particle of windParticles) {
         const t = wrap(particle.phase + phase * particle.speed + (lobe < 0 ? 0.23 : 0));
         const rise = t * (0.75 + 0.25 * t);
-        const azimuth = particle.azimuth + 0.26 * rise + 0.055 * Math.sin(angle * 2 + particle.jitter);
+        const azimuth = particle.azimuth + 0.20 * rise + 0.055 * Math.sin(angle * 2 + particle.jitter);
         const fade = Math.sin(Math.PI * t) ** 0.84 * (1 - 0.48 * t);
         const edge = Math.abs(Math.cos(azimuth)) ** 4;
-        const light = fade * (particle.sheath ? 0.30 + edge * 0.61 : 0.22);
-        const [x, y] = windPoint(lobe, rise, particle.launch, azimuth);
-        const radius = particle.size + 1.15 * t;
-        const axialSpread = lerp(0.72, 1.8, smooth(0.05, 0.36, rise));
-        glow(ctx, x, y, radius * axialSpread, radius * 1.6, particle.sheath ? windColor : AQUA, light);
-        if (particle.sheath && edge > 0.57 && particle.size > 2.1) {
-          ctx.globalAlpha = light * 0.68;
-          dot(ctx, x, y, radius * 0.36, '#b7eded');
+        const light = fade * (0.37 + edge * 0.48);
+        const [x, y] = windPoint(lobe, rise, particle.depth, azimuth);
+        const radius = particle.size + 1.08 * t;
+        const axialSpread = lerp(0.67, 1.72, smooth(0.05, 0.36, rise));
+        glow(ctx, x, y, radius * axialSpread, radius * 1.6, windColor, light);
+        if (edge > 0.59 && particle.size > 2.16) {
+          ctx.globalAlpha = light * 0.65;
+          dot(ctx, x, y, radius * 0.34, '#b7eded');
           ctx.globalAlpha = 1;
         }
       }
@@ -1052,10 +1108,10 @@
       ctx.save();
       ctx.translate(companion.x, companion.y + 4);
       ctx.rotate(0.015);
-      glow(ctx, 0, 0, 59, 24, '#efaf77', 0.49);
+      glow(ctx, 0, 0, 59, 24, '#efaf77', 0.32);
       for (let index = 0; index < 17; index++) {
         const t = index / 16;
-        const radius = lerp(11, 41, t);
+        const radius = lerp(companion.radius + 3, 44, t);
         ctx.beginPath();
         ctx.ellipse(0, 0, radius, radius * 0.33, 0, 0, TAU);
         ctx.strokeStyle = index % 4 === 1 ? '#ffd7a2ca' : `rgba(213, 131, 92, ${0.64 - t * 0.45})`;
@@ -1065,37 +1121,38 @@
       ctx.restore();
     }
 
-    function starTexture(radius, cool) {
+    function starTexture(radius, bright) {
       const buffer = circleCanvas(160);
       const ctx = buffer.getContext('2d');
-      const rng = seededRandom(cool ? 307 : 441);
+      const rng = seededRandom(bright ? 441 : 307);
       ctx.translate(80, 80);
       ctx.scale(65 / radius, 65 / radius);
-      const gradient = ctx.createRadialGradient(-radius * 0.23, -radius * 0.31, radius * 0.05, 0, 0, radius);
-      gradient.addColorStop(0, '#fffdfa');
-      gradient.addColorStop(0.56, cool ? '#eafaff' : '#fff1ce');
-      gradient.addColorStop(0.86, cool ? '#9dd8fb' : '#ffbd89');
-      gradient.addColorStop(1, cool ? '#6cc4f4' : '#e98162');
+      const gradient = ctx.createRadialGradient(-radius * 0.22, -radius * 0.29, radius * 0.05, 0, 0, radius);
+      gradient.addColorStop(0, bright ? '#fffde1' : '#f1bc70');
+      gradient.addColorStop(0.56, bright ? '#fff4b7' : '#db924b');
+      gradient.addColorStop(0.86, bright ? '#ffd281' : '#bd6539');
+      gradient.addColorStop(1, bright ? '#f18e45' : '#884124');
       dot(ctx, 0, 0, radius, gradient);
       ctx.clip();
-      for (let index = 0; index < 1100; index++) {
+      for (let index = 0; index < 1000; index++) {
         const angle = rng() * TAU;
         const r = Math.sqrt(rng()) * radius;
         const size = radius * (0.025 + 0.11 * rng() ** 2);
-        const color = cool ? '#92d4fe' : index % 4 === 0 ? '#c8604c' : '#f49e70';
-        glow(ctx, r * Math.cos(angle), r * Math.sin(angle), size * 1.7, size, color, 0.03 + rng() * 0.34);
+        const speckle = index % 4 === 0;
+        const color = bright ? (speckle ? '#ec954f' : '#ffdf90') : (speckle ? '#a0462c' : '#e7a358');
+        glow(ctx, r * Math.cos(angle), r * Math.sin(angle), size * 1.7, size, color, 0.03 + rng() * 0.30);
       }
       return buffer;
     }
 
     function paintStars(ctx, phase) {
       const flicker = Math.sin(5 * TAU * phase) * 0.036;
-      glow(ctx, primary.x, primary.y, 101, 94, '#f78359', 0.84 + flicker);
-      glow(ctx, primary.x, primary.y, 74, 19, '#ffb77e', 0.51);
-      glow(ctx, primary.x, primary.y, 48, 45, '#ffc185', 0.76);
+      glow(ctx, primary.x, primary.y, 87, 73, '#fca449', 0.80 + flicker);
+      glow(ctx, primary.x, primary.y, 60, 17, '#ffc77e', 0.56);
+      glow(ctx, primary.x, primary.y, 34, 32, '#ffe19d', 0.78);
       stamp(ctx, stars.primary, primary.x, primary.y, primary.radius * 80 / 65, primary.radius * 80 / 65);
-      glow(ctx, companion.x, companion.y, 44, 43, '#67c8f7', 0.89);
-      glow(ctx, companion.x, companion.y, 30, 6, '#b6efff', 0.69);
+      glow(ctx, companion.x, companion.y, 51, 44, '#d98249', 0.41);
+      glow(ctx, companion.x, companion.y, 36, 31, '#e69b51', 0.29);
       stamp(ctx, stars.companion, companion.x, companion.y, companion.radius * 80 / 65, companion.radius * 80 / 65);
     }
 
@@ -1178,18 +1235,12 @@
 
       trace(ctx, sliceCurve(1.025));
       ctx.lineWidth = 1.2;
-      ctx.strokeStyle = '#ecc3ac42';
+      ctx.strokeStyle = '#ecc3ac29';
       ctx.stroke();
       trace(ctx, sliceCurve(-0.92));
       ctx.lineWidth = 0.9;
-      ctx.strokeStyle = '#9eace330';
+      ctx.strokeStyle = '#9eace324';
       ctx.stroke();
-      for (const [x, opacity] of [[slice.inner, 0.38], [slice.outer, 0.21]]) {
-        trace(ctx, [[x, layerY(x, 1.04)], [x, layerY(x, -0.93)]]);
-        ctx.strokeStyle = `rgba(171, 174, 196, ${opacity})`;
-        ctx.lineWidth = 0.85;
-        ctx.stroke();
-      }
     }
 
     function paintSliceBackdrop(ctx, detail) {
@@ -1203,6 +1254,70 @@
         const r = 0.4 + 1.5 * random() ** 3;
         dot(ctx, x, sliceMidplane(x) + offset, r, index % 5 === 0 ? '#ffbc8a8c' : '#c68a794b');
       }
+    }
+
+    function surfaceOutflowPoint(source, t) {
+      const x = source.x + source.drift * t ** 1.32;
+      const y = source.y - source.side * source.height * t * (0.87 + 0.13 * t);
+      return [x, y];
+    }
+
+    function makeSurfaceOutflow() {
+      const random = seededRandom(71852);
+      const strands = [];
+      const particles = [];
+      for (const side of [-1, 1]) {
+        for (let i = 0; i < 29; i++) {
+          const progress = (i + 0.35 * random()) / 28.5;
+          const x = lerp(232, 928, progress);
+          const y = layerY(x, side > 0 ? 1.016 : -0.899);
+          const source = { x, y, side, drift: lerp(24, 92, progress), height: lerp(36, 64, random()) };
+          if (i % 4 === 1) {
+            const points = Array.from({ length: 20 }, (_, sample) => surfaceOutflowPoint(source, sample / 19 * 0.91));
+            strands.push(points);
+          }
+          for (let part = 0; part < 3; part++) {
+            particles.push({
+              source, phase: random(), pace: random() < 0.6 ? 1 : 2,
+              size: lerp(1.15, 3.1, random()), brightness: lerp(0.12, 0.48, random())
+            });
+          }
+        }
+      }
+      return { strands, particles };
+    }
+
+    function paintDiscOutflow(ctx, phase) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      ctx.lineCap = 'round';
+      for (const points of surfaceOutflow.strands) {
+        const [x0, y0] = points[0];
+        const [x1, y1] = points.at(-1);
+        const fade = ctx.createLinearGradient(x0, y0, x1, y1);
+        fade.addColorStop(0, '#83bcc300');
+        fade.addColorStop(0.24, '#83bcc322');
+        fade.addColorStop(0.68, '#83bcc314');
+        fade.addColorStop(1, '#83bcc300');
+        ctx.strokeStyle = fade;
+        ctx.lineWidth = 1.5;
+        trace(ctx, points);
+        ctx.stroke();
+      }
+      for (const particle of surfaceOutflow.particles) {
+        const t = wrap(particle.phase + phase * particle.pace);
+        const [x, y] = surfaceOutflowPoint(particle.source, t);
+        const envelope = smooth(0, 0.24, t) * (1 - smooth(0.57, 1, t));
+        const breath = 0.85 + 0.15 * Math.sin(TAU * phase + particle.phase * 5.07);
+        const light = envelope * particle.brightness * breath;
+        glow(ctx, x, y, particle.size * 2.3, particle.size * 1.75, '#83c2c8', light);
+        if (particle.size > 2.40 && light > 0.02) {
+          ctx.globalAlpha = light * 0.49;
+          dot(ctx, x, y, particle.size * 0.29, '#c5f0e9');
+          ctx.globalAlpha = 1;
+        }
+      }
+      ctx.restore();
     }
 
     const grainCell = 56;
@@ -1382,6 +1497,10 @@
       ctx.globalAlpha = 1;
     }
 
+    function discEdgeFade(radius) {
+      return smooth(0.003, 0.060, radius) * (1 - smooth(0.92, 1.002, radius));
+    }
+
     function paintTracers(ctx, angle, selected, projection, sectional) {
       ctx.save();
       ctx.globalCompositeOperation = 'screen';
@@ -1398,7 +1517,7 @@
           const z = sample.z + 0.035 * Math.sin(2 * angle + sample.offset);
           const [x, y] = projection(r, azimuth, z);
           const flicker = 0.69 + 0.31 * Math.sin(3 * angle + sample.offset);
-          const light = opacity * flicker * cutFade * (z < 0 && !sectional ? 0.57 : 1);
+          const light = opacity * flicker * cutFade * discEdgeFade(r) * (z < 0 && !sectional ? 0.57 : 1);
           const radius = sample.size * (highlighted ? 1.28 : 1) * (sectional ? 1 : 0.82);
           glow(ctx, x, y, radius * 7.2, radius * (sectional ? 4.2 : 2.9), field.color, light * 0.57);
           if (highlighted || sample.size > 1.05) {
@@ -1441,7 +1560,7 @@
     const warmEnd = 0.18;
 
     function drawGrowingGrain(ctx, track, p, projection, scale) {
-      const alpha = smooth(0, 0.075, p) * (1 - smooth(impactPhase, impactPhase + 0.025, p));
+      const alpha = discEdgeFade(track.r) * smooth(0, 0.075, p) * (1 - smooth(impactPhase, impactPhase + 0.025, p));
       const settling = smooth(0.28, impactPhase, p);
       const growth = smooth(0.09, 0.47, p);
       const icy = track.r > coldStart;
@@ -1505,12 +1624,13 @@
       const color = icy ? ICE : GOLD;
       const size = scale * track.size;
       const [x, y] = projection(track.r, track.a, 0);
-      const spark = smooth(0, 0.045, sinceImpact) * (1 - smooth(0.07, 0.27, sinceImpact));
+      const edge = discEdgeFade(track.r);
+      const spark = edge * smooth(0, 0.045, sinceImpact) * (1 - smooth(0.07, 0.27, sinceImpact));
       glow(ctx, x, y, size * (11 + 17 * sinceImpact), size * (8 + 11 * sinceImpact), color, spark * 0.94);
       glow(ctx, x, y, size * 4.7, size * 4.7, '#fff3d4', spark * 0.82);
       const spread = smooth(0, 0.52, sinceImpact);
       const mixing = smooth(0.21, 0.97, sinceImpact);
-      const opacity = smooth(0, 0.10, sinceImpact) * (1 - smooth(0.80, 1, sinceImpact));
+      const opacity = edge * smooth(0, 0.10, sinceImpact) * (1 - smooth(0.80, 1, sinceImpact));
       const fineCount = track.size > 1.04 ? 6 : 4;
       for (let index = 0; index <= fineCount; index++) {
         const fine = index !== fineCount;
@@ -1566,11 +1686,14 @@
       ctx.restore();
     }
 
-    const stars = { primary: starTexture(primary.radius, false), companion: starTexture(companion.radius, true) };
+    const stars = { primary: starTexture(primary.radius, true), companion: starTexture(companion.radius, false) };
     const grains = { rock: makeGrainAtlas(2369, false), ice: makeGrainAtlas(5011, true) };
     const gasField = tracerSamples();
     const dustTracks = makeDustTracks();
     const discFootprint = makeDiscFootprint();
+    const sliceFootprint = new Path2D();
+    appendPolygon(sliceFootprint, [...sliceCurve(1.04), ...sliceCurve(-0.93, true)]);
+    const surfaceOutflow = makeSurfaceOutflow();
     const windRays = makeWindRays();
     const windParticles = makeWindParticles();
 
@@ -1607,10 +1730,10 @@
     };
     const hotspots = [...map.querySelectorAll('[data-destination]')];
     const canvasLabels = {
-      system: 'Animated cutaway of a post-AGB binary. Gas enters through L₂ and L₃, an L₁ stream connects the two sides of the binary, and a bipolar wind opens out from narrow bases at the companion’s poles.',
-      disc: 'Animated vertical cross-section of the circumbinary disc. Grains grow, settle, fragment and mix upward. CO traces an upper layer, with ¹³CO below it.'
+      system: 'Animated cutaway of a post-AGB binary. Warm gas streams flow through L₂ and L₃. The smaller primary shines more brightly, and two broad jet lobes emerge from the companion’s poles.',
+      disc: 'Animated vertical cross-section of the circumbinary disc. Grains grow, settle, fragment and mix upward. CO traces an upper layer, with ¹³CO below it. A faint wind flows from the disc surfaces.'
     };
-    const defaultCaption = 'Grains grow, settle, fragment and mix upward throughout the disc.';
+    const defaultCaption = 'Grains grow, settle, fragment and mix upward throughout the disc. A faint wind rises from its surfaces.';
     let route = routeFromUrl();
     let layers = [];
     let transition = null;
@@ -1671,7 +1794,9 @@
     function traceHit(x, y) {
       const padding = Math.min(12, 5 / layout.base);
       if (Math.hypot(x - primary.x, y - primary.y) <= primary.radius + padding) return 'about';
-      if (((x - companion.x) / (43 + padding)) ** 2 + ((y - companion.y - 5) / (14 + padding)) ** 2 <= 1) return 'leisure';
+      const onCompanion = Math.hypot(x - companion.x, y - companion.y) <= companion.radius + padding;
+      const onCompanionDisc = ((x - companion.x) / (44 + padding)) ** 2 + ((y - companion.y - 5) / (14 + padding)) ** 2 <= 1;
+      if (onCompanion || onCompanionDisc) return 'leisure';
       const onDisc = hitContext.isPointInPath(discFootprint, x, y);
       const lobe = y < companion.y ? 1 : -1;
       const height = Math.abs(y - companion.y);
@@ -1718,14 +1843,54 @@
       return buffer;
     }
 
+    function featherBackdrop(buffer, shape, softness) {
+      const mask = document.createElement('canvas');
+      const fringe = document.createElement('canvas');
+      const filterSupported = typeof mask.getContext('2d').filter === 'string';
+      // A small mask describes the edge. The artwork inside it stays at its render resolution.
+      const width = filterSupported ? Math.ceil(buffer.width * 0.44) : Math.ceil(WIDTH / softness);
+      const height = Math.ceil(width * HEIGHT / WIDTH);
+      mask.width = fringe.width = width;
+      mask.height = fringe.height = height;
+      const scale = width / WIDTH;
+      const blur = `blur(${softness * scale}px)`;
+
+      const alpha = mask.getContext('2d');
+      alpha.setTransform(scale, 0, 0, height / HEIGHT, 0, 0);
+      alpha.fillStyle = '#ffffff';
+      if (filterSupported) alpha.filter = blur;
+      alpha.fill(shape);
+
+      const halo = fringe.getContext('2d');
+      if (filterSupported) halo.filter = blur;
+      halo.drawImage(buffer, 0, 0, width, height);
+      if (filterSupported) halo.filter = 'none';
+      halo.globalCompositeOperation = 'destination-out';
+      halo.drawImage(mask, 0, 0);
+
+      const detail = buffer.getContext('2d');
+      detail.save();
+      detail.setTransform(1, 0, 0, 1, 0, 0);
+      detail.globalCompositeOperation = 'destination-in';
+      for (let pass = 0; pass < 4; pass++) detail.drawImage(mask, 0, 0, buffer.width, buffer.height);
+      detail.globalCompositeOperation = 'destination-over';
+      detail.drawImage(fringe, 0, 0, buffer.width, buffer.height);
+      detail.restore();
+    }
+
     function buildBackdrop(scene, resolution, detail) {
       const buffer = document.createElement('canvas');
       buffer.width = Math.ceil(WIDTH * resolution);
       buffer.height = Math.ceil(HEIGHT * resolution);
       const ctx = buffer.getContext('2d');
       ctx.setTransform(buffer.width / WIDTH, 0, 0, buffer.height / HEIGHT, 0, 0);
-      if (scene === 'disc') paintSliceBackdrop(ctx, detail);
-      else paintBinaryBackdrop(ctx, detail);
+      if (scene === 'disc') {
+        paintSliceBackdrop(ctx, detail);
+        featherBackdrop(buffer, sliceFootprint, 8.6);
+      } else {
+        paintBinaryBackdrop(ctx, detail);
+        featherBackdrop(buffer, discFootprint, 6.6);
+      }
       return { buffer, detail };
     }
 
@@ -1778,6 +1943,7 @@
       const { density } = layout;
       ctx.setTransform(scale * density, 0, 0, scale * density, x * density, y * density);
       if (frame.scene === 'disc') {
+        if (paintedFirstFrame) paintDiscOutflow(ctx, phase);
         ctx.drawImage(backdrop('disc'), 0, 0, WIDTH, HEIGHT);
         if (paintedFirstFrame) paintDiscActivity(ctx, phase, selectedSpecies, true);
         if (!layout.compact) paintSliceLabels(ctx);
