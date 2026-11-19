@@ -1,2 +1,2 @@
-# mohomaks.github.io
+# makstheuastronomer.github.io
 Personal webpage
