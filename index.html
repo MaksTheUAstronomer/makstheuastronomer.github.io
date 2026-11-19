@@ -266,8 +266,8 @@
           <summary class="control">System description</summary>
           <div class="description-panel">
             <h2>A post-AGB binary</h2>
-            <p>Gas enters the cavity through L₂ beyond the companion and L₃ beyond the primary. The stream through L₁ carries gas from the companion’s side toward the primary. The three points are drawn for an illustrative circular binary.</p>
-            <p>The companion’s accretion disc launches a broad bipolar wind. The illustrated lobes have denser, slower walls and faster, more tenuous inner flow.</p>
+            <p>Gas enters the cavity through L₂ beyond the companion and L₃ beyond the primary. The stream through L₁ carries gas from the companion’s side toward the primary. The warm streams curve in the direction of disc rotation. The three points are drawn for an illustrative circular binary.</p>
+            <p>The outflow is collimated near the companion’s poles and fans out into broad lobes with denser, slower walls and faster, more tenuous inner flow.</p>
             <div class="description-sources">
               <a href="https://arxiv.org/abs/0911.2032">Hanawa et al.</a>
               <a href="https://arxiv.org/abs/2208.08752">Bollen et al.</a>
@@ -363,7 +363,6 @@
     const HEIGHT = 510;
     const TAU = 2 * Math.PI;
     const LOOP_SECONDS = 24;
-    const MINT = '#8ee5d3';
     const AQUA = '#75cff0';
     const GOLD = '#f6b17d';
     const ICE = '#b3d8ff';
@@ -446,6 +445,128 @@
       stamp(ctx, glowTexture(color), x, y, rx, ry, opacity);
     }
 
+    const artwork = new Map();
+    const renderQueue = new Map();
+    let artworkPending = false;
+
+    function prepareArtwork(key, draw) {
+      if (!renderQueue.has(key)) renderQueue.set(key, draw);
+      scheduleArtwork();
+    }
+
+    function scheduleArtwork() {
+      if (artworkPending || renderQueue.size === 0) return;
+      artworkPending = true;
+      requestAnimationFrame(() => {
+        const next = () => {
+          artworkPending = false;
+          const [key, draw] = renderQueue.entries().next().value;
+          renderQueue.delete(key);
+          draw();
+          if (!playing && !transition && !document.hidden) paintFrame();
+          scheduleArtwork();
+        };
+        if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(next, { timeout: 240 });
+        else window.setTimeout(next, 0);
+      });
+    }
+
+    function drawArtwork(ctx, key, rectangle, painter, ...args) {
+      const [x, y, width, height] = rectangle;
+      const layer = artwork.get(key);
+      if (layer) {
+        ctx.drawImage(layer, x, y, width, height);
+        return;
+      }
+      ctx.save();
+      painter(ctx, ...args);
+      ctx.restore();
+      prepareArtwork(key, () => {
+        const resolution = 2.35;
+        const buffer = document.createElement('canvas');
+        buffer.width = Math.ceil(width * resolution);
+        buffer.height = Math.ceil(height * resolution);
+        const paint = buffer.getContext('2d');
+        const sx = buffer.width / width;
+        const sy = buffer.height / height;
+        paint.setTransform(sx, 0, 0, sy, -x * sx, -y * sy);
+        painter(paint, ...args);
+        artwork.set(key, buffer);
+      });
+    }
+
+    // Build the speckle layer in one pixel buffer. Fractional pixel coverage
+    // retains fine grain detail at the same resolution as the rest of the disc.
+    function paintSpeckles(ctx, shape, populate) {
+      const x0 = Math.floor(Math.min(...shape.map(([x]) => x))) - 1;
+      const y0 = Math.floor(Math.min(...shape.map(([, y]) => y))) - 1;
+      const x1 = Math.ceil(Math.max(...shape.map(([x]) => x))) + 3;
+      const y1 = Math.ceil(Math.max(...shape.map(([, y]) => y))) + 3;
+      const transform = ctx.getTransform();
+      const scale = Math.max(transform.a, transform.d);
+      const layer = document.createElement('canvas');
+      const width = layer.width = Math.ceil((x1 - x0) * scale);
+      const height = layer.height = Math.ceil((y1 - y0) * scale);
+      const raster = layer.getContext('2d');
+      const image = raster.createImageData(width, height);
+      const data = image.data;
+
+      populate((x, y, w, h, color, opacity) => {
+        const left = (x - x0) * scale;
+        const top = (y - y0) * scale;
+        const right = left + w * scale;
+        const bottom = top + h * scale;
+        const xStart = Math.max(0, Math.floor(left));
+        const xEnd = Math.min(width, Math.ceil(right));
+        const yStart = Math.max(0, Math.floor(top));
+        const yEnd = Math.min(height, Math.ceil(bottom));
+        for (let row = yStart; row < yEnd; row++) {
+          const vertical = Math.min(row + 1, bottom) - Math.max(row, top);
+          for (let column = xStart; column < xEnd; column++) {
+            const horizontal = Math.min(column + 1, right) - Math.max(column, left);
+            const source = opacity * horizontal * vertical;
+            if (source < 0.002) continue;
+            const index = (row * width + column) * 4;
+            const alpha = source * 255 + data[index + 3] * (1 - source);
+            const mix = source * 255 / alpha;
+            data[index] += (color[0] - data[index]) * mix;
+            data[index + 1] += (color[1] - data[index + 1]) * mix;
+            data[index + 2] += (color[2] - data[index + 2]) * mix;
+            data[index + 3] = alpha;
+          }
+        }
+      });
+      raster.putImageData(image, 0, 0);
+      ctx.drawImage(layer, x0, y0, width / scale, height / scale);
+    }
+
+    function paintDiscStreaks(ctx, random) {
+      const bins = new Map();
+      for (let index = 0; index < 1300; index++) {
+        const t = random();
+        const radius = lerp(disc.inner, disc.outer, t);
+        const angle = lerp(startAngle, endAngle, random());
+        const arcLength = 0.016 + 0.27 * random() ** 2;
+        const end = Math.min(endAngle, angle + arcLength);
+        const opacity = Math.max(1, Math.round(90 * (0.012 + 0.14 * random() ** 3) * (1 - 0.41 * t))) / 90;
+        const width = Math.round((0.46 + 2.8 * random() ** 3) * 3) / 3;
+        const color = index % 6 === 0 ? '#71a5d3' : '#faa26f';
+        const key = `${color}/${opacity}/${width}`;
+        if (!bins.has(key)) bins.set(key, { path: new Path2D(), opacity, width, color });
+        const { path } = bins.get(key);
+        const points = discArc(radius, angle, end);
+        path.moveTo(...points[0]);
+        for (let point = 1; point < points.length; point++) path.lineTo(...points[point]);
+      }
+      for (const { path, opacity, width, color } of bins.values()) {
+        ctx.globalAlpha = opacity;
+        ctx.lineWidth = width;
+        ctx.strokeStyle = color;
+        ctx.stroke(path);
+      }
+      ctx.globalAlpha = 1;
+    }
+
     // The near sector is removed all the way down through the disc thickness.
     const disc = { x: 578, y: 282, inner: 192, outer: 438, nearRight: 0.98, nearLeft: 2.19 };
     const startAngle = disc.nearLeft;
@@ -508,10 +629,6 @@
       });
     }
 
-    function discBand(ctx, inner, outer, start = startAngle, end = endAngle) {
-      trace(ctx, [...discArc(outer, start, end), ...discArc(inner, end, start)], true);
-    }
-
     const radialColors = [
       [0, [237, 151, 104]], [0.07, [158, 90, 75]], [0.19, [128, 70, 63]],
       [0.36, [120, 69, 69]], [0.60, [83, 58, 69]], [0.82, [57, 54, 75]], [1, [31, 45, 66]]
@@ -544,14 +661,15 @@
       }
     }
 
-    function paintDiscSurface(ctx) {
+    function paintDiscSurface(ctx, detail) {
       const random = seededRandom(314159);
-      discBand(ctx, disc.inner, disc.outer);
+      const shape = [...discArc(disc.outer), ...discArc(disc.inner, endAngle, startAngle)];
+      trace(ctx, shape, true);
       ctx.fillStyle = '#352d3e';
       ctx.fill();
       ctx.save();
       ctx.clip();
-      const colors = 145;
+      const colors = detail ? 145 : 101;
       for (let index = 0; index < colors; index++) {
         const t = index / (colors - 1);
         const radius = lerp(disc.inner, disc.outer, t);
@@ -561,7 +679,7 @@
         const light = rings * gap;
         trace(ctx, discArc(radius));
         ctx.strokeStyle = `rgb(${r * light}, ${g * light}, ${b * (0.44 + 0.56 * light)})`;
-        ctx.lineWidth = 3.1;
+        ctx.lineWidth = detail ? 3.1 : 4.2;
         ctx.stroke();
       }
 
@@ -573,29 +691,22 @@
       ctx.fillStyle = shading;
       ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-      for (let index = 0; index < 1300; index++) {
-        const t = random();
-        const radius = lerp(disc.inner, disc.outer, t);
-        const angle = lerp(startAngle, endAngle, random());
-        const arcLength = 0.016 + 0.27 * random() ** 2;
-        const end = Math.min(endAngle, angle + arcLength);
-        trace(ctx, discArc(radius, angle, end));
-        const alpha = (0.012 + 0.14 * random() ** 3) * (1 - 0.41 * t);
-        ctx.strokeStyle = index % 6 === 0 ? `rgba(113, 165, 211, ${alpha})` : `rgba(250, 162, 111, ${alpha})`;
-        ctx.lineWidth = 0.46 + 2.8 * random() ** 3;
-        ctx.stroke();
-      }
-
-      for (let index = 0; index < 41000; index++) {
-        const t = random();
-        const radius = lerp(disc.inner, disc.outer, t);
-        const angle = lerp(startAngle, endAngle, random());
-        const [x, y] = projected(radius, angle, discHeight(radius, angle));
-        const density = 0.70 + 0.30 * Math.sin(angle * 13 + t * 64);
-        const strength = density * (0.018 + 0.43 * random() ** 3) * (1 - t * 0.38);
-        const size = 0.16 + 1.36 * random() ** 4;
-        ctx.fillStyle = index % 7 < 2 ? `rgba(27, 24, 38, ${strength})` : `rgba(250, 171, 130, ${strength})`;
-        ctx.fillRect(x, y, size * (1.2 + 0.45 * Math.abs(Math.sin(angle))), size);
+      if (detail) {
+        paintDiscStreaks(ctx, random);
+        const dark = [27, 24, 38];
+        const copper = [250, 171, 130];
+        paintSpeckles(ctx, shape, plot => {
+          for (let index = 0; index < 41000; index++) {
+            const t = random();
+            const radius = lerp(disc.inner, disc.outer, t);
+            const angle = lerp(startAngle, endAngle, random());
+            const [x, y] = projected(radius, angle, discHeight(radius, angle));
+            const density = 0.70 + 0.30 * Math.sin(angle * 13 + t * 64);
+            const strength = density * (0.018 + 0.43 * random() ** 3) * (1 - t * 0.38);
+            const size = 0.16 + 1.36 * random() ** 4;
+            plot(x, y, size * (1.2 + 0.45 * Math.abs(Math.sin(angle))), size, index % 7 < 2 ? dark : copper, strength);
+          }
+        });
       }
       ctx.restore();
 
@@ -628,27 +739,32 @@
       return reverse ? samples.reverse() : samples;
     }
 
-    function paintCutWall(ctx, angle, right) {
+    function paintCutWall(ctx, angle, right, detail) {
       const random = seededRandom(right ? 3302 : 3301);
       const lens = ctx.createLinearGradient(0, 317, 0, 464);
       lens.addColorStop(0, '#7c4e44');
       lens.addColorStop(0.41, '#613c3d');
       lens.addColorStop(0.74, '#412c38');
       lens.addColorStop(1, '#1d2236');
-      trace(ctx, [...wallCurve(angle, 1), ...wallCurve(angle, -0.61, true)], true);
+      const shape = [...wallCurve(angle, 1), ...wallCurve(angle, -0.61, true)];
+      trace(ctx, shape, true);
       ctx.fillStyle = lens;
       ctx.fill();
       ctx.save();
       ctx.clip();
-      for (let index = 0; index < 5200; index++) {
-        const radius = lerp(disc.inner, disc.outer, random());
-        const z = lerp(-0.61, 1, random());
-        const [x, y] = projected(radius, angle, z * discHeight(radius, angle));
-        const aligned = Math.max(0, 1 - Math.abs(z) * 1.9);
-        const alpha = 0.04 + (0.20 + aligned * 0.35) * random() ** 3;
-        ctx.fillStyle = `rgba(250, 160, 116, ${alpha})`;
-        const size = 0.3 + 1.5 * random() ** 2;
-        ctx.fillRect(x, y, size * 1.6, size * 0.65);
+      if (detail) {
+        const copper = [250, 160, 116];
+        paintSpeckles(ctx, shape, plot => {
+          for (let index = 0; index < 5200; index++) {
+            const radius = lerp(disc.inner, disc.outer, random());
+            const z = lerp(-0.61, 1, random());
+            const [x, y] = projected(radius, angle, z * discHeight(radius, angle));
+            const aligned = Math.max(0, 1 - Math.abs(z) * 1.9);
+            const alpha = 0.04 + (0.20 + aligned * 0.35) * random() ** 3;
+            const size = 0.3 + 1.5 * random() ** 2;
+            plot(x, y, size * 1.6, size * 0.65, copper, alpha);
+          }
+        });
       }
       for (let index = 0; index < 25; index++) {
         const z = lerp(-0.58, 0.98, index / 24);
@@ -669,86 +785,148 @@
       ctx.stroke();
     }
 
-    function paintBinaryBackdrop(ctx) {
+    function paintBinaryBackdrop(ctx, detail) {
       glow(ctx, disc.x, 319, 574, 155, '#ad604b', 0.15);
       glow(ctx, disc.x, 177, 530, 130, '#696280', 0.10);
       paintOuterEdge(ctx);
-      paintDiscSurface(ctx);
-      paintCutWall(ctx, disc.nearLeft, false);
-      paintCutWall(ctx, disc.nearRight, true);
+      paintDiscSurface(ctx, detail);
+      paintCutWall(ctx, disc.nearLeft, false, detail);
+      paintCutWall(ctx, disc.nearRight, true, detail);
     }
 
-    function rimPoint(side, y) {
-      return [side * Math.sqrt(disc.inner ** 2 - y ** 2), y];
+    function polarBinaryPoint(radius, azimuth) {
+      return binaryPoint(radius * Math.cos(azimuth), radius * Math.sin(azimuth));
     }
 
-    function makeStream(point, color, before, after) {
-      const crossing = [point.x, 0];
-      return { name: point.name, color, segments: [[...before, crossing], [crossing, ...after]]
-        .map(segment => segment.map(([x, y]) => binaryPoint(x, y))) };
+    function streamRadius(start, end, slopeStart, slopeEnd, t) {
+      const t2 = t * t;
+      const t3 = t2 * t;
+      return (2 * t3 - 3 * t2 + 1) * start + (t3 - 2 * t2 + t) * slopeStart
+        + (-2 * t3 + 3 * t2) * end + (t3 - t2) * slopeEnd;
     }
 
-    const companionArc = [xSecondary + 19, -22];
+    function makeStream(point, crossingAngle, entry, landing, color, width) {
+      const crossing = [Math.abs(point.x), crossingAngle];
+      const radii = [entry[0], crossing[0], landing[0]];
+      const angles = [entry[1], crossing[1], landing[1]];
+      const leftSlope = (radii[1] - radii[0]) / (angles[1] - angles[0]);
+      const rightSlope = (radii[2] - radii[1]) / (angles[2] - angles[1]);
+      const passageSlope = leftSlope * rightSlope > 0 ? 2 / (1 / leftSlope + 1 / rightSlope) : 0;
+      const slopes = [leftSlope * 0.24, passageSlope, rightSlope * 0.64];
+      const samples = [];
+      const steps = 52;
+      let travelTime = 0;
+
+      // Particles retain a prograde tangential component. In the schematic
+      // timing, r² dθ/dt is constant along the centre of each stream.
+      for (let i = 0; i <= steps * 2; i++) {
+        const segment = i <= steps ? 0 : 1;
+        const fraction = (i - segment * steps) / steps;
+        const swept = angles[segment + 1] - angles[segment];
+        const r = streamRadius(radii[segment], radii[segment + 1], slopes[segment] * swept, slopes[segment + 1] * swept, fraction);
+        const angle = angles[segment] + fraction * swept;
+        const [x, y] = polarBinaryPoint(r, angle);
+        const previous = samples.at(-1);
+        if (previous) travelTime += (angle - previous.angle) * (previous.r ** 2 + r ** 2) / 2;
+        samples.push({ x, y, r, angle, time: travelTime });
+      }
+      for (let index = 0; index < samples.length; index++) {
+        const sample = samples[index];
+        const ahead = samples[Math.min(samples.length - 1, index + 1)];
+        const behind = samples[Math.max(0, index - 1)];
+        const dx = ahead.x - behind.x;
+        const dy = ahead.y - behind.y;
+        const tangent = Math.hypot(dx, dy);
+        sample.nx = -dy / tangent;
+        sample.ny = dx / tangent;
+        sample.time /= travelTime;
+        const fraction = index / (samples.length - 1);
+        const waist = 1 - 0.23 * Math.exp(-((fraction - 0.50) ** 2) / 0.0048);
+        sample.width = width * (0.42 + 0.58 * Math.sin(Math.PI * fraction) ** 0.65) * waist;
+      }
+      return { name: point.name, color, samples, crossingTime: samples[steps].time };
+    }
+
     const streamPaths = [
-      makeStream(lagrangePoints[0], ICE,
-        [companionArc, [xSecondary + 5, -42], [lagrangePoints[0].x + 16, -15]],
-        [[lagrangePoints[0].x - 15, 14], [xPrimary + 24, 20], [xPrimary + 13, 3]]),
-      makeStream(lagrangePoints[1], MINT,
-        [rimPoint(1, -54), [disc.inner - 8, -35], [lagrangePoints[1].x + 15, -4]],
-        [[lagrangePoints[1].x - 22, 5.9], [xSecondary + 33, -4], companionArc]),
-      makeStream(lagrangePoints[2], MINT,
-        [rimPoint(-1, 44), [-disc.inner + 7, 21], [lagrangePoints[2].x - 18, 1.5]],
-        [[lagrangePoints[2].x + 25, -2.1], [xPrimary - 36, -25], [xPrimary - 14, -6]])
+      makeStream(lagrangePoints[0], 0, [59, -0.45], [50, 2.84], '#ffab75', 7.5),
+      makeStream(lagrangePoints[1], 0, [disc.inner + 2, -0.83], [81, 0.42], '#fd785d', 11.3),
+      makeStream(lagrangePoints[2], Math.PI, [disc.inner + 2, Math.PI - 0.85], [63, Math.PI + 0.36], '#f5785e', 10.6)
     ];
 
-    function cubic(points, t) {
-      const u = 1 - t;
-      return [0, 1].map(axis => u ** 3 * points[0][axis] + 3 * u * u * t * points[1][axis] + 3 * u * t * t * points[2][axis] + t ** 3 * points[3][axis]);
+    function offsetStream(sample, offset) {
+      const distance = sample.width * offset;
+      return [sample.x + distance * sample.nx, sample.y + distance * sample.ny];
     }
 
-    // The Lagrange point is the join of both curve segments. The transverse
-    // width falls to zero at the join so the visible fibres share the crossing.
-    function streamPoint(route, t, width) {
-      const segment = t <= 0.5 ? 0 : 1;
-      const [x, y] = cubic(route.segments[segment], 2 * t - segment);
-      const pinch = Math.abs(Math.sin(TAU * t));
-      return [x + width * 0.34 * pinch, y + width * pinch];
+    function streamPoint(route, time, offset = 0) {
+      const { samples } = route;
+      let lower = 0;
+      let upper = samples.length - 1;
+      while (upper - lower > 1) {
+        const middle = (lower + upper) >>> 1;
+        if (samples[middle].time < time) lower = middle;
+        else upper = middle;
+      }
+      const left = samples[lower];
+      const right = samples[upper];
+      const t = (time - left.time) / (right.time - left.time);
+      const a = offsetStream(left, offset);
+      const b = offsetStream(right, offset);
+      return [lerp(a[0], b[0], t), lerp(a[1], b[1], t)];
+    }
+
+    function paintStreamRibbons(ctx) {
+      for (const route of streamPaths) {
+        const start = route.samples[0];
+        const end = route.samples.at(-1);
+        const gradient = ctx.createLinearGradient(start.x, start.y, end.x, end.y);
+        gradient.addColorStop(0, '#bb493329');
+        gradient.addColorStop(0.17, '#cf483d91');
+        gradient.addColorStop(0.58, route.color + 'ec');
+        gradient.addColorStop(0.86, '#ffba8ab8');
+        gradient.addColorStop(1, '#ff9b672b');
+        ctx.fillStyle = gradient;
+        for (const [spread, alpha] of [[1.58, 0.12], [1.23, 0.19], [0.86, 0.30], [0.51, 0.39]]) {
+          const upper = route.samples.map(sample => offsetStream(sample, spread));
+          const lower = route.samples.map(sample => offsetStream(sample, -spread)).reverse();
+          trace(ctx, [...upper, ...lower], true);
+          ctx.globalAlpha = alpha;
+          ctx.fill();
+        }
+        ctx.strokeStyle = gradient;
+        for (let line = -3; line <= 3; line++) {
+          const points = route.samples.map((sample, index) => {
+            const texture = 0.066 * Math.sin(index * 0.19 + line) * Math.sin(index / (route.samples.length - 1) * Math.PI);
+            return offsetStream(sample, line * 0.235 + texture);
+          });
+          trace(ctx, points);
+          ctx.lineWidth = line === 0 ? 1.35 : 0.82;
+          ctx.globalAlpha = line === 0 ? 0.62 : 0.27;
+          ctx.stroke();
+        }
+      }
+      ctx.globalAlpha = 1;
     }
 
     function paintStreams(ctx, phase) {
       ctx.save();
       ctx.globalCompositeOperation = 'screen';
-      streamPaths.forEach((route, index) => {
-        const { color, segments } = route;
-        const gradient = ctx.createLinearGradient(...segments[0][0], ...segments[1][3]);
-        gradient.addColorStop(0, color + '26');
-        gradient.addColorStop(0.46, color + 'a8');
-        gradient.addColorStop(0.78, color + 'ca');
-        gradient.addColorStop(1, color + '21');
-        for (let strand = -3; strand <= 3; strand++) {
-          const points = Array.from({ length: 45 }, (_, i) => {
-            const t = i / 44;
-            return streamPoint(route, t, strand * (1.02 + 0.23 * Math.sin(t * 9 + strand - phase * TAU * 3)));
-          });
-          trace(ctx, points);
-          ctx.strokeStyle = gradient;
-          ctx.lineWidth = strand === 0 ? 1.72 : 0.64;
-          ctx.globalAlpha = strand === 0 ? 0.79 : 0.52;
-          ctx.stroke();
-        }
-        ctx.globalAlpha = 1;
-        for (let i = 0; i < 23; i++) {
-          const t = wrap(i * 0.618034 + (3 + index % 2) * phase);
-          const [x, y] = streamPoint(route, t, 4.6 * Math.sin(i * 2.37 + t * 6));
-          const envelope = Math.sin(Math.PI * t) ** 0.8;
-          glow(ctx, x, y, 5, 4, color, envelope * 0.82);
+      drawArtwork(ctx, 'streams', [disc.x - 229, disc.y - 102, 458, 207], paintStreamRibbons);
+      for (const [index, route] of streamPaths.entries()) {
+        for (let i = 0; i < 30; i++) {
+          const time = wrap(i * 0.618034 + (3 + index % 2) * phase);
+          const offset = 0.89 * Math.sin(i * 2.37 + time * 1.45);
+          const [x, y] = streamPoint(route, time, offset);
+          const envelope = Math.sin(Math.PI * time) ** 0.79;
+          const size = 0.87 + 0.53 * Math.sin(i * 0.664) ** 2;
+          glow(ctx, x, y, 5.1 * size, 4.4 * size, route.color, envelope * 0.72);
           if (i % 3 === 0) {
-            ctx.globalAlpha = envelope * 0.65;
-            dot(ctx, x, y, 0.72, color);
+            ctx.globalAlpha = envelope * 0.64;
+            dot(ctx, x, y, 0.68 * size, '#ffd5ae');
             ctx.globalAlpha = 1;
           }
         }
-      });
+      }
       ctx.restore();
     }
 
@@ -772,19 +950,20 @@
       ctx.restore();
     }
 
-    // A wide, limb-brightened disc wind. Field lines originate across the
-    // companion disc. The polar region is mostly clear, with a faint fast flow.
+    // Each lobe opens beyond a narrow neck at the companion's projected pole.
     const windLength = 222;
     const windTilt = 0.095;
+    const windPole = companion.radius * 0.78;
     const windColor = '#78d7da';
 
     function windPoint(lobe, t, launch, azimuth) {
       const distance = windLength * t;
-      const radius = lerp(10, 33, launch) + lerp(0.24, 0.62, launch) * distance * (1 - 0.16 * t);
-      return [
-        companion.x + lobe * windTilt * distance + radius * Math.cos(azimuth),
-        companion.y - lobe * distance + 0.22 * radius * Math.sin(azimuth)
-      ];
+      const beyondNeck = Math.max(0, distance - 21);
+      const flare = beyondNeck ** 2 / (beyondNeck + 32);
+      const radius = lerp(1.2, 4.45, launch) + distance * 0.017 + flare * lerp(0.24, 0.78, launch);
+      const axial = windPole + distance;
+      return [companion.x + lobe * windTilt * axial + radius * Math.cos(azimuth),
+        companion.y - lobe * axial + 0.22 * radius * Math.sin(azimuth)];
     }
 
     function makeWindRays() {
@@ -795,7 +974,7 @@
           const launch = index % 7 === 0 ? 0.32 : 0.78 + (index % 5) * 0.055;
           const ray = new Path2D();
           ray.moveTo(...windPoint(lobe, 0, launch, azimuth));
-          for (let j = 1; j <= 32; j++) ray.lineTo(...windPoint(lobe, j / 32, launch, azimuth));
+          for (let j = 1; j <= 44; j++) ray.lineTo(...windPoint(lobe, j / 44, launch, azimuth));
           rays.push({ lobe, ray, launch, edge: Math.abs(Math.cos(azimuth)) ** 5 });
         }
       }
@@ -814,37 +993,41 @@
       });
     }
 
-    function paintWind(ctx, lobe, phase) {
-      ctx.save();
-      ctx.globalCompositeOperation = 'screen';
-      const gradient = ctx.createLinearGradient(companion.x, companion.y, companion.x, companion.y - lobe * windLength);
-      gradient.addColorStop(0, '#8ce4e847');
-      gradient.addColorStop(0.10, '#92ebecbf');
-      gradient.addColorStop(0.42, '#77cfdfb3');
-      gradient.addColorStop(0.69, '#65b3d385');
-      gradient.addColorStop(0.87, '#578fb942');
+    function paintWindStructure(ctx, lobe) {
+      const gradient = ctx.createLinearGradient(companion.x, companion.y, companion.x, companion.y - lobe * (windLength + windPole));
+      gradient.addColorStop(0, '#a9f2f273');
+      gradient.addColorStop(0.16, '#8fe5e4d4');
+      gradient.addColorStop(0.45, '#76cbdcb6');
+      gradient.addColorStop(0.73, '#65b3d377');
       gradient.addColorStop(1, '#315b8500');
-      const angle = TAU * phase;
-      for (let section = 1; section < 10; section++) {
-        const t = section / 10;
+      for (let section = 1; section < 11; section++) {
+        const t = section / 11;
         const fade = Math.sin(Math.PI * t) ** 0.82;
         for (const azimuth of [0.20, Math.PI - 0.17]) {
           const [x, y] = windPoint(lobe, t, 0.93, azimuth);
-          const shimmer = 0.68 + 0.32 * Math.sin(angle * 3 + section * 0.88 + azimuth);
-          glow(ctx, x, y, 17 + 30 * t, 16 + 29 * t, windColor, 0.37 * fade * shimmer);
-          glow(ctx, x, y, 11 + 11 * t, 12 + 13 * t, '#579ac1', 0.18 * fade);
+          const spread = smooth(0.09, 0.70, t);
+          glow(ctx, x, y, lerp(6, 42, spread), lerp(10, 42, spread), windColor, 0.30 * fade);
+          if (t > 0.22) glow(ctx, x, y, 10 + 8 * t, 11 + 12 * t, '#579ac1', 0.15 * fade);
         }
       }
-      ctx.strokeStyle = gradient;
       ctx.lineCap = 'round';
+      ctx.strokeStyle = gradient;
       for (const line of windRays) {
         if (line.lobe !== lobe) continue;
         const shell = line.launch > 0.65;
-        ctx.globalAlpha = shell ? 0.052 + 0.19 * line.edge : 0.027;
-        ctx.lineWidth = shell ? 1.15 + line.edge : 0.75;
+        ctx.globalAlpha = shell ? 0.039 + 0.16 * line.edge : 0.022;
+        ctx.lineWidth = shell ? 0.95 + 0.72 * line.edge : 0.69;
         ctx.stroke(line.ray);
       }
       ctx.globalAlpha = 1;
+    }
+
+    function paintWind(ctx, lobe, phase) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      const rect = [companion.x - 215, companion.y + (lobe > 0 ? -273 : -13), 430, 286];
+      drawArtwork(ctx, lobe > 0 ? 'north-wind' : 'south-wind', rect, paintWindStructure, lobe);
+      const angle = TAU * phase;
       for (const particle of windParticles) {
         const t = wrap(particle.phase + phase * particle.speed + (lobe < 0 ? 0.23 : 0));
         const rise = t * (0.75 + 0.25 * t);
@@ -854,7 +1037,8 @@
         const light = fade * (particle.sheath ? 0.30 + edge * 0.61 : 0.22);
         const [x, y] = windPoint(lobe, rise, particle.launch, azimuth);
         const radius = particle.size + 1.15 * t;
-        glow(ctx, x, y, radius * 1.8, radius * 1.6, particle.sheath ? windColor : AQUA, light);
+        const axialSpread = lerp(0.72, 1.8, smooth(0.05, 0.36, rise));
+        glow(ctx, x, y, radius * axialSpread, radius * 1.6, particle.sheath ? windColor : AQUA, light);
         if (particle.sheath && edge > 0.57 && particle.size > 2.1) {
           ctx.globalAlpha = light * 0.68;
           dot(ctx, x, y, radius * 0.36, '#b7eded');
@@ -947,10 +1131,11 @@
       [0.72, '#655576'], [0.91, '#4e648c'], [1, '#35475f']
     ];
 
-    function paintSliceLayers(ctx) {
+    function paintSliceLayers(ctx, detail) {
       const base = ctx.createLinearGradient(slice.inner, 0, slice.outer, 0);
       for (const [position, color] of warmth) base.addColorStop(position, color);
-      trace(ctx, [...sliceCurve(1.04), ...sliceCurve(-0.93, true)], true);
+      const shape = [...sliceCurve(1.04), ...sliceCurve(-0.93, true)];
+      trace(ctx, shape, true);
       ctx.save();
       ctx.clip();
       ctx.fillStyle = base;
@@ -972,17 +1157,22 @@
       glow(ctx, 473, 308, 335, 43, '#f1a266', 0.17);
       glow(ctx, 852, 288, 228, 21, '#e3a679', 0.19);
 
-      const random = seededRandom(34267);
-      for (let index = 0; index < 32000; index++) {
-        const x = lerp(slice.inner, slice.outer, random());
-        const z = (random() * 2 - 1) ** 3;
-        const y = layerY(x, z);
-        const nearPlane = Math.exp(-z * z * 220);
-        const alpha = (0.035 + (0.25 + 0.22 * nearPlane) * random() ** 3) * (1 - 0.45 * Math.abs(z));
-        const rust = x < 510 || index % 7 === 0 || Math.abs(z) < 0.07;
-        const size = lerp(0.19, nearPlane > 0.3 ? 1.65 : 1.13, random() ** 3);
-        ctx.fillStyle = rust ? `rgba(241, 171, 124, ${alpha})` : `rgba(165, 147, 226, ${alpha * 0.62})`;
-        ctx.fillRect(x, y, size * (1.2 + nearPlane * 0.42), size);
+      if (detail) {
+        const random = seededRandom(34267);
+        const warm = [241, 171, 124];
+        const cool = [165, 147, 226];
+        paintSpeckles(ctx, shape, plot => {
+          for (let index = 0; index < 32000; index++) {
+            const x = lerp(slice.inner, slice.outer, random());
+            const z = (random() * 2 - 1) ** 3;
+            const y = layerY(x, z);
+            const nearPlane = Math.exp(-z * z * 220);
+            const alpha = (0.035 + (0.25 + 0.22 * nearPlane) * random() ** 3) * (1 - 0.45 * Math.abs(z));
+            const rust = x < 510 || index % 7 === 0 || Math.abs(z) < 0.07;
+            const size = lerp(0.19, nearPlane > 0.3 ? 1.65 : 1.13, random() ** 3);
+            plot(x, y, size * (1.2 + nearPlane * 0.42), size, rust ? warm : cool, rust ? alpha : alpha * 0.62);
+          }
+        });
       }
       ctx.restore();
 
@@ -1002,10 +1192,10 @@
       }
     }
 
-    function paintSliceBackdrop(ctx) {
+    function paintSliceBackdrop(ctx, detail) {
       glow(ctx, 94, 317, 256, 166, '#da7052', 0.24);
       glow(ctx, 835, 256, 361, 195, '#5566b8', 0.22);
-      paintSliceLayers(ctx);
+      paintSliceLayers(ctx, detail);
       const random = seededRandom(49476);
       for (let index = 0; index < 265; index++) {
         const x = lerp(slice.inner + 3, slice.outer - 4, random());
@@ -1015,8 +1205,12 @@
       }
     }
 
+    const grainCell = 56;
+    const grainsPerRow = 8;
+    const grainAngles = 32;
+
     function makeGrainTexture(seed, iced) {
-      const buffer = circleCanvas(56);
+      const buffer = circleCanvas(grainCell);
       const ctx = buffer.getContext('2d');
       const random = seededRandom(seed);
       const polygon = Array.from({ length: 10 }, (_, sector) => {
@@ -1044,14 +1238,32 @@
       return buffer;
     }
 
+    function makeGrainAtlas(seed, iced) {
+      const grain = makeGrainTexture(seed, iced);
+      const atlas = document.createElement('canvas');
+      atlas.width = grainCell * grainsPerRow;
+      atlas.height = grainCell * Math.ceil(grainAngles / grainsPerRow);
+      const ctx = atlas.getContext('2d');
+      for (let frame = 0; frame < grainAngles; frame++) {
+        const x = grainCell * (frame % grainsPerRow + 0.5);
+        const y = grainCell * (Math.floor(frame / grainsPerRow) + 0.5);
+        ctx.setTransform(1, 0, 0, 1, x, y);
+        ctx.rotate(frame * TAU / grainAngles);
+        ctx.drawImage(grain, -grainCell / 2, -grainCell / 2);
+      }
+      return atlas;
+    }
+
     function grain(ctx, x, y, size, phase, iced, opacity) {
       if (opacity <= 0.001) return;
       const radius = size * 1.47;
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(phase);
-      stamp(ctx, iced ? grains.ice : grains.rock, 0, 0, radius, radius, opacity);
-      ctx.restore();
+      const frame = Math.round(wrap(phase / TAU) * grainAngles) % grainAngles;
+      const sx = grainCell * (frame % grainsPerRow);
+      const sy = grainCell * Math.floor(frame / grainsPerRow);
+      const alpha = ctx.globalAlpha;
+      ctx.globalAlpha = alpha * opacity;
+      ctx.drawImage(iced ? grains.ice : grains.rock, sx, sy, grainCell, grainCell, x - radius, y - radius, radius * 2, radius * 2);
+      ctx.globalAlpha = alpha;
     }
 
     // Heights are fractions of the drawn disc atmosphere. The CO bands illustrate
@@ -1180,11 +1392,13 @@
         for (const sample of field.points) {
           const drift = angle + sample.offset;
           const r = sample.r + 0.009 * Math.sin(drift);
-          const azimuth = 0.018 + 0.964 * sample.a + 0.013 * Math.sin(drift);
+          const orbital = wrap(sample.a + angle / TAU);
+          const azimuth = sectional ? sample.a : orbital;
+          const cutFade = sectional ? 1 : smooth(0, 0.042, orbital) * (1 - smooth(0.958, 1, orbital));
           const z = sample.z + 0.035 * Math.sin(2 * angle + sample.offset);
           const [x, y] = projection(r, azimuth, z);
           const flicker = 0.69 + 0.31 * Math.sin(3 * angle + sample.offset);
-          const light = opacity * flicker * (z < 0 && !sectional ? 0.57 : 1);
+          const light = opacity * flicker * cutFade * (z < 0 && !sectional ? 0.57 : 1);
           const radius = sample.size * (highlighted ? 1.28 : 1) * (sectional ? 1 : 0.82);
           glow(ctx, x, y, radius * 7.2, radius * (sectional ? 4.2 : 2.9), field.color, light * 0.57);
           if (highlighted || sample.size > 1.05) {
@@ -1353,7 +1567,7 @@
     }
 
     const stars = { primary: starTexture(primary.radius, false), companion: starTexture(companion.radius, true) };
-    const grains = { rock: makeGrainTexture(2369, false), ice: makeGrainTexture(5011, true) };
+    const grains = { rock: makeGrainAtlas(2369, false), ice: makeGrainAtlas(5011, true) };
     const gasField = tracerSamples();
     const dustTracks = makeDustTracks();
     const discFootprint = makeDiscFootprint();
@@ -1361,7 +1575,7 @@
     const windParticles = makeWindParticles();
 
     const canvas = document.querySelector('#disc-scene');
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext('2d', { alpha: false });
     const map = document.querySelector('#system-links');
     const description = document.querySelector('#system-description');
     const backLink = document.querySelector('#back-link');
@@ -1393,7 +1607,7 @@
     };
     const hotspots = [...map.querySelectorAll('[data-destination]')];
     const canvasLabels = {
-      system: 'Animated cutaway of a post-AGB binary. Gas enters through L₂ and L₃, an L₁ stream connects the two sides of the binary, and a broad bipolar disc wind rises from the companion’s accretion disc.',
+      system: 'Animated cutaway of a post-AGB binary. Gas enters through L₂ and L₃, an L₁ stream connects the two sides of the binary, and a bipolar wind opens out from narrow bases at the companion’s poles.',
       disc: 'Animated vertical cross-section of the circumbinary disc. Grains grow, settle, fragment and mix upward. CO traces an upper layer, with ¹³CO below it.'
     };
     const defaultCaption = 'Grains grow, settle, fragment and mix upward throughout the disc.';
@@ -1402,6 +1616,7 @@
     let transition = null;
     let layout;
     let ambient;
+    let paintedFirstFrame = false;
     let selectedSpecies = '';
     let hovered = '';
     let clock = 0;
@@ -1460,7 +1675,7 @@
       const onDisc = hitContext.isPointInPath(discFootprint, x, y);
       const lobe = y < companion.y ? 1 : -1;
       const height = Math.abs(y - companion.y);
-      const t = height / windLength;
+      const t = (height - windPole) / windLength;
       if (t > 0.095 && t < 0.89 && (lobe > 0 || !onDisc)) {
         const [left] = windPoint(lobe, t, 1, Math.PI);
         const [right] = windPoint(lobe, t, 1, 0);
@@ -1503,19 +1718,31 @@
       return buffer;
     }
 
+    function buildBackdrop(scene, resolution, detail) {
+      const buffer = document.createElement('canvas');
+      buffer.width = Math.ceil(WIDTH * resolution);
+      buffer.height = Math.ceil(HEIGHT * resolution);
+      const ctx = buffer.getContext('2d');
+      ctx.setTransform(buffer.width / WIDTH, 0, 0, buffer.height / HEIGHT, 0, 0);
+      if (scene === 'disc') paintSliceBackdrop(ctx, detail);
+      else paintBinaryBackdrop(ctx, detail);
+      return { buffer, detail };
+    }
+
+    function backdropResolution() {
+      return Math.min(2.7, Math.max(1.25, layout.base * layout.density * 1.42));
+    }
+
     function backdrop(scene) {
-      if (!backdrops.has(scene)) {
-        const resolution = Math.min(2.7, Math.max(1.25, layout.base * layout.density * 1.42));
-        const buffer = document.createElement('canvas');
-        buffer.width = Math.ceil(WIDTH * resolution);
-        buffer.height = Math.ceil(HEIGHT * resolution);
-        const ctx = buffer.getContext('2d');
-        ctx.setTransform(buffer.width / WIDTH, 0, 0, buffer.height / HEIGHT, 0, 0);
-        if (scene === 'disc') paintSliceBackdrop(ctx);
-        else paintBinaryBackdrop(ctx);
-        backdrops.set(scene, buffer);
+      let cached = backdrops.get(scene);
+      if (!cached) {
+        cached = buildBackdrop(scene, Math.min(1.08, backdropResolution()), false);
+        backdrops.set(scene, cached);
       }
-      return backdrops.get(scene);
+      if (!cached.detail || cached.buffer.width < WIDTH * backdropResolution() * 0.89) {
+        prepareArtwork(`backdrop-${scene}`, () => backdrops.set(scene, buildBackdrop(scene, backdropResolution(), true)));
+      }
+      return cached.buffer;
     }
 
     function paintSliceLabels(ctx) {
@@ -1552,15 +1779,15 @@
       ctx.setTransform(scale * density, 0, 0, scale * density, x * density, y * density);
       if (frame.scene === 'disc') {
         ctx.drawImage(backdrop('disc'), 0, 0, WIDTH, HEIGHT);
-        paintDiscActivity(ctx, phase, selectedSpecies, true);
+        if (paintedFirstFrame) paintDiscActivity(ctx, phase, selectedSpecies, true);
         if (!layout.compact) paintSliceLabels(ctx);
       } else {
         paintWind(ctx, -1, phase);
         ctx.drawImage(backdrop('system'), 0, 0, WIDTH, HEIGHT);
-        paintDiscActivity(ctx, phase, '', false);
+        if (paintedFirstFrame) paintDiscActivity(ctx, phase, '', false);
         paintStreams(ctx, phase);
         paintWind(ctx, 1, phase);
-        paintCompanionDisc(ctx);
+        drawArtwork(ctx, 'companion-disc', [companion.x - 65, companion.y - 24, 130, 56], paintCompanionDisc);
         paintStars(ctx, phase);
         if (description.open && route === 'system' && !transition) paintLagrangePoints(ctx, scale);
       }
@@ -1573,7 +1800,12 @@
       const phase = wrap(clock / LOOP_SECONDS);
       if (layers.length === 1) {
         paintLayer(context, layers[0], phase);
+        paintedFirstFrame = true;
         return;
+      }
+      if (mixBuffer.width !== canvas.width || mixBuffer.height !== canvas.height) {
+        mixBuffer.width = canvas.width;
+        mixBuffer.height = canvas.height;
       }
       for (const layer of layers) {
         if (layer.opacity <= 0.005) continue;
@@ -1594,9 +1826,8 @@
       const compact = width <= 820;
       const priorCompact = layout?.compact;
       layout = { width, height, density, compact, base: Math.min(width / (compact ? 970 : 1020), height / (compact ? 525 : 584)) };
-      canvas.width = mixBuffer.width = Math.round(width * density);
-      canvas.height = mixBuffer.height = Math.round(height * density);
-      backdrops.clear();
+      canvas.width = Math.round(width * density);
+      canvas.height = Math.round(height * density);
       ambient = drawAmbient(width, height, density);
       if (transition && priorCompact !== compact) {
         transition = null;
@@ -1753,7 +1984,10 @@
     const canvasResize = new ResizeObserver(fitCanvas);
     canvasResize.observe(canvas);
     window.addEventListener('resize', fitCanvas, { passive: true });
-    document.addEventListener('visibilitychange', scheduleFrame);
+    document.addEventListener('visibilitychange', () => {
+      scheduleFrame();
+      if (!document.hidden) scheduleArtwork();
+    });
     playbackButton.addEventListener('click', () => setPlayback(!playing));
     motionPreference.addEventListener('change', event => {
       if (event.matches && transition) {
