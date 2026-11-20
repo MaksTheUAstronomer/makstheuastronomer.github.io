@@ -272,7 +272,7 @@
   </style>
 </head>
 <body data-page="system">
-  <canvas id="disc-scene" role="img" aria-label="Animated post-AGB binary surrounded by a circumbinary disc. Volatile-rich gas re-accretes onto the central binary through L₂ and L₃. The post-AGB primary star has ~10 000 times higher luminosity than the main sequence secondary companion. The latter hosts a small circumsecondary disc argued to power the bipolar jet."></canvas>
+  <canvas id="disc-scene" role="img" aria-label="Animated post-AGB binary surrounded by a circumbinary disc. Volatile-rich gas re-accretes onto the central binary through L₂ and L₃. The larger post-AGB primary star has ~10 000 times higher luminosity than the main sequence secondary companion. The latter hosts a small circumsecondary disc argued to power the bipolar jet."></canvas>
   <div class="vignette" aria-hidden="true"></div>
   <a class="skip-link" href="#system-links">Skip to the system links</a>
 
@@ -405,7 +405,7 @@
       </div>
       <figure class="disc-figure">
         <canvas id="playground-scene" width="1180" height="510" role="img"
-          aria-label="Animated cross-section of the circumbinary disc with layers of gas, dust and ice."
+          aria-label="Animated cross-section of the circumbinary disc with layers of gas, dust and ice. Fine grains settle, merge near the midplane, and break apart."
           aria-describedby="disc-caption disc-region-caption"></canvas>
       </figure>
       <div class="disc-foot">
@@ -561,7 +561,7 @@
           <summary>Science behind the disc</summary>
           <div class="disc-references">
             <p>The figure combines examples from protoplanetary discs and evolved post-AGB binaries. Positions, widths and colours represent schematic emitting layers or ice reservoirs (not to scale!). Actual locations depend on the system, molecular transition data and local temperature, shielding and optical depth.</p>
-            <p>Where gas drag is weak enough for a grain to overshoot the midplane (customizable via the percentage slider), drag damps each subsequent swing. The slider sets an illustrative first-crossing breakup probability. This schematic animation compresses different physical timescales into one loop.</p>
+            <p>In this schematic, fine grains settle and stick together near the midplane. The slider sets the fraction that break up at the first crossing. Surviving aggregates swing across the midplane with a gradually decreasing amplitude before breaking apart. Fine fragments drift back into the upper layers, closing the animation loop.</p>
             <ul class="disc-reference-links" role="list">
               <li><a href="https://arxiv.org/abs/2309.05685">Öberg, Facchini &amp; Anderson 2023</a></li>
               <li><a href="https://arxiv.org/abs/2504.19902">exoALMA V</a></li>
@@ -829,7 +829,7 @@
       return (lower + upper) / 2 * separation;
     }
 
-    const primary = starAt(xPrimary, 16);
+    const primary = starAt(xPrimary, 32);
     const companion = starAt(xSecondary, 22);
     const mu = secondaryMassFraction;
     const lagrangePoints = [
@@ -1892,8 +1892,7 @@
       ctx.restore();
     }
 
-    // Stratify the population in radius and azimuth. Each orbit segment has
-    // different offsets, so gathering, settling and impacts overlap everywhere.
+    // Distribute tracks across the disc and stagger their cycles.
     const RADIAL_BINS = 24;
     const AZIMUTH_BINS = 9;
     function makeDustTracks() {
@@ -1902,9 +1901,12 @@
       for (let radial = 0; radial < RADIAL_BINS; radial++) {
         for (let azimuth = 0; azimuth < AZIMUTH_BINS; azimuth++) {
           const t = (radial + lerp(0.18, 0.82, random())) / RADIAL_BINS;
+          const r = lerp(0.019, 0.981, t);
+          const orbitRadius = lerp(disc.inner + 2, disc.outer - 2, r);
           tracks.push({
-            r: lerp(0.019, 0.981, t),
+            r,
             a: lerp(0.024, 0.976, (azimuth + lerp(0.16, 0.84, random())) / AZIMUTH_BINS),
+            orbitTurns: Math.round((disc.outer / orbitRadius) ** 1.5),
             side: (radial + azimuth) % 2 ? -1 : 1,
             offset: wrap(radial * 0.618034 + azimuth * 0.414214 + random() * 0.065),
             size: 0.62 + 0.89 * random() ** 2,
@@ -1917,10 +1919,12 @@
       return assignCrossingTracks(tracks);
     }
 
-    const impactPhase = 0.62;
-    const settlingStart = 0.28;
+    const settlingStart = 0.145;
     const coldStart = 0.59;
     const warmEnd = 0.18;
+    const aggregationHeight = 0.22;
+    const crossingAcceleration = 0.375;
+    const breakupBlend = 0.026;
 
     // Use a seeded shuffle of uniformly spaced thresholds. Changing the
     // probability changes the cohort without rerolling grains every frame.
@@ -1933,23 +1937,23 @@
       }
       for (const [index, track] of ranks.entries()) {
         track.crossingRoll = (index + 0.5) / ranks.length;
-        track.firstCrossing = lerp(0.48, 0.54, random());
-        track.lastCrossing = track.firstCrossing + lerp(0.255, 0.308, random());
-        track.halfSwings = 4 + Math.floor(3 * random());
-        track.damping = lerp(1.6, 2.7, random());
-        track.arrivalSlope = lerp(3.65, 5.25, random());
+        track.firstCrossing = lerp(0.51, 0.60, random());
+        track.lastCrossing = track.firstCrossing + lerp(0.25, 0.30, random());
+        track.halfSwings = 3 + Math.floor(2 * random());
+        track.damping = lerp(0.40, 0.76, random());
+        track.arrivalPower = lerp(8.25, 10.25, random());
       }
       return tracks;
     }
 
     function verticalLoft(track) {
-      return track.r > coldStart ? track.loft * 0.59 : track.loft;
+      return track.r > coldStart ? track.loft * 0.80 : track.loft;
     }
 
-    function settlingFraction(track, p, crossing, passThrough) {
-      if (!passThrough) return smooth(settlingStart, crossing, p);
-      const time = clamp((p - settlingStart) / (crossing - settlingStart));
-      return 0.45 * smooth(0, 1, time) + 0.55 * time ** (track.arrivalSlope / 0.55);
+    function settlingFraction(track, p, passThrough) {
+      const time = clamp((p - settlingStart) / (track.firstCrossing - settlingStart));
+      const settling = smooth(0, 1, time);
+      return passThrough ? lerp(settling, time ** track.arrivalPower, crossingAcceleration) : settling;
     }
 
     function oscillationHeight(track, p) {
@@ -1957,165 +1961,136 @@
       const t = clamp((p - track.firstCrossing) / duration);
       const frequency = Math.PI * track.halfSwings;
       // Match the grain's vertical velocity just before the first crossing.
-      const speedAtCrossing = verticalLoft(track) * track.arrivalSlope / (track.firstCrossing - settlingStart);
+      const speedAtCrossing = verticalLoft(track) * crossingAcceleration * track.arrivalPower
+        / (track.firstCrossing - settlingStart);
       const amplitude = speedAtCrossing * duration / frequency;
       return -track.side * amplitude * Math.exp(-track.damping * t) * Math.sin(frequency * t);
     }
 
-    function drawOscillatingGrain(ctx, track, p, projection, scale) {
-      const opacity = discEdgeFade(track.r) * (1 - smooth(track.lastCrossing, track.lastCrossing + 0.022, p));
-      const z = oscillationHeight(track, p);
-      const [x, y] = projection(track.r, track.a, z);
-      const icy = track.r > coldStart;
-      const size = scale * track.size;
-      const trailStart = Math.max(track.firstCrossing, p - 0.026);
-      const trail = Array.from({ length: 6 }, (_, index) => {
-        const time = lerp(trailStart, p, index / 5);
-        return projection(track.r, track.a, oscillationHeight(track, time));
-      });
-      ctx.save();
-      ctx.globalAlpha = opacity * 0.35;
-      ctx.strokeStyle = icy ? ICE : GOLD;
-      ctx.lineWidth = Math.max(0.7, size * 0.85);
-      trace(ctx, trail);
-      ctx.stroke();
-      ctx.restore();
-      grain(ctx, x, y, size * 3.6, track.spin + p * 3.6, icy, opacity);
+    function drawAggregate(ctx, x, y, size, spin, icy, opacity, growth) {
+      const bond = smooth(0.20, 0.85, growth);
+      const spread = size * lerp(5.3, 1.35, growth);
+      if (bond > 0.002) {
+        glow(ctx, x, y, size * 11, size * 8.5, icy ? ICE : GOLD, opacity * bond * 0.73);
+        grain(ctx, x, y, size * lerp(1.1, 2.8, growth), spin, icy, opacity * bond);
+      }
+      for (let index = 0; index < 3; index++) {
+        const angle = spin + index * TAU / 3;
+        const dx = Math.cos(angle) * spread;
+        const dy = Math.sin(angle) * spread * 0.72;
+        const lobe = size * lerp(0.68 + 0.12 * index, 1.3 + 0.20 * index, growth);
+        grain(ctx, x + dx, y + dy, lobe, angle, icy, opacity);
+      }
     }
 
-    function drawGrowingGrain(ctx, track, p, projection, scale, crossing, passThrough) {
-      const breakupFade = passThrough ? 1 : 1 - smooth(crossing, crossing + 0.025, p);
-      const alpha = discEdgeFade(track.r) * smooth(0, 0.075, p) * breakupFade;
-      const settling = settlingFraction(track, p, crossing, passThrough);
-      const growth = smooth(0.09, 0.47, p);
+    function drawOscillatingGrain(ctx, track, p, size, opacity) {
       const icy = track.r > coldStart;
-      const rimCondensation = track.r < warmEnd;
-      const layer = verticalLoft(track);
+      const fade = opacity * (1 - smooth(track.lastCrossing, track.lastCrossing + breakupBlend, p));
+      const [x, y] = slicePoint(track.r, track.a, oscillationHeight(track, p));
+      for (let index = 3; index > 0; index--) {
+        const time = p - index * 0.0055;
+        if (time < track.firstCrossing) continue;
+        const [trailX, trailY] = slicePoint(track.r, track.a, oscillationHeight(track, time));
+        glow(ctx, trailX, trailY, size * 4.2, size * 6, icy ? ICE : GOLD, fade * (0.22 - index * 0.04));
+      }
+      drawAggregate(ctx, x, y, size, track.spin + p * 4, icy, fade, 1);
+    }
+
+    function drawSettlingGrains(ctx, track, p, size, opacity, passThrough) {
+      const alpha = opacity * smooth(0, 0.085, p)
+        * (1 - smooth(track.firstCrossing, track.firstCrossing + breakupBlend, p));
+      const settling = settlingFraction(track, p, passThrough);
       const inwardTravel = Math.min(track.drift, 0.994 - track.r);
       const r = track.r + inwardTravel * (1 - settling);
-      const theta = track.a + 0.013 * Math.sin(track.spin + 5 * p) * (1 - settling);
-      const z = track.side * layer * (1 - settling);
-      const [x, y] = projection(r, theta, z);
-      const size = scale * track.size;
+      const z = track.side * verticalLoft(track) * (1 - settling);
+      const [x, y] = slicePoint(r, track.a, z);
+      const growth = 1 - smooth(0.022, aggregationHeight, Math.abs(z));
+      const spin = track.spin + p * 4;
+      const icy = track.r > coldStart;
 
-      // Only the inner refractory band and the cold outer band acquire visible
-      // mantles here. Existing grains also coagulate in the intervening disc.
-      if (icy || rimCondensation) {
-        const mantle = smooth(0.045, 0.135, p) * (1 - smooth(0.19, 0.33, p));
+      // At the hot rim and in the cold outer disc, diffuse material resolves
+      // into fine grains. Grains across the disc aggregate near the midplane.
+      const condensing = (icy ? smooth(coldStart, coldStart + 0.06, track.r)
+        : 1 - smooth(warmEnd - 0.055, warmEnd, track.r))
+        * smooth(0, 0.045, p) * (1 - smooth(0.10, 0.249, p));
+      if (condensing > 0.002) {
+        const gathering = smooth(0.017, 0.23, p);
+        const mist = size * lerp(15, 6, gathering);
         const color = icy ? ICE : GOLD;
-        glow(ctx, x, y, size * 11, size * 8, color, alpha * mantle * 0.74);
+        glow(ctx, x, y, mist, mist * 0.78, color, opacity * condensing * 0.68);
+        ctx.globalAlpha = opacity * condensing * 0.75;
         for (let index = 0; index < 4; index++) {
-          const turn = track.spin + index * TAU / 4 + p * 4;
-          const radius = size * lerp(10, 1.8, growth);
-          ctx.globalAlpha = alpha * mantle * 0.76;
-          dot(ctx, x + Math.cos(turn) * radius, y + Math.sin(turn) * radius * 0.73, size * 0.61, color);
-          ctx.globalAlpha = 1;
+          const angle = spin + index * TAU / 4;
+          dot(ctx, x + Math.cos(angle) * mist * 0.70, y + Math.sin(angle) * mist * 0.55, size * 0.49, color);
         }
-      }
-      const separateGrains = 1 - smooth(0.65, 1, growth);
-      if (separateGrains > 0.01) {
-        const spread = size * lerp(9.8, 1.4, growth);
-        for (let index = 0; index < 3; index++) {
-          const direction = track.spin + index * TAU / 3 + p * 3;
-          const dx = Math.cos(direction) * spread;
-          const dy = Math.sin(direction) * spread * 0.78;
-          grain(ctx, x + dx, y + dy, size * 0.82, direction, icy, alpha * separateGrains);
-        }
-      }
-      const trailOpacity = alpha * growth * 0.43 * smooth(0.025, 0.16, settling) * (1 - smooth(0.81, 0.98, settling));
-      if (trailOpacity > 0.002) {
-        const earlier = settlingFraction(track, p - 0.032, crossing, passThrough);
-        const [trailX, trailY] = projection(track.r + inwardTravel * (1 - earlier), theta, track.side * layer * (1 - earlier));
-        ctx.globalAlpha = trailOpacity;
-        ctx.strokeStyle = icy ? ICE : GOLD;
-        ctx.lineWidth = Math.max(0.65, size * 0.79);
-        trace(ctx, [[trailX, trailY], [x, y]]);
-        ctx.stroke();
         ctx.globalAlpha = 1;
       }
-      grain(ctx, x, y, size * lerp(0.76, 3.6, growth), track.spin + p * 3.6, icy, alpha);
-
-      const approach = smooth(0.46, impactPhase, p);
-      const partnerAlpha = passThrough ? 0 : alpha * smooth(0.43, 0.52, p) * 0.88;
-      if (partnerAlpha > 0.01) {
-        const [x2, y2] = projection(track.r - track.drift * (1 - approach), track.a + 0.020 * (1 - approach), -track.side * 0.036 * (1 - approach));
-        grain(ctx, x2, y2, size * 2.58, track.spin - 2 * p, icy, partnerAlpha);
-      }
+      drawAggregate(ctx, x, y, size, spin, icy, alpha, growth);
     }
 
-    function drawFragmentingGrain(ctx, track, p, projection, scale, breakup) {
+    function drawFragmentingGrain(ctx, track, p, size, edge, breakup) {
       const sinceImpact = clamp((p - breakup) / (1 - breakup));
       const icy = track.r > coldStart;
       const color = icy ? ICE : GOLD;
-      const size = scale * track.size;
-      const [x, y] = projection(track.r, track.a, 0);
-      const edge = discEdgeFade(track.r);
-      const spark = edge * smooth(0, 0.045, sinceImpact) * (1 - smooth(0.07, 0.27, sinceImpact));
-      glow(ctx, x, y, size * (11 + 17 * sinceImpact), size * (8 + 11 * sinceImpact), color, spark * 0.94);
-      glow(ctx, x, y, size * 4.7, size * 4.7, '#fff3d4', spark * 0.82);
-      const spread = smooth(0, 0.52, sinceImpact);
-      const mixing = smooth(0.21, 0.97, sinceImpact);
-      const opacity = edge * smooth(0, 0.10, sinceImpact) * (1 - smooth(0.80, 1, sinceImpact));
-      const fineCount = track.size > 1.04 ? 6 : 4;
+      const spread = smooth(0, 0.54, sinceImpact);
+      const mixing = smooth(0.12, 0.98, sinceImpact);
+      const opacity = edge * smooth(breakup, breakup + breakupBlend, p) * (1 - smooth(0.74, 1, sinceImpact));
+      const fineCount = track.size > 1.04 ? 5 : 3;
       for (let index = 0; index <= fineCount; index++) {
         const fine = index !== fineCount;
         const direction = track.spin + index * 2.39996;
-        const dx = (fine ? 0.029 : 0.017) * Math.cos(direction) * spread;
-        const da = (fine ? 0.022 : 0.013) * Math.sin(direction) * spread;
+        const dx = (fine ? 0.035 : 0.015) * Math.cos(direction) * spread;
         const side = index % 3 === 0 ? -track.side : track.side;
-        const lift = fine ? side * track.loft * (0.42 + 0.11 * (index % 4)) * mixing : 0;
-        const z = lift + Math.sin(direction) * spread * (fine ? 0.105 : 0.032) * (1 - 0.64 * mixing);
+        const lift = fine ? side * track.loft * (0.46 + 0.11 * (index % 4)) * mixing : 0;
+        const z = lift + Math.sin(direction) * spread * (fine ? 0.125 : 0.032) * (1 - 0.64 * mixing);
         const wander = fine ? 0.008 * Math.sin(direction + 8 * sinceImpact) * mixing : 0;
-        const [pieceX, pieceY] = projection(track.r + dx + wander, track.a + da, z);
-        const pieceSize = size * (fine ? 0.80 + 0.17 * (index % 3) : 1.75);
+        const [pieceX, pieceY] = slicePoint(track.r + dx + wander, track.a, z);
+        const pieceSize = size * (fine ? lerp(1.46, 0.55 + 0.14 * (index % 3), mixing) : 1.88);
         const iceFraction = icy ? 1 - smooth(0.40, 0.59, Math.abs(z)) : 0;
-        grain(ctx, pieceX, pieceY, pieceSize, direction + spread, true, opacity * iceFraction);
-        grain(ctx, pieceX, pieceY, pieceSize, direction + spread, false, opacity * (1 - iceFraction));
-        if (icy && fine && iceFraction < 1) {
-          const release = 4 * iceFraction * (1 - iceFraction);
-          glow(ctx, pieceX, pieceY, pieceSize * 6.5, pieceSize * 5.2, ICE, opacity * release * 0.61);
-        }
+        const spin = direction + p * 4;
+        glow(ctx, pieceX, pieceY, pieceSize * 4.8, pieceSize * 4.2, color, opacity * (0.41 - 0.21 * mixing));
+        grain(ctx, pieceX, pieceY, pieceSize, spin, true, opacity * iceFraction);
+        grain(ctx, pieceX, pieceY, pieceSize, spin, false, opacity * (1 - iceFraction));
       }
     }
 
-    function paintDust(ctx, phase, projection, sectional) {
-      const scale = sectional ? 1.12 : 0.68;
+    function paintSettlingDust(ctx, phase) {
       for (const track of dustTracks) {
         const p = wrap(phase + track.offset);
-        const passThrough = sectional && track.crossingRoll >= breakupChance;
-        const firstCrossing = passThrough ? track.firstCrossing : impactPhase;
-        const breakup = passThrough ? track.lastCrossing : firstCrossing;
-        if (p < firstCrossing + (passThrough ? 0 : 0.025)) {
-          drawGrowingGrain(ctx, track, p, projection, scale, firstCrossing, passThrough);
+        const passThrough = track.crossingRoll >= breakupChance;
+        const breakup = passThrough ? track.lastCrossing : track.firstCrossing;
+        const size = track.size * 1.48;
+        const edge = discEdgeFade(track.r);
+        if (p < track.firstCrossing + (passThrough ? 0 : breakupBlend)) {
+          drawSettlingGrains(ctx, track, p, size, edge, passThrough);
         }
-        if (passThrough && p >= firstCrossing && p < breakup + 0.022) {
-          drawOscillatingGrain(ctx, track, p, projection, scale);
+        if (passThrough && p >= track.firstCrossing && p < breakup + breakupBlend) {
+          drawOscillatingGrain(ctx, track, p, size, edge);
         }
-        if (p >= breakup) drawFragmentingGrain(ctx, track, p, projection, scale, breakup);
+        const partner = edge * smooth(breakup - 0.073, breakup - 0.032, p)
+          * (1 - smooth(breakup, breakup + breakupBlend, p));
+        if (partner > 0.002) {
+          const distance = 1 - smooth(breakup - 0.073, breakup, p);
+          const side = passThrough && track.halfSwings % 2 ? -track.side : track.side;
+          const [x, y] = slicePoint(track.r - 0.027 * distance, track.a, -side * 0.084 * distance);
+          drawAggregate(ctx, x, y, size * 0.70, track.spin + p * 5, track.r > coldStart, partner, 1);
+        }
+        if (p >= breakup) drawFragmentingGrain(ctx, track, p, size, edge, breakup);
       }
     }
 
-    function paintDiscActivity(ctx, phase, selected, sectional) {
-      // Clip the annular overlay to the projected disc and preserve the cavity.
-      const projection = sectional ? slicePoint : systemPoint;
-      ctx.save();
-      if (!sectional) ctx.clip(discFootprint);
-      paintTracers(ctx, TAU * phase, selected, projection, sectional);
-      paintDust(ctx, phase, projection, sectional);
-      ctx.restore();
-    }
-
-    function paintSliceBaseline(ctx) {
-      ctx.save();
-      ctx.strokeStyle = '#8ba5c665';
-      ctx.lineWidth = 0.8;
-      trace(ctx, [[slice.inner, 454], [slice.outer, 454]]);
-      ctx.stroke();
-      for (const x of [slice.inner, slice.outer]) {
-        trace(ctx, [[x, 450], [x, 458]]);
-        ctx.stroke();
+    function paintOrbitingDust(ctx, phase) {
+      // All grains advance with the accretion flow. Whole turns keep the loop
+      // seamless, with shorter orbital periods closer to the inner rim.
+      for (const track of dustTracks) {
+        const angle = TAU * phase + track.spin;
+        const z = track.side * verticalLoft(track) * 0.55 + 0.083 * Math.sin(angle);
+        const [x, y] = systemPoint(track.r, track.a + phase * track.orbitTurns, z);
+        const size = track.size * lerp(2.18, 1.32, track.r);
+        const opacity = discEdgeFade(track.r) * (0.79 + 0.18 * Math.cos(angle));
+        const icy = track.r > coldStart;
+        grain(ctx, x, y, size, track.spin + TAU * phase * track.orbitTurns, icy, opacity);
       }
-      ctx.restore();
     }
 
     const stars = { primary: starTexture(primary.radius, true), companion: starTexture(companion.radius, false) };
@@ -2401,26 +2376,17 @@
       ctx.restore();
     }
 
-    function paintSliceLabels(ctx) {
-      paintSliceBaseline(ctx);
-      const items = [
-        { x: 103, y: 112, text: 'Irradiated surface', ink: GOLD, line: [[103, 129], [221, 129], [364, 244]] },
-        { x: 918, y: 97, text: 'Cool CO ice region', ink: ICE, line: [[918, 114], [886, 114], [850, layerY(850, 0.09)]] },
-        { x: 930, y: 389, text: 'Dust-rich midplane', ink: GOLD, line: [[930, 373], [858, 373], [771, layerY(771, 0)]] }
-      ];
+    function paintSliceScale(ctx) {
       ctx.save();
-      ctx.font = '500 13px system-ui, sans-serif';
-      ctx.textBaseline = 'middle';
-      for (const item of items) {
-        trace(ctx, item.line);
-        ctx.strokeStyle = '#a9c3da7f';
-        ctx.lineWidth = 1;
+      ctx.strokeStyle = '#8ba5c665';
+      ctx.lineWidth = 0.8;
+      trace(ctx, [[slice.inner, 454], [slice.outer, 454]]);
+      ctx.stroke();
+      for (const x of [slice.inner, slice.outer]) {
+        trace(ctx, [[x, 450], [x, 458]]);
         ctx.stroke();
-        dot(ctx, ...item.line[item.line.length - 1], 1.8, item.ink);
-        dot(ctx, item.x, item.y, 2.6, item.ink);
-        ctx.fillStyle = '#e4edf4';
-        ctx.fillText(item.text, item.x + 10, item.y);
       }
+      ctx.textBaseline = 'middle';
       ctx.font = '12px ui-monospace, monospace';
       ctx.fillStyle = '#b7c7d7';
       ctx.fillText('Inner disc', slice.inner, 475);
@@ -2439,7 +2405,13 @@
       ctx.setTransform(scale * density, 0, 0, scale * density, x * density, y * density);
       paintWind(ctx, -1, phase);
       ctx.drawImage(backdrop('system', base * density), 0, 0, WIDTH, HEIGHT);
-      if (paintedSystemFrame) paintDiscActivity(ctx, phase, '', false);
+      if (paintedSystemFrame) {
+        ctx.save();
+        ctx.clip(discFootprint);
+        paintTracers(ctx, TAU * phase, '', systemPoint, false);
+        paintOrbitingDust(ctx, phase);
+        ctx.restore();
+      }
       paintStreams(ctx, phase);
       paintWind(ctx, 1, phase);
       drawArtwork(ctx, 'companion-disc-far', companionDiscBounds, paintCompanionDisc, false);
@@ -2458,12 +2430,13 @@
       ctx.setTransform(scale, 0, 0, playgroundCanvas.height / HEIGHT, 0, 0);
       paintDiscOutflow(ctx, phase);
       ctx.drawImage(backdrop('disc', scale), 0, 0, WIDTH, HEIGHT);
-      paintDiscActivity(ctx, phase, selectedSpecies, true);
+      paintTracers(ctx, TAU * phase, selectedSpecies, slicePoint, true);
+      paintSettlingDust(ctx, phase);
       if (selectedFeature) {
         paintDiscFeature(ctx, selectedFeature);
         if (width >= 540) paintDiscFeatureLabel(ctx, selectedFeature);
       } else if (width >= 820) {
-        paintSliceLabels(ctx);
+        paintSliceScale(ctx);
       }
     }
 
