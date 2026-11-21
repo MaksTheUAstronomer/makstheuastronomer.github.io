@@ -1,0 +1,92 @@
+:root {
+  color-scheme: dark;
+  background: #0b1320;
+  color: #f1eae0;
+  font: 1rem/1.65 system-ui, sans-serif;
+  --accent: #ffc995;
+  --line: #344053;
+  --serif: Georgia, "Times New Roman", serif;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  width: min(41rem, calc(100% - 2.5rem));
+  margin-inline: auto;
+  padding-block: clamp(2rem, 7vw, 5rem);
+}
+
+nav {
+  font-size: 0.9rem;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  color: #ffe7cd;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 0.2rem;
+}
+
+h1,
+h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+h1 {
+  margin: 1.25rem 0 1.4rem;
+  font-size: clamp(2.2rem, 6vw, 3.5rem);
+}
+
+h2 {
+  margin: 0 0 0.65rem;
+  font-size: clamp(1.35rem, 3.5vw, 1.65rem);
+}
+
+section,
+.chapter-navigation {
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.chapter-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.chapter-list li + li {
+  margin-top: 0.35rem;
+}
+
+.pending-chapter {
+  color: #aebac9;
+}
+
+.prose {
+  font: clamp(1.08rem, 2.55vw, 1.2rem)/1.8 var(--serif);
+  overflow-wrap: anywhere;
+}
+
+.prose p {
+  margin: 0 0 1.12em;
+  white-space: pre-wrap;
+}
+
+.chapter-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 1.4rem;
+}
