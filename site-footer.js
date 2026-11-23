@@ -21,7 +21,7 @@
         {
           name: 'Australia for UNHCR',
           url: 'https://www.unrefugees.org.au/emergency-response/ukraine-emergency/',
-          description: 'Aiding civilians by cash funding, home repairing, and psychological support.',
+          description: 'Cash funding, home repairing, and psychological support for civilians.',
         },
       ],
     },
