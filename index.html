@@ -5,15 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b111d">
   <meta name="description" content="Maksym Mohorian studies the chemistry of gas and dust in evolved binary systems - from stellar surfaces to circumbinary discs. The site contains all ordinary things you might need to know Maksym, plus animated models of an evolved binary system and a chemical make-up of the circumbinary disc.">
-  <title>Dr. Maksym Mohorian</title>
-  <link rel="icon" href="data:,">
+  <title>Personal website of Dr. Mohorian</title>
+  <link rel="icon" type="image/svg+xml" href="data:,">
   <style>
     :root {
       color-scheme: dark;
       --night: #080e1a;
       --text: #f3efea;
       --quiet: #adbdce;
-      --mint: #a1e5dc;
       --link: #ffc995;
       --edge: #8da6bd3d;
       --gutter: clamp(1.25rem, 5.1vw, 6rem);
@@ -64,15 +63,7 @@
     .wordmark { color: var(--text); font-size: 0.89rem; font-weight: 650; white-space: nowrap; text-decoration: none; }
     .header-controls { gap: clamp(0.65rem, 2.1vw, 1.8rem); }
     .back-link { color: #c6d3e2; text-decoration: none; font-size: 0.9rem; white-space: nowrap; }
-    .orbit-mark { position: relative; width: 1.66rem; height: 1.42rem; flex: none; }
-    .orbit-mark::before {
-      content: ''; position: absolute; inset: 0.31rem 0 0.34rem; border: 1px solid #86a6b6;
-      border-radius: 50%; transform: rotate(-33deg);
-    }
-    .orbit-mark::after {
-      content: ''; position: absolute; left: 0.48rem; top: 0.33rem; width: 0.33rem; height: 0.33rem;
-      border-radius: 50%; background: #f5bd91; box-shadow: 0 0 0.5rem #f3b88185, 0.7rem 0.44rem 0 -0.05rem var(--mint);
-    }
+    .system-mark { display: block; inline-size: 2rem; block-size: auto; flex: none; }
     .control {
       display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem;
       min-height: 2.58rem; border: 1px solid #728fa258; border-radius: 0.45rem;
@@ -88,8 +79,9 @@
     main { position: relative; z-index: 2; }
     .home { min-height: 100svh; display: flex; flex-direction: column; justify-content: space-between; }
     .home-title {
+      --home-picture-width: clamp(8rem, 15vw, 13.5rem);
       position: relative; z-index: 2; padding: clamp(5.9rem, 10.5vh, 8rem) var(--gutter) 0; pointer-events: none;
-      display: grid; grid-template-columns: minmax(0, 1fr) auto;
+      display: grid; grid-template-columns: minmax(0, 1fr) var(--home-picture-width);
       grid-template-areas: "heading picture" "intro picture";
       align-items: start; gap: 0.72rem clamp(1rem, 4vw, 3.5rem);
     }
@@ -97,17 +89,25 @@
     .home-intro { grid-area: intro; max-width: 58ch; color: #c5d2df; font-size: clamp(0.94rem, 1.23vw, 1.06rem); }
     .home-intro p + p { margin-top: 0.52rem; }
     .picture-slot {
-      position: relative; display: grid; place-items: center; overflow: hidden;
-      inline-size: min(100%, 24rem); aspect-ratio: var(--picture-ratio, 4 / 3);
-      margin: 0; border: 1px dashed #92a7c26e; border-radius: 0.65rem;
+      inline-size: fit-content; max-inline-size: min(100%, var(--picture-width, 24rem));
+      overflow: hidden; margin: 0; border: 1px solid var(--edge); border-radius: 0.65rem;
       background: linear-gradient(145deg, #162638dc, #0c1525ec);
     }
-    .picture-slot img {
-      position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: var(--picture-fit, cover);
+    .picture-slot img { display: block; max-inline-size: 100%; block-size: auto; }
+    .picture-slot:not(:has(img)) {
+      inline-size: min(100%, var(--picture-width, 24rem));
+      border-style: dashed;
     }
-    .picture-slot:has(img) { border-style: solid; }
-    .picture-slot img + .picture-placeholder { display: none; }
-    .picture-placeholder { display: grid; justify-items: center; gap: 0.42rem; color: var(--quiet); font-size: 0.84rem; }
+    .picture-slot:has(img) .picture-placeholder { display: none; }
+    .picture-slot figcaption, .disc-figure figcaption {
+      padding: 0.45rem 0.65rem; border-top: 1px solid var(--edge);
+      background: #0d1728ee; color: var(--quiet); font-size: 0.86rem; overflow-wrap: anywhere;
+    }
+    .picture-slot figcaption { contain: inline-size; }
+    .picture-placeholder {
+      display: grid; place-content: center; justify-items: center; gap: 0.42rem;
+      aspect-ratio: var(--placeholder-ratio, 4 / 3); color: var(--quiet); font-size: 0.84rem;
+    }
     .picture-placeholder::before {
       content: ""; width: 1.58rem; height: 1.22rem; border: 1px solid currentColor; border-radius: 0.24rem;
       opacity: 0.66;
@@ -115,13 +115,13 @@
                   linear-gradient(135deg, transparent 46%, currentColor 48% 56%, transparent 58%) 0 100% / 66% 60% no-repeat,
                   linear-gradient(45deg, transparent 46%, currentColor 48% 56%, transparent 58%) 100% 100% / 54% 60% no-repeat;
     }
-    .home-picture { grid-area: picture; inline-size: clamp(8rem, 15vw, 13.5rem); }
+    .home-picture { grid-area: picture; justify-self: end; --picture-width: var(--home-picture-width); }
     .reading-panel .picture-slot { margin-top: 1.23rem; }
-    .portrait-picture { inline-size: min(100%, 13.5rem); --picture-ratio: 4 / 5; }
-    .research-picture { inline-size: min(100%, 27rem); --picture-ratio: 16 / 10; --picture-fit: contain; }
+    .portrait-picture { --picture-width: 13.5rem; --placeholder-ratio: 4 / 5; }
+    .research-picture { --picture-width: 27rem; --placeholder-ratio: 16 / 10; }
     .disc-picture {
-      inline-size: min(100%, 48rem); margin: clamp(1.25rem, 3vw, 2.4rem) auto 0;
-      --picture-ratio: 16 / 9; --picture-fit: contain;
+      --picture-width: 48rem; --placeholder-ratio: 16 / 9;
+      margin: clamp(1.25rem, 3vw, 2.4rem) auto 0;
     }
     .system-links { position: fixed; z-index: 1; inset: 0; }
     .system-links[data-active] { cursor: pointer; }
@@ -275,18 +275,19 @@
     @media (max-width: 520px) {
       .site-header { min-height: 3.72rem; }
       .wordmark { gap: 0.42rem; }
+      .system-mark { inline-size: 1.7rem; }
       .header-controls { gap: 0.6rem; }
-      .back-link { font-size: 0.78rem; }
+      .back-link { font-size: 0.78rem; line-height: 1.2; white-space: normal; }
       .play-button { padding-inline: 0.55rem; min-height: 2.25rem; }
       .disc-page { padding-top: 5.8rem; }
       h1 { font-size: clamp(2.75rem, 10.8vw, 4.1rem); }
       .home-title {
+        --home-picture-width: clamp(4.25rem, 19.5vw, 6.25rem);
         grid-template-areas: "heading picture" "intro intro"; align-items: center;
         padding-top: 4.75rem; column-gap: 0.85rem;
       }
       .home-title h1 { font-size: clamp(1.85rem, 7.9vw, 2.7rem); }
       .home-intro { line-height: 1.46; }
-      .home-picture { inline-size: clamp(4.25rem, 19.5vw, 6.25rem); }
       .detail h1, .disc-title h1 { font-size: clamp(2.7rem, 9.95vw, 4rem); }
       .disc-title p { margin-top: 0.58rem; }
       .home-foot { flex-direction: column; align-items: flex-start; gap: 0.52rem; }
@@ -299,9 +300,8 @@
     @media (max-width: 350px) {
       .site-header { inset-inline: 0.85rem; }
       .back-link { font-size: 0.72rem; }
-      .home-title { column-gap: 0.6rem; }
+      .home-title { --home-picture-width: 3.25rem; column-gap: 0.6rem; }
       .home-title h1 { font-size: clamp(1.65rem, 8.1vw, 1.78rem); }
-      .home-picture { inline-size: 3.25rem; }
       .home-picture .picture-placeholder { gap: 0.2rem; font-size: 0.74rem; }
       .home-picture .picture-placeholder::before { width: 1.28rem; height: 1rem; }
     }
@@ -309,7 +309,7 @@
       .site-header { min-height: 3.6rem; }
       .home-title, .disc-page { padding-top: 4.3rem; }
       .home-title h1 { font-size: clamp(2.3rem, 4.3vw, 3.65rem); }
-      .home-picture { inline-size: clamp(8rem, 13vw, 11rem); }
+      .home-title { --home-picture-width: clamp(8rem, 13vw, 11rem); }
       .disc-title h1 { font-size: clamp(2.9rem, 6vw, 4.7rem); }
       .disc-title p { margin-top: 0.38rem; }
       .home-foot { padding-block: 0.5rem 0.62rem; }
@@ -326,7 +326,18 @@
 
   <header class="site-header">
     <a class="wordmark" href="#system" aria-label="Dr. Maksym Mohorian, return to the binary system">
-      <span class="orbit-mark" aria-hidden="true"></span><span>Dr. Mohorian</span>
+      <svg class="system-mark" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <rect width="32" height="32" rx="6" fill="#141f30"/>
+        <path d="M20.8 21.7 24.8 29h-8Z" fill="#76aebe"/>
+        <ellipse cx="16" cy="19.7" rx="14.6" ry="7" fill="#718299"/>
+        <ellipse cx="16" cy="17.7" rx="14.6" ry="7" fill="#ad7965"/>
+        <ellipse cx="16" cy="17.7" rx="9.3" ry="4.5" fill="#192437" stroke="#e4ac86" stroke-width="1.1"/>
+        <path d="M21.4 15 16.4 4.5h10Z" fill="#9cd8d9"/>
+        <circle cx="11.5" cy="17.5" r="2.65" fill="#ffe0a2"/>
+        <ellipse cx="21.4" cy="19.25" rx="3.7" ry="1.25" fill="#ba846f"/>
+        <circle cx="21.4" cy="18.2" r="1.8" fill="#f4ab64"/>
+      </svg>
+      <span>Dr. Mohorian</span>
     </a>
     <div class="header-controls">
       <a class="back-link" href="#system" id="back-link" hidden>Back to the system</a>
@@ -347,6 +358,7 @@
         <figure class="picture-slot home-picture">
           <img src="images/home.PNG" alt="La Silla Observing School" decoding="async">
           <span class="picture-placeholder" aria-hidden="true">Photo</span>
+          <!-- <figcaption>La Silla Observing School.</figcaption> -->
         </figure>
       </div>
       <nav class="system-links" id="system-links" aria-label="Explore the binary system">
@@ -414,6 +426,7 @@
         <figure class="picture-slot portrait-picture">
           <img src="images/portrait.jpg" alt="Portrait" loading="lazy" decoding="async">
           <span class="picture-placeholder" aria-hidden="true">Portrait</span>
+          <!-- <figcaption>Portrait of Maksym Mohorian.</figcaption> -->
         </figure>
         <p>I study how disc-binary interactions affect the chemistry of evolved binary systems. As originally gaseous disc matter condenses into dust through chemically inhomogeneous way, gas and dust phases fractionate due to poorly constrained processes disc processes (irradiation, dust trapping, etc.). When gas re-accretes onto the central binary, it dominates over the original surface composition. Hence, when the surface of the primary star is observed with a high-resolution spectrograph, the primary's chemical composition shows a record of the inner disc composition.</p>
         <p>I combine high-resolution stellar spectroscopy, radio-interferometry and chemical modelling to connect the observed chemical patterns and distributions to the processes that shape the disc.</p>
@@ -430,6 +443,7 @@
         <figure class="picture-slot">
           <img src="images/leisure.jpg" alt="Lorekeeping for Call of Cthulhu" loading="lazy" decoding="async">
           <span class="picture-placeholder" aria-hidden="true">Photo</span>
+          <!-- <figcaption>Lorekeeping for Call of Cthulhu.</figcaption> -->
         </figure>
         <div class="construction-sign">under construction.<br>do not disturb</div>
       </article>
@@ -445,6 +459,7 @@
         <figure class="picture-slot research-picture">
           <img src="images/research.jpg" alt="Describe the research image" loading="lazy" decoding="async">
           <span class="picture-placeholder" aria-hidden="true">Research image</span>
+          <!-- <figcaption>Add a caption for the research image.</figcaption> -->
         </figure>
         <h2>Work and education</h2>
         <dl class="cv-list">
@@ -476,6 +491,7 @@
         <canvas id="playground-scene" width="1180" height="510" role="img"
           aria-label="Animated cross-section of the circumbinary disc with layers of gas, dust and ice. Fine grains settle, merge near the midplane, and break apart."
           aria-describedby="disc-caption disc-region-caption"></canvas>
+        <!-- <figcaption>Animated cross-section of the circumbinary disc.</figcaption> -->
       </figure>
       <div class="disc-foot">
         <div class="disc-controls">
@@ -653,8 +669,9 @@
         </details>
       </div>
       <figure class="picture-slot disc-picture">
-        <img src="images/disc.png" alt="CBD asymmetries in ALMA 0.9mm continuum map" loading="lazy" decoding="async"> -->
+        <img src="images/disc.png" alt="CBD asymmetries in ALMA 0.9mm continuum map" loading="lazy" decoding="async">
         <span class="picture-placeholder" aria-hidden="true">Disc image</span>
+        <!-- <figcaption>Circumbinary disc asymmetries in an ALMA 0.9 mm continuum map.</figcaption> -->
       </figure>
     </section>
     <noscript>
@@ -663,6 +680,10 @@
   </main>
   <script>
     'use strict';
+
+    const systemMark = document.querySelector('.system-mark');
+    const favicon = document.querySelector('link[rel="icon"]');
+    favicon.href = 'data:image/svg+xml,' + encodeURIComponent(systemMark.outerHTML);
 
     const WIDTH = 1180;
     const HEIGHT = 510;
@@ -1310,6 +1331,40 @@
         companionDiscPoint(radius, lerp(start, end, index / segments), height));
     }
 
+    function makeCompanionDust() {
+      const random = seededRandom(73991);
+      const { inner, outer } = companionDisc;
+      const count = 144;
+      return Array.from({ length: count }, (_, index) => {
+        const t = (index + random()) / count;
+        const radius = lerp(inner + 1.5, outer - 1.1, t);
+        const edgeFade = smooth(0, 0.14, t) * (1 - smooth(0.78, 1, t));
+        return {
+          radius,
+          azimuth: wrap(index * 0.618034 + 0.11 * random()),
+          // Whole revolutions per loop let the inner dust move faster without a reset jump.
+          turns: Math.round(4 * (outer / radius) ** 1.5),
+          size: lerp(0.28, 0.66, random() ** 1.6),
+          opacity: lerp(0.45, 0.87, random()) * edgeFade,
+          color: t < 0.67 ? '#ffd5a6' : '#b4c8df'
+        };
+      });
+    }
+
+    const companionDust = makeCompanionDust();
+
+    function paintCompanionDust(ctx, phase, near) {
+      ctx.save();
+      for (const grain of companionDust) {
+        const angle = TAU * wrap(grain.azimuth + phase * grain.turns);
+        if ((angle < Math.PI) !== near) continue;
+        const [x, y] = companionDiscPoint(grain.radius, angle);
+        ctx.globalAlpha = grain.opacity;
+        dot(ctx, x, y, grain.size, grain.color);
+      }
+      ctx.restore();
+    }
+
     function paintCompanionDisc(ctx, near) {
       const { inner, outer } = companionDisc;
       const start = near ? 0 : Math.PI;
@@ -1348,18 +1403,6 @@
       trace(ctx, surface, true);
       ctx.clip();
       const random = seededRandom(near ? 3897 : 9450);
-      const warm = [250, 178, 130];
-      const cool = [133, 162, 208];
-      paintSpeckles(ctx, surface, plot => {
-        for (let index = 0; index < 770; index++) {
-          const t = random();
-          const angle = lerp(start, end, random());
-          const [x, y] = companionDiscPoint(lerp(inner, outer, t), angle);
-          const opacity = (0.02 + 0.44 * random() ** 3) * smooth(0, 0.16, t) * (1 - smooth(0.69, 1, t));
-          const size = lerp(0.25, 0.95, random() ** 2);
-          plot(x, y, 1.6 * size, size, t < 0.68 ? warm : cool, opacity);
-        }
-      });
       for (let index = 0; index < 76; index++) {
         const t = lerp(0.09, 0.86, random());
         const first = lerp(start, end, random());
@@ -2200,7 +2243,7 @@
     const skipLink = document.querySelector('.skip-link');
 
     const pages = {
-      system: { title: 'Dr. Maksym Mohorian | Astrophysics', page: document.querySelector('#page-system') },
+      system: { title: document.title, page: document.querySelector('#page-system') },
       about: { title: 'About me | Dr. Maksym Mohorian', page: document.querySelector('#page-about') },
       leisure: { title: 'Non-research | Dr. Maksym Mohorian', page: document.querySelector('#page-leisure') },
       cv: { title: 'Research | Dr. Maksym Mohorian', page: document.querySelector('#page-cv') },
@@ -2492,8 +2535,10 @@
       paintStreams(ctx, phase);
       paintWind(ctx, 1, phase);
       drawArtwork(ctx, 'companion-disc-far', companionDiscBounds, paintCompanionDisc, false);
+      paintCompanionDust(ctx, phase, false);
       paintStars(ctx, phase);
       drawArtwork(ctx, 'companion-disc-near', companionDiscBounds, paintCompanionDisc, true);
+      paintCompanionDust(ctx, phase, true);
       if (description.open && route === 'system' && !transition) paintLagrangePoints(ctx, scale);
       paintedSystemFrame = true;
     }
