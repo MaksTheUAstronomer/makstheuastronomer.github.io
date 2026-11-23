@@ -21,7 +21,7 @@
         {
           name: 'Australia for UNHCR',
           url: 'https://www.unrefugees.org.au/emergency-response/ukraine-emergency/',
-          description: 'Supporting civilians by providing emergency cash for essentials, repairing damaged homes, and giving children and parents psychological support.',
+          description: 'Aiding civilians by cash funding, home repairing, and psychological support.',
         },
       ],
     },
