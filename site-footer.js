@@ -1,8 +1,8 @@
 (() => {
   'use strict';
 
-  const dedication = 'I’m grateful to Ukraine’s defenders for protecting my home and family from Russia’s invasion. '
-    + 'Please consider supporting Ukraine through these organisations.';
+  const dedication = 'I am eternally grateful to Ukrainian defenders for protecting my home and family from russian invaders. '
+    + 'Please consider supporting Ukraine through these or other trustworthy organisations. Слава Україні!';
 
   const fundraiserGroups = [
     {
