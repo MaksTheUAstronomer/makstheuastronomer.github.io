@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const dedication = 'I am eternally grateful to Ukrainian defenders for protecting my home and family from russian invaders. '
+  const dedication = 'I’m grateful to Ukraine’s defenders for protecting my home and family from Russia’s invasion. '
     + 'Please consider supporting Ukraine through these organisations.';
 
   const fundraiserGroups = [
@@ -10,18 +10,19 @@
       fundraisers: [
         {
           name: 'UNITED24',
-          url: 'https://u24.gov.ua/',
+          url: 'https://u24.gov.ua/scott-kelly-fundraiser-for-ambulances',
           description: 'Ambulances for Ukrainian hospitals.',
         },
         {
           name: 'Razom for Ukraine',
-          url: 'https://www.razomforukraine.org/donate-to-ukraine/',
+          url: 'https://www.razomforukraine.org/projects/relief/',
           description: 'Civilian relief and recovery through local organisations.',
         },
         {
-          name: 'Australia for UNHCR',
-          url: 'https://www.unrefugees.org.au/emergency-response/ukraine-emergency/',
-          description: 'Cash funding, home repairing, and psychological support for civilians.',
+          name: 'Корпорація Монстрів',
+          language: 'uk',
+          url: 'https://monstrov.org/projects/humanitarian/',
+          description: 'In-kind donations of food, clothing and hygiene supplies for civilians in Odesa.',
         },
       ],
     },
@@ -31,7 +32,7 @@
         {
           name: 'Sternenko Community Foundation',
           url: 'https://www.sternenkofund.org/en',
-          description: 'Equipment and drones for Ukraine’s Defence Forces.',
+          description: 'Equipment for Ukraine’s Defence Forces.',
         },
         {
           name: 'Come Back Alive',
@@ -73,8 +74,9 @@
   }
 
   const footer = document.querySelector('[data-fundraisers]');
-  if (footer) {
-    // Keep the shared layout here so the main page and book need the same one file.
+  const homePage = document.getElementById('page-system');
+  if (footer && !homePage) footer.remove();
+  if (footer && homePage) {
     const styles = document.createElement('style');
     styles.textContent = `
       .site-fundraisers .fundraiser-columns {
@@ -108,6 +110,13 @@
     description.append(heading, intro);
     columns.append(description, ...fundraiserGroups.map(createFundraiserColumn));
     footer.replaceChildren(columns);
+
+    function syncFooter() {
+      footer.hidden = homePage.hidden;
+    }
+    syncFooter();
+    const pageObserver = new MutationObserver(syncFooter);
+    pageObserver.observe(homePage, { attributes: true, attributeFilter: ['hidden'] });
   }
 
   const siteHostname = 'makstheuastronomer.github.io';

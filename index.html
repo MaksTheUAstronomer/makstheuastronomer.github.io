@@ -132,24 +132,24 @@
     .hotspot {
       position: absolute; left: var(--x, -100px); top: var(--y, -100px); width: 2.8rem; height: 2.8rem;
       transform: translate(-50%, -50%); display: grid; place-items: center; color: var(--text); text-decoration: none;
+      border-radius: 0.42rem;
     }
     .hotspot-mark {
-      display: grid; place-items: center; width: 0.68rem; height: 0.68rem; border: 1px solid var(--ink);
-      border-radius: 50%; background: #131b2b6b; box-shadow: 0 0 0 2px #0a111d9c, 0 0 0.55rem var(--ink);
-      transition: transform 180ms, background 180ms; pointer-events: none;
+      display: block; width: 1.18rem; height: auto; pointer-events: none;
+      filter: drop-shadow(0 1px 2px #030812);
+      transition: transform 180ms, filter 180ms;
     }
-    .hotspot-mark::before { content: ''; width: 0.17rem; height: 0.17rem; background: var(--ink); border-radius: 50%; }
     .hotspot-label {
-      position: absolute; bottom: calc(100% + 0.05rem); left: 50%; transform: translateX(-50%) translateY(3px);
+      position: absolute; bottom: calc(100% + 0.05rem); left: 50%; transform: translateX(var(--label-shift, -50%)) translateY(3px);
       padding: 0.28rem 0.6rem; border: 1px solid #728fa268; border-radius: 0.35rem; background: #111d30f2;
       color: #f5f8fa; font-size: 0.82rem; font-weight: 550; white-space: nowrap; pointer-events: none;
       opacity: 0; transition: opacity 140ms, transform 140ms;
     }
     .hotspot.is-hovered .hotspot-label, .hotspot:hover .hotspot-label, .hotspot:focus-visible .hotspot-label {
-      opacity: 1; transform: translateX(-50%) translateY(0);
+      opacity: 1; transform: translateX(var(--label-shift, -50%)) translateY(0);
     }
     .hotspot.is-hovered .hotspot-mark, .hotspot:hover .hotspot-mark, .hotspot:focus-visible .hotspot-mark {
-      transform: scale(1.27); background: #243e52;
+      transform: scale(1.12); filter: drop-shadow(0 0 4px #ffce6569);
     }
     .system-description { margin-top: 0.8rem; }
     .system-description > summary { list-style: none; justify-content: flex-start; pointer-events: auto; }
@@ -243,6 +243,7 @@
     }
     .disc-notes p + p { margin-top: 0.5rem; }
     .disc-notes strong { color: #f3efea; }
+    .note-placement { display: block; margin-top: 0.22rem; color: #b7c8d5; font-size: 0.84rem; }
     .note-sources { display: inline-flex; flex-wrap: wrap; column-gap: 0.7rem; font-size: 0.84rem; }
     .disc-science { margin-top: 0.62rem; color: #b7c8d5; }
     .disc-science summary { width: fit-content; cursor: pointer; font-size: 0.85rem; }
@@ -256,6 +257,8 @@
     }
     @media (max-width: 680px) {
       .disc-controls { grid-template-columns: minmax(0, 1fr); }
+      .system-links { position: relative; inset: auto; height: clamp(18.5rem, 69vw, 27rem); }
+      .hotspot[data-destination='disc'] .hotspot-label { left: auto; right: 0; --label-shift: 0%; }
     }
     .no-script { position: fixed; z-index: 9; inset: 40% 10% auto; color: var(--text); background: #102035; padding: 1rem; }
 
@@ -302,8 +305,6 @@
       .detail h1, .disc-title h1 { font-size: clamp(2.7rem, 9.95vw, 4rem); }
       .disc-title p { margin-top: 0.58rem; }
       .description-panel { padding: 0.9rem 1rem; }
-      .hotspot { width: 1.55rem; height: 1.55rem; }
-      .hotspot-mark { width: 0.55rem; height: 0.55rem; }
       .disc-foot { padding: 0.72rem 0.75rem; }
     }
     @media (max-width: 350px) {
@@ -409,17 +410,25 @@
         </figure>
       </div>
       <nav class="system-links" id="system-links" aria-label="Explore the binary system">
-        <a class="hotspot" data-destination="about" href="#about" aria-label="Primary star, About me" style="--ink:#ffc995">
-          <span class="hotspot-mark" aria-hidden="true"></span><span class="hotspot-label" aria-hidden="true">About me</span>
+        <!-- Lesser Coat of Arms of Ukraine, public domain: https://commons.wikimedia.org/wiki/File:Coat_of_Arms_of_Ukraine.svg -->
+        <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+          <symbol id="ukraine-arms" viewBox="0 0 660 922">
+            <path d="m5 5h650v689c0 48-29 97-76 117l-251 105-251-105c-44-20-76-65-72-117z" fill="#005bbb" stroke="#ffd500" stroke-width="10"/>
+            <path id="ukraine-arms-half" d="m329 53c-6 4-2 396 0 401 12 43 29 81 48 112-104 31-63 146-48 287 7-12 17-21 28-28 43-34 70-81 79-132h133v-580c-148 88-132 213-148 361 59-10 75 76-3 83-92-149-59-257-59-419 0-37-9-62-30-85zm200 143v297h-22c-6-23-21-41-42-51 8-85 10-189 64-246zm-22 337h22v120h-89c0-19-3-39-8-58 36-4 68-29 75-62zm-114 71c4 16 6 33 6 49h-50c1-27 19-44 44-49zm-44 89h46c-7 31-23 61-46 85z" fill="#ffd500"/>
+            <use href="#ukraine-arms-half" transform="matrix(-1 0 0 1 658 0)"/>
+          </symbol>
+        </svg>
+        <a class="hotspot" data-destination="about" href="#about" aria-label="Primary star, About me">
+          <svg class="hotspot-mark" viewBox="0 0 660 922" aria-hidden="true"><use href="#ukraine-arms"/></svg><span class="hotspot-label" aria-hidden="true">About me</span>
         </a>
-        <a class="hotspot" data-destination="leisure" href="#leisure" aria-label="Companion, Leisure" style="--ink:#eba96f">
-          <span class="hotspot-mark" aria-hidden="true"></span><span class="hotspot-label" aria-hidden="true">Non-research</span>
+        <a class="hotspot" data-destination="leisure" href="#leisure" aria-label="Companion, Leisure">
+          <svg class="hotspot-mark" viewBox="0 0 660 922" aria-hidden="true"><use href="#ukraine-arms"/></svg><span class="hotspot-label" aria-hidden="true">Non-research</span>
         </a>
-        <a class="hotspot" data-destination="cv" href="#cv" aria-label="Bipolar jet, Research" style="--ink:#9be4dc">
-          <span class="hotspot-mark" aria-hidden="true"></span><span class="hotspot-label" aria-hidden="true">Research</span>
+        <a class="hotspot" data-destination="cv" href="#cv" aria-label="Bipolar jet, Research">
+          <svg class="hotspot-mark" viewBox="0 0 660 922" aria-hidden="true"><use href="#ukraine-arms"/></svg><span class="hotspot-label" aria-hidden="true">Research</span>
         </a>
-        <a class="hotspot" data-destination="disc" href="#disc" aria-label="Circumbinary disc, Disc Chemistry Sandbox" style="--ink:#efc6ae">
-          <span class="hotspot-mark" aria-hidden="true"></span><span class="hotspot-label" aria-hidden="true">Disc Chemistry Sandbox</span>
+        <a class="hotspot" data-destination="disc" href="#disc" aria-label="Circumbinary disc, Disc Chemistry Sandbox">
+          <svg class="hotspot-mark" viewBox="0 0 660 922" aria-hidden="true"><use href="#ukraine-arms"/></svg><span class="hotspot-label" aria-hidden="true">Disc Chemistry Sandbox</span>
         </a>
       </nav>
     </section>
@@ -644,13 +653,16 @@
           </div>
         </div>
         <div class="disc-notes">
-          <p id="disc-caption" aria-live="polite">The dust excess in the infrared part of the spectral energy distribution decreases with time due to two major processes: i) gas condenses into dust, dust grains settle in the midplane, grow, and fragment, ii) a disc outflow removes 10-90% of the nebular mass from the disc.</p>
+          <p id="disc-caption" aria-live="polite">The dust excess in the infrared part of the spectral energy distribution decreases with time due to two major processes: i) gas condenses into dust, dust grains settle in the midplane, grow, and fragment, ii) a disc outflow removes 10-90% of the nebular mass from the disc.
+            <span class="note-placement">Disc structure informed by <a href="https://arxiv.org/abs/2109.06268">MAPS I (Fig. 1)</a>.</span>
+          </p>
           <p id="disc-region-caption" aria-live="polite" hidden></p>
         </div>
         <details class="disc-science">
           <summary>Science behind the disc</summary>
           <div class="disc-references">
             <p>The figure combines examples from protoplanetary discs and evolved post-AGB binaries. Positions, widths and colours represent schematic emitting layers or ice reservoirs (not to scale!). Actual locations depend on the system, molecular transition data and local temperature, shielding and optical depth.</p>
+            <p>The placement links identify the figures or subsections behind each overlay. They can point to a direct measurement, a chemical model, or an observational analogue for a schematic layer.</p>
             <p>In this schematic, fine grains settle and stick together near the midplane. The slider sets the fraction that break up at the first crossing. Surviving aggregates swing across the midplane with a gradually decreasing amplitude before breaking apart. Fine fragments drift back into the upper layers, closing the animation loop.</p>
             <ul class="disc-reference-links" role="list">
               <li><a href="https://arxiv.org/abs/2309.05685">Öberg, Facchini &amp; Anderson 2023</a></li>
@@ -683,7 +695,7 @@
       <div class="no-script">This site uses JavaScript for its interactive binary system.</div>
     </noscript>
   </main>
-  <footer class="site-fundraisers" data-fundraisers aria-labelledby="fundraisers-title">
+  <footer class="site-fundraisers" data-fundraisers aria-labelledby="fundraisers-title" hidden>
     <h2 id="fundraisers-title">Fundraisers I support</h2>
     <p class="fundraiser-placeholder">Campaign links will be added here.</p>
     <ul class="fundraiser-links" role="list" hidden></ul>
@@ -1588,7 +1600,7 @@
           const progress = (i + 0.35 * random()) / 28.5;
           const x = lerp(232, 928, progress);
           const y = layerY(x, side > 0 ? 1.016 : -0.899);
-          const source = { x, y, side, drift: lerp(24, 92, progress), height: lerp(36, 64, random()) };
+          const source = { x, y, side, drift: lerp(24, 92, progress), height: lerp(43, 74, random()) };
           if (i % 4 === 1) {
             const points = Array.from({ length: 20 }, (_, sample) => surfaceOutflowPoint(source, sample / 19 * 0.91));
             strands.push(points);
@@ -1596,7 +1608,7 @@
           for (let part = 0; part < 3; part++) {
             particles.push({
               source, phase: random(), pace: random() < 0.6 ? 1 : 2,
-              size: lerp(1.15, 3.1, random()), brightness: lerp(0.12, 0.48, random())
+              size: lerp(1.3, 3.5, random()), brightness: lerp(0.18, 0.58, random())
             });
           }
         }
@@ -1612,12 +1624,12 @@
         const [x0, y0] = points[0];
         const [x1, y1] = points.at(-1);
         const fade = ctx.createLinearGradient(x0, y0, x1, y1);
-        fade.addColorStop(0, '#83bcc300');
-        fade.addColorStop(0.24, '#83bcc322');
-        fade.addColorStop(0.68, '#83bcc314');
-        fade.addColorStop(1, '#83bcc300');
+        fade.addColorStop(0, '#9ad4df00');
+        fade.addColorStop(0.24, '#9ad4df42');
+        fade.addColorStop(0.68, '#9ad4df25');
+        fade.addColorStop(1, '#9ad4df00');
         ctx.strokeStyle = fade;
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 2.1;
         trace(ctx, points);
         ctx.stroke();
       }
@@ -1743,7 +1755,7 @@
       "evolvedSurvey": ["Gallardo Cava et al. 2022", "https://doi.org/10.1051/0004-6361/202142339"],
       "rectangle": ["Bujarrabal et al. 2016", "https://doi.org/10.1051/0004-6361/201628546"],
       "hr4049": ["Malek & Cami 2014", "https://doi.org/10.1088/0004-637X/780/1/41"],
-      "exoalma": ["exoALMA V", "https://doi.org/10.3847/2041-8213/adc437"],
+      "exoalma": ["exoALMA V", "https://arxiv.org/html/2504.19902v1"],
       "maps": ["MAPS I", "https://doi.org/10.3847/1538-4365/ac1432"],
       "mapsLayers": ["MAPS IV", "https://doi.org/10.3847/1538-4365/ac1439"],
       "mapsOrganics": ["MAPS VI", "https://doi.org/10.3847/1538-4365/ac1440"],
@@ -1777,7 +1789,7 @@
       "water": ["Perotti et al. 2023", "https://pubmed.ncbi.nlm.nih.gov/37488359/"],
       "waterD": ["Tobin et al. 2023", "https://doi.org/10.1038/s41586-022-05676-z"],
       "waterD2": ["Heavy water in V883 Ori", "https://doi.org/10.1038/s41550-025-02663-y"],
-      "h2co": ["Hernández-Vera et al. 2024", "https://arxiv.org/abs/2404.06133"],
+      "h2co": ["Hernández-Vera et al. 2024", "https://arxiv.org/html/2404.06133v1"],
       "dFormaldehyde": ["FAUST XVII", "https://arxiv.org/abs/2407.04813"],
       "methanol": ["Booth et al. 2021, HD 100546", "https://doi.org/10.1038/s41550-021-01352-w"],
       "formic": ["Favre et al. 2018", "https://arxiv.org/abs/1807.05768"],
@@ -1802,106 +1814,106 @@
     };
 
     const molecularTracers = {
-      "co": {"label": "¹²CO", "name": "Carbon monoxide", "environment": "surfaceCO", "color": "#79e1cb", "note": "Maps rotating gas and an outflow in the Red Rectangle. Its higher emitting surface here follows the pattern measured in young discs.", "refs": ["rectangle", "exoalma", "evolvedCO"]},
-      "13co": {"label": "¹³CO", "name": "Carbon monoxide with carbon-13", "environment": "lowerCO", "color": "#8fbafa", "note": "Resolved in the Red Rectangle disc and outflow. The lower emitting layer shown here follows exoALMA.", "refs": ["rectangle", "exoalma"]},
-      "c18o": {"label": "C¹⁸O", "name": "Carbon monoxide with oxygen-18", "environment": "deepCO", "color": "#8fbafa", "note": "Reported in the Red Rectangle and 89 Her. It can probe deeper gas than ¹²CO when optical depth and chemistry allow.", "refs": ["evolvedSurvey", "mapsLayers"]},
-      "c17o": {"label": "C¹⁷O", "name": "Carbon monoxide with oxygen-17", "environment": "thinCO", "color": "#8fbafa", "note": "The Red Rectangle has resolved C¹⁷O emission tracing its rotating disc. The deep band is illustrative.", "refs": ["rectangle"]},
-      "hcn": {"label": "HCN", "name": "Hydrogen cyanide", "environment": "nitrile", "color": "#8fbafa", "note": "Reported tentatively in the Red Rectangle and 89 Her. HCN is firmly detected in MAPS young discs, where its emission shows radial and vertical structure.", "refs": ["evolvedSurvey", "mapsOrganics"]},
-      "h13cn": {"label": "H¹³CN", "name": "Hydrogen cyanide with carbon-13", "environment": "innerDense", "color": "#8fbafa", "note": "In the Red Rectangle, ALMA line profiles place the abundant H¹³CN in the dense inner Keplerian disc.", "refs": ["rectangle"]},
-      "hcop": {"label": "HCO⁺", "name": "Formyl ion", "environment": "ionLayer", "color": "#8fbafa", "note": "Detected toward R Sct. Its narrow line is consistent with a disc contribution. Young-disc studies use HCO⁺ to probe ionization, which also depends on CO and electron abundance.", "refs": ["evolvedSurvey", "mapsIon"]},
-      "cs": {"label": "CS", "name": "Carbon monosulfide", "environment": "sulfurGas", "color": "#8fbafa", "note": "A narrow CS line was reported in 89 Her. The lower molecular layer in the figure follows the exoALMA CS emission surfaces.", "refs": ["evolvedSurvey", "exoalma"]},
-      "sis": {"label": "SiS", "name": "Silicon monosulfide", "environment": "innerDense", "color": "#8fbafa", "note": "Narrow SiS emission in 89 Her was attributed to the rotating disc from its line shape. Its vertical placement in the figure is schematic.", "refs": ["evolvedSurvey"]},
-      "sio": {"label": "SiO", "name": "Silicon monoxide", "environment": "rimShock", "color": "#f3b779", "note": "SiO is reported in selected evolved nebulae, including AI CMi and R Sct. The inner-rim highlight illustrates a possible shock environment, informed by shocked HH 212 gas.", "refs": ["evolvedSurvey", "sio"]},
-      "29sio": {"label": "²⁹SiO", "name": "Silicon monoxide with silicon-29", "environment": "rimShock", "color": "#8fbafa", "note": "Thermal ²⁹SiO was reported toward AI CMi and R Sct. The narrow R Sct profile matches the narrow component of CO.", "refs": ["evolvedSurvey"]},
-      "30sio": {"label": "³⁰SiO", "name": "Silicon monoxide with silicon-30", "environment": "rimShock", "color": "#8fbafa", "note": "Thermal ³⁰SiO was reported in R Sct. The rare SiO isotopologues help characterize the gas in evolved environments with a detected SiO spectrum.", "refs": ["evolvedSurvey"]},
-      "so2": {"label": "SO₂", "name": "Sulfur dioxide", "environment": "iceTrap", "color": "#f7a6b7", "note": "SO₂ was reported with a composite profile toward the outflow-dominated evolved nebula AI CMi. The specific warm ice-release overlay follows the young Oph IRS 48 dust-trap example.", "refs": ["evolvedSurvey", "sulfurTrap"]},
-      "so": {"label": "SO", "name": "Sulfur monoxide", "environment": "warmSulfur", "color": "#c3d786", "note": "Narrow SO emission in the Red Rectangle suggests a disc contribution. Oph IRS 48 gives a young-disc example of SO associated with a warm dust trap.", "refs": ["evolvedSurvey", "sulfurTrap"]},
-      "h2o": {"label": "H₂O", "name": "Water vapour", "environment": "warmWater", "color": "#8fbafa", "note": "Infrared H₂O emission in HR 4049 provides an evolved example. PDS 70 shows warm water vapour in the terrestrial planet-forming region of a young disc.", "refs": ["hr4049", "water"]},
-      "co2": {"label": "CO₂", "name": "Carbon dioxide gas", "environment": "warmCO2", "color": "#8fbafa", "note": "Strong infrared CO₂ emission is seen in the evolved HR 4049 circumbinary disc. JWST also detects CO₂ in the warm inner disc of GW Lup.", "refs": ["hr4049", "warmCO2"]},
-      "13co2": {"label": "¹³CO₂", "name": "Carbon dioxide with carbon-13, gas", "environment": "warmCO2", "color": "#8fbafa", "note": "The rare carbon dioxide isotopologue helps constrain the CO₂ column where the main bands saturate. Compare the infrared studies of HR 4049 and GW Lup.", "refs": ["hr4049", "warmCO2"]},
-      "h2": {"label": "H₂", "name": "Molecular hydrogen", "environment": "warmH2", "color": "#b3d8ff", "note": "H₂ is the main molecular gas constituent. The highlight follows warm emitting gas in the atmosphere. Infrared H₂ lines are reported in young Herbig discs.", "refs": ["digitH2", "review"]},
-      "hd": {"label": "HD", "name": "Hydrogen deuteride", "environment": "bulkGas", "color": "#b3d8ff", "note": "Herschel detected HD in TW Hya. It follows the H₂ reservoir, with rotational line brightness strongly sensitive to gas temperature.", "refs": ["hd"]},
-      "13c17o": {"label": "¹³C¹⁷O", "name": "Carbon monoxide with carbon-13 and oxygen-17", "environment": "thinCO", "color": "#b3d8ff", "note": "ALMA detected this rare CO isotopologue in HD 163296 to probe gas at low line optical depth.", "refs": ["coDouble17"]},
-      "13c18o": {"label": "¹³C¹⁸O", "name": "Carbon monoxide with carbon-13 and oxygen-18", "environment": "thinCO", "color": "#b3d8ff", "note": "This rare isotopologue has been used with C¹⁷O and C¹⁸O to constrain CO isotope ratios in HD 163296.", "refs": ["coDouble18"]},
-      "oh": {"label": "OH", "name": "Hydroxyl", "environment": "hotOH", "color": "#c0a5f0", "note": "In irradiated d203-506, infrared OH emission is linked to ultraviolet photodissociation of water.", "refs": ["oh"]},
-      "cn": {"label": "CN", "name": "Cyano radical", "environment": "surfaceUV", "color": "#c0a5f0", "note": "MAPS finds vertically distinct CN and HCN emitting regions. CN responds to UV-driven chemistry and can also extend far out in radius.", "refs": ["mapsCN"]},
-      "c15n": {"label": "C¹⁵N", "name": "Cyano with nitrogen-15", "environment": "surfaceUV", "color": "#c0a5f0", "note": "Measured with CN lines in TW Hya to constrain nitrogen isotope ratios. Its schematic overlay shares the CN layer.", "refs": ["cn15"]},
-      "chp": {"label": "CH⁺", "name": "Methylidyne ion", "environment": "hotOH", "color": "#c0a5f0", "note": "Herschel detected CH⁺ in Herbig discs including HD 100546. Formation favours hot gas or UV-excited H₂, motivating an irradiated surface overlay.", "refs": ["digitch"]},
-      "c2h": {"label": "C₂H", "name": "Ethynyl radical", "environment": "carbonRadical", "color": "#c0a5f0", "note": "MAPS resolves C₂H rings. Several discs have low measured C₂H emitting heights. Its brightness responds to irradiation and the available gas-phase carbon.", "refs": ["mapsOrganics", "mapsLayers"]},
-      "c2d": {"label": "C₂D", "name": "Deuterated ethynyl", "environment": "carbonRadical", "color": "#c0a5f0", "note": "Detected in the LkCa 15 and MWC 480 spectral-line survey. The overlay shares the ethynyl-family environment.", "refs": ["loomis"]},
-      "c3h2": {"label": "c-C₃H₂", "name": "Cyclopropenylidene", "environment": "outerOrganic", "color": "#c0a5f0", "note": "MAPS mapped this cyclic hydrocarbon in young discs. Its radial extent can exceed that of the larger nitriles.", "refs": ["mapsLarge"]},
-      "h13cop": {"label": "H¹³CO⁺", "name": "Formyl ion with carbon-13", "environment": "ionDeep", "color": "#eab0e6", "note": "The rarer formyl ion helps constrain HCO⁺ where the main transition is optically thick.", "refs": ["mapsIon"]},
-      "dcop": {"label": "DCO⁺", "name": "Deuterated formyl ion", "environment": "outerRing", "color": "#eab0e6", "note": "Resolved DCO⁺ rings trace deuterium chemistry. Both warm and cold formation channels can contribute.", "refs": ["dco", "mapsD"]},
-      "n2hp": {"label": "N₂H⁺", "name": "Diazenylium", "environment": "coldCOIon", "color": "#eab0e6", "note": "Gas-phase CO destroys N₂H⁺, so it can brighten beyond the CO snowline. The bright emission ring can also be offset from the midplane snowline.", "refs": ["n2h", "nh3"]},
-      "n2dp": {"label": "N₂D⁺", "name": "Deuterated diazenylium", "environment": "coldDeuterium", "color": "#eab0e6", "note": "MAPS uses N₂D⁺ relative to N₂H⁺ to diagnose low-temperature deuterium fractionation.", "refs": ["mapsD"]},
-      "dcn": {"label": "DCN", "name": "Deuterated hydrogen cyanide", "environment": "nitrileInner", "color": "#eab0e6", "note": "MAPS resolves DCN/HCN structure. DCN can remain abundant at radii where warm deuterium chemistry contributes.", "refs": ["mapsD"]},
-      "hc15n": {"label": "HC¹⁵N", "name": "Hydrogen cyanide with nitrogen-15", "environment": "nitrileInner", "color": "#eab0e6", "note": "ALMA observations of HC¹⁵N and H¹³CN in discs including V4046 Sgr constrain nitrogen isotope ratios.", "refs": ["cyanide"]},
-      "hnc": {"label": "HNC", "name": "Hydrogen isocyanide", "environment": "outerCool", "color": "#eab0e6", "note": "HNC is seen in TW Hya and HD 163296. The TW Hya ring is consistent with more efficient HNC destruction at warmer inner radii.", "refs": ["hnc"]},
-      "dnc": {"label": "DNC", "name": "Deuterated hydrogen isocyanide", "environment": "outerCool", "color": "#eab0e6", "note": "The LkCa 15 and MWC 480 survey reported DNC. The example shares the cool HNC-family band.", "refs": ["loomis"]},
-      "nh3": {"label": "NH₃", "name": "Ammonia gas", "environment": "outerCool", "color": "#eab0e6", "note": "Herschel detected gas-phase ammonia toward the TW Hya disc. This illustration places the gas in a cool shielded region.", "refs": ["nh3"]},
-      "no": {"label": "NO", "name": "Nitric oxide", "environment": "iceTrap", "color": "#eab0e6", "note": "NO was detected in the Oph IRS 48 dust trap, where release of nitrogen-bearing ices may contribute to its gas-phase chemistry.", "refs": ["no"]},
-      "c34s": {"label": "C³⁴S", "name": "Carbon monosulfide with sulfur-34", "environment": "sulfurRare", "color": "#efcc8c", "note": "Detected in the LkCa 15 and MWC 480 spectral survey. This rarer CS variant helps probe optical depth and the sulfur reservoir.", "refs": ["loomis", "mapsS"]},
-      "13cs": {"label": "¹³CS", "name": "Carbon monosulfide with carbon-13", "environment": "sulfurRare", "color": "#efcc8c", "note": "The LkCa 15 and MWC 480 survey reported ¹³CS. It is shown sharing the lower CS molecular layer.", "refs": ["loomis", "mapsS"]},
-      "h2cs": {"label": "H₂CS", "name": "Thioformaldehyde", "environment": "outerOrganic", "color": "#efcc8c", "note": "Reported in MWC 480. Its ratio to CS helps probe how sulfur is distributed among gas-phase species.", "refs": ["leGal", "loomis"]},
-      "h2s": {"label": "H₂S", "name": "Hydrogen sulfide", "environment": "outerCool", "color": "#6cc9ec", "note": "Detected in the GG Tau A circumbinary ring around young stars, motivating a cooler dense-gas example.", "refs": ["h2s"]},
-      "hdo": {"label": "HDO", "name": "Singly deuterated water vapour", "environment": "isotopeWater", "color": "#ffb68e", "note": "Resolved in the outbursting V883 Ori disc. Together with H₂¹⁸O, HDO constrains the deuterium enrichment of water.", "refs": ["waterD"]},
-      "h218o": {"label": "H₂¹⁸O", "name": "Water vapour with oxygen-18", "environment": "isotopeWater", "color": "#ffb68e", "note": "In V883 Ori, this rarer form of water provides an estimate of the gas-phase H₂O column.", "refs": ["waterD"]},
-      "d2o": {"label": "D₂O", "name": "Doubly deuterated water vapour", "environment": "isotopeWater", "color": "#ffb68e", "note": "Detected as gas in outburst-heated V883 Ori. Its deuterium enrichment records the history of the sublimated icy reservoir.", "refs": ["waterD2"]},
-      "c2h2": {"label": "C₂H₂", "name": "Acetylene", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Infrared acetylene emission is detected in GW Lup and can be especially strong in carbon-rich young inner discs such as J1605−2338.", "refs": ["warmCO2", "acetylene"]},
-      "13cch2": {"label": "¹³CCH₂", "name": "Acetylene with carbon-13", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Detected with acetylene in the JWST spectrum of J1605−2338, helping constrain the abundant parent molecule.", "refs": ["acetylene"]},
-      "ch3": {"label": "CH₃", "name": "Methyl radical", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "JWST detected CH₃ in the unusually carbon-rich inner disc of ISO-ChaI 147.", "refs": ["hydrocarbon"]},
-      "ch4": {"label": "CH₄", "name": "Methane gas", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Methane is part of the warm hydrocarbon inventory inferred from JWST spectroscopy of ISO-ChaI 147.", "refs": ["hydrocarbon"]},
-      "c2h4": {"label": "C₂H₄", "name": "Ethylene", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Detected by JWST in ISO-ChaI 147. The overlay shows a schematic warm inner zone.", "refs": ["hydrocarbon"]},
-      "c2h6": {"label": "C₂H₆", "name": "Ethane", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "JWST detected ethane in the warm carbon-rich inner disc of ISO-ChaI 147.", "refs": ["hydrocarbon"]},
-      "c3h4": {"label": "CH₃CCH", "name": "Propyne", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "The JWST spectrum of ISO-ChaI 147 shows propyne, a three-carbon hydrocarbon.", "refs": ["hydrocarbon"]},
-      "c4h2": {"label": "C₄H₂", "name": "Diacetylene", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Diacetylene is seen in the carbon-rich inner disc of J1605−2338 alongside acetylene and benzene.", "refs": ["acetylene"]},
-      "c6h6": {"label": "C₆H₆", "name": "Benzene", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Infrared benzene bands are found in carbon-rich inner discs including ISO-ChaI 147. The highlight shares the warm hydrocarbon zone.", "refs": ["hydrocarbon", "acetylene"]},
-      "h2co": {"label": "H₂CO", "name": "Formaldehyde", "environment": "formaldehyde", "color": "#f1b6c3", "note": "Observed across young discs. HD 163296 shows emission above the midplane, with ice chemistry and gas-phase routes both relevant across systems.", "refs": ["mapsOrganics", "h2co"]},
-      "hdco": {"label": "HDCO", "name": "Singly deuterated formaldehyde", "environment": "deuteratedH2CO", "color": "#f1b6c3", "note": "Detected in the young IRS 63 disc and a streamer feeding it. Its vertical position in this illustration is schematic.", "refs": ["dFormaldehyde"]},
-      "d2co": {"label": "D₂CO", "name": "Doubly deuterated formaldehyde", "environment": "deuteratedH2CO", "color": "#f1b6c3", "note": "Detected in the young IRS 63 disc and used to probe deuteration of formaldehyde.", "refs": ["dFormaldehyde"]},
-      "hc3n": {"label": "HC₃N", "name": "Cyanoacetylene", "environment": "nitrileInner", "color": "#f1b6c3", "note": "MAPS resolves this larger nitrile. The compact band here represents its often centrally concentrated emission.", "refs": ["mapsLarge"]},
-      "ch3cn": {"label": "CH₃CN", "name": "Acetonitrile", "environment": "acetonitrile", "color": "#f1b6c3", "note": "MAPS finds acetonitrile at lower relative heights than HC₃N in its analysis, sometimes close to the midplane.", "refs": ["mapsLarge"]},
-      "ch3oh": {"label": "CH₃OH", "name": "Methanol gas", "environment": "iceTrap", "color": "#f1b6c3", "note": "Warm gas-phase methanol in HD 100546 has been interpreted as sublimated organic-rich ice. Its illustrated position represents an example release zone.", "refs": ["methanol"]},
-      "hcooh": {"label": "HCOOH", "name": "Formic acid", "environment": "outerOrganic", "color": "#f1b6c3", "note": "Gas-phase formic acid was reported toward TW Hya. The overlay illustrates a shielded region for molecular organics.", "refs": ["formic"]},
-      "ch3och3": {"label": "CH₃OCH₃", "name": "Dimethyl ether", "environment": "iceTrap", "color": "#f1b6c3", "note": "Detected in the Oph IRS 48 dust trap. Ice release is a proposed route to its observed gas-phase emission.", "refs": ["complexTrap"]},
-      "ch3ocho": {"label": "CH₃OCHO", "name": "Methyl formate", "environment": "burstOrganic", "color": "#f1b6c3", "note": "Detected in outburst-heated V883 Ori, where organic-rich ices release molecules into the gas.", "refs": ["outburstSurvey"]},
-      "ch3cho": {"label": "CH₃CHO", "name": "Acetaldehyde", "environment": "burstOrganic", "color": "#f1b6c3", "note": "Detected in V883 Ori, where a stellar outburst enables observations of sublimated organics farther out in the disc.", "refs": ["outburstOrganics", "outburstSurvey"]},
-      "acetone": {"label": "CH₃COCH₃", "name": "Acetone", "environment": "burstOrganic", "color": "#f1b6c3", "note": "Reported in the heated regions of V883 Ori, providing an example of observable organic gas after ice release.", "refs": ["outburstOrganics"]},
-      "ice-water": {"label": "H₂O ice", "name": "Water ice", "environment": "waterIce", "color": "#b8d5ff", "note": "JWST observed water ice in HH 48 NE. The highlight follows cold shielded grains outside the illustrative water snow surface.", "refs": ["ices", "snowlines"]},
-      "ice-co2": {"label": "CO₂ ice", "name": "Carbon dioxide ice", "environment": "co2Ice", "color": "#b8d5ff", "note": "CO₂ ice absorption is observed in HH 48 NE. In this schematic its reservoir starts farther out than water ice.", "refs": ["ices", "snowlines"]},
-      "ice-co": {"label": "CO ice", "name": "Carbon monoxide ice", "environment": "coIce", "color": "#b8d5ff", "note": "CO ice absorption is observed in HH 48 NE. The overlay shows the cold midplane reservoir beyond the illustrative CO snow surface.", "refs": ["ices", "nomura"]},
-      "ice-13co2": {"label": "¹³CO₂ ice", "name": "Carbon dioxide ice with carbon-13", "environment": "co2Ice", "color": "#b8d5ff", "note": "The rarer carbon isotope appears in HH 48 NE ice absorption and provides a more transparent probe of the CO₂ ice column.", "refs": ["ices"]},
-      "ice-nh3": {"label": "NH₃ ice", "name": "Ammonia ice", "environment": "mixedIce", "color": "#b8d5ff", "note": "Ammonia ice contributes weak absorption in HH 48 NE. Its highlight illustrates ice on shielded grains.", "refs": ["ices"]},
-      "ice-ocn": {"label": "OCN⁻ ice", "name": "Cyanate in ice", "environment": "mixedIce", "color": "#b8d5ff", "note": "The OCN⁻ absorption signature in HH 48 NE traces an ion in solid ice mixtures.", "refs": ["ices"]},
-      "ice-ocs": {"label": "OCS ice", "name": "Carbonyl sulfide ice", "environment": "mixedIce", "color": "#b8d5ff", "note": "HH 48 NE shows a weak feature assigned to solid OCS. The schematic overlay follows the shielded ice reservoir.", "refs": ["ices"]},
-      "ice-methanol": {"label": "CH₃OH ice", "name": "Methanol ice reservoir", "environment": "mixedIce", "color": "#b8d5ff", "note": "Gas-phase methanol in warm discs and after outbursts provides evidence for an icy reservoir. Here the highlight illustrates that inferred solid phase.", "refs": ["methanol", "outburstOrganics"]}
+      "co": {"label": "¹²CO", "name": "Carbon monoxide", "environment": "surfaceCO", "color": "#79e1cb", "note": "Maps rotating gas and an outflow in the Red Rectangle. Its higher emitting surface here follows the pattern measured in young discs.", "refs": ["rectangle", "exoalma", "evolvedCO"], "placement": [["exoalma", "Fig. 2"], ["rectangle", "Figs. 1 and 2"]]},
+      "13co": {"label": "¹³CO", "name": "Carbon monoxide with carbon-13", "environment": "lowerCO", "color": "#8fbafa", "note": "Resolved in the Red Rectangle disc and outflow. The lower emitting layer shown here follows exoALMA.", "refs": ["rectangle", "exoalma"], "placement": [["exoalma", "Fig. 2"], ["rectangle", "Figs. 1 and 2"]]},
+      "c18o": {"label": "C¹⁸O", "name": "Carbon monoxide with oxygen-18", "environment": "deepCO", "color": "#8fbafa", "note": "Reported in the Red Rectangle and 89 Her. It can probe deeper gas than ¹²CO when optical depth and chemistry allow.", "refs": ["evolvedSurvey", "mapsLayers"], "placement": [["mapsLayers", "Fig. 4"]]},
+      "c17o": {"label": "C¹⁷O", "name": "Carbon monoxide with oxygen-17", "environment": "thinCO", "color": "#8fbafa", "note": "Channel maps show C¹⁷O in the rotating Red Rectangle disc. The shaded depth is illustrative, guided by the lower optical depth of rare CO isotopologues.", "refs": ["rectangle"], "placement": [["rectangle", "Fig. 3"]]},
+      "hcn": {"label": "HCN", "name": "Hydrogen cyanide", "environment": "nitrile", "color": "#8fbafa", "note": "Reported tentatively in the Red Rectangle and 89 Her. HCN is firmly detected in MAPS young discs, where its emission shows radial and vertical structure.", "refs": ["evolvedSurvey", "mapsOrganics"], "placement": [["mapsLayers", "Fig. 5"]]},
+      "h13cn": {"label": "H¹³CN", "name": "Hydrogen cyanide with carbon-13", "environment": "innerDense", "color": "#8fbafa", "note": "In the Red Rectangle, ALMA line profiles place the abundant H¹³CN in the dense inner Keplerian disc.", "refs": ["rectangle"], "placement": [["rectangle", "Fig. 5"]]},
+      "hcop": {"label": "HCO⁺", "name": "Formyl ion", "environment": "ionLayer", "color": "#8fbafa", "note": "Detected toward R Sct. Its narrow line is consistent with a disc contribution. Young-disc studies use HCO⁺ to probe ionization, which also depends on CO and electron abundance.", "refs": ["evolvedSurvey", "mapsIon"], "placement": [["mapsIon", "Fig. 11"]]},
+      "cs": {"label": "CS", "name": "Carbon monosulfide", "environment": "sulfurGas", "color": "#8fbafa", "note": "A narrow CS line was reported in 89 Her. The lower molecular layer in the figure follows the exoALMA CS emission surfaces.", "refs": ["evolvedSurvey", "exoalma"], "placement": [["exoalma", "Fig. 2"]]},
+      "sis": {"label": "SiS", "name": "Silicon monosulfide", "environment": "innerDense", "color": "#8fbafa", "note": "Narrow SiS emission in 89 Her motivates a disc origin. The inner band shown here is schematic.", "refs": ["evolvedSurvey"], "placement": [["evolvedSurvey", "Fig. 13"]]},
+      "sio": {"label": "SiO", "name": "Silicon monoxide", "environment": "rimShock", "color": "#f3b779", "note": "SiO is reported in selected evolved nebulae, including AI CMi and R Sct. The inner-rim highlight illustrates a possible shock environment, informed by shocked HH 212 gas.", "refs": ["evolvedSurvey", "sio"], "placement": [["sio", "Figs. 2 and 3"]]},
+      "29sio": {"label": "²⁹SiO", "name": "Silicon monoxide with silicon-29", "environment": "rimShock", "color": "#8fbafa", "note": "Thermal ²⁹SiO was reported toward AI CMi and R Sct. The highlighted rim shares the possible shock environment illustrated for SiO.", "refs": ["evolvedSurvey"], "placement": [["sio", "Figs. 2 and 3"]]},
+      "30sio": {"label": "³⁰SiO", "name": "Silicon monoxide with silicon-30", "environment": "rimShock", "color": "#8fbafa", "note": "Thermal ³⁰SiO was reported in R Sct. The highlighted rim shares the possible shock environment illustrated for SiO.", "refs": ["evolvedSurvey"], "placement": [["sio", "Figs. 2 and 3"]]},
+      "so2": {"label": "SO₂", "name": "Sulfur dioxide", "environment": "iceTrap", "color": "#f7a6b7", "note": "SO₂ was reported toward AI CMi. For the schematic warm release zone, the geometry comes from the mapped ice trap in Oph IRS 48, where SO₂ is also observed.", "refs": ["evolvedSurvey", "sulfurTrap"], "placement": [["complexTrap", "Fig. 1"]]},
+      "so": {"label": "SO", "name": "Sulfur monoxide", "environment": "warmSulfur", "color": "#c3d786", "note": "Narrow SO emission in the Red Rectangle suggests a disc contribution. The warm placement uses the mapped Oph IRS 48 ice trap as a young-disc analogue.", "refs": ["evolvedSurvey", "sulfurTrap"], "placement": [["complexTrap", "Fig. 1"]]},
+      "h2o": {"label": "H₂O", "name": "Water vapour", "environment": "warmWater", "color": "#8fbafa", "note": "Infrared H₂O emission in HR 4049 provides an evolved example. PDS 70 shows warm water vapour in the terrestrial planet-forming region of a young disc.", "refs": ["hr4049", "water"], "placement": [["water", "Fig. 3"]]},
+      "co2": {"label": "CO₂", "name": "Carbon dioxide gas", "environment": "warmCO2", "color": "#8fbafa", "note": "Strong infrared CO₂ emission is seen in the evolved HR 4049 circumbinary disc. JWST also detects CO₂ in the warm inner disc of GW Lup.", "refs": ["hr4049", "warmCO2"], "placement": [["warmCO2", "§3.1"]]},
+      "13co2": {"label": "¹³CO₂", "name": "Carbon dioxide with carbon-13, gas", "environment": "warmCO2", "color": "#8fbafa", "note": "The rare carbon dioxide isotopologue helps constrain the CO₂ column where the main bands saturate. Compare the infrared studies of HR 4049 and GW Lup.", "refs": ["hr4049", "warmCO2"], "placement": [["warmCO2", "§3.1"]]},
+      "h2": {"label": "H₂", "name": "Molecular hydrogen", "environment": "warmH2", "color": "#b3d8ff", "note": "H₂ is the main molecular gas constituent. Spatially resolved infrared H₂ emission at the bases of young disc winds informs the warm emitting layer shown here.", "refs": ["digitH2", "review"], "placement": [["winds", "Fig. 2"]]},
+      "hd": {"label": "HD", "name": "Hydrogen deuteride", "environment": "bulkGas", "color": "#b3d8ff", "note": "Herschel detected HD in TW Hya. The illustrated bulk reservoir follows the same H₂ distribution used in the model. The line is most sensitive to warmer gas.", "refs": ["hd"], "placement": [["hd", "Fig. 2"]]},
+      "13c17o": {"label": "¹³C¹⁷O", "name": "Carbon monoxide with carbon-13 and oxygen-17", "environment": "thinCO", "color": "#b3d8ff", "note": "ALMA detected this rare CO isotopologue in HD 163296 to probe gas at low line optical depth.", "refs": ["coDouble17"], "placement": [["coDouble17", "Fig. 2"]]},
+      "13c18o": {"label": "¹³C¹⁸O", "name": "Carbon monoxide with carbon-13 and oxygen-18", "environment": "thinCO", "color": "#b3d8ff", "note": "This rare isotopologue has been used with C¹⁷O and C¹⁸O to constrain CO isotope ratios in HD 163296.", "refs": ["coDouble18"], "placement": [["coDouble18", "Figs. 1 and 2"]]},
+      "oh": {"label": "OH", "name": "Hydroxyl", "environment": "hotOH", "color": "#c0a5f0", "note": "In irradiated d203-506, infrared OH emission is linked to ultraviolet photodissociation of water.", "refs": ["oh"], "placement": [["oh", "Figs. 1 and 2"]]},
+      "cn": {"label": "CN", "name": "Cyano radical", "environment": "surfaceUV", "color": "#c0a5f0", "note": "MAPS models the UV wavelengths that favour CN production in an irradiated layer. Its observed radial emission can extend farther out than HCN.", "refs": ["mapsCN"], "placement": [["mapsCN", "Fig. 9"]]},
+      "c15n": {"label": "C¹⁵N", "name": "Cyano with nitrogen-15", "environment": "surfaceUV", "color": "#c0a5f0", "note": "Measured with CN lines in TW Hya to constrain nitrogen isotope ratios. The overlay uses the CN layer discussed in the MAPS photochemical models.", "refs": ["cn15"], "placement": [["mapsCN", "Fig. 9"], ["cn15", "Appendix C"]]},
+      "chp": {"label": "CH⁺", "name": "Methylidyne ion", "environment": "hotOH", "color": "#c0a5f0", "note": "Herschel detected CH⁺ in Herbig discs including HD 100546. Formation favours hot gas or UV-excited H₂, motivating an irradiated surface overlay.", "refs": ["digitch"], "placement": [["digitch", "§4.3.1"]]},
+      "c2h": {"label": "C₂H", "name": "Ethynyl radical", "environment": "carbonRadical", "color": "#c0a5f0", "note": "MAPS resolves C₂H rings. Several discs have low measured C₂H emitting heights. Its brightness responds to irradiation and the available gas-phase carbon.", "refs": ["mapsOrganics", "mapsLayers"], "placement": [["mapsLayers", "Fig. 5"]]},
+      "c2d": {"label": "C₂D", "name": "Deuterated ethynyl", "environment": "carbonRadical", "color": "#c0a5f0", "note": "Detected in the LkCa 15 and MWC 480 spectral-line survey. The overlay shares the ethynyl-family environment.", "refs": ["loomis"], "placement": [["loomis", "Fig. 8"]]},
+      "c3h2": {"label": "c-C₃H₂", "name": "Cyclopropenylidene", "environment": "outerOrganic", "color": "#c0a5f0", "note": "MAPS mapped this cyclic hydrocarbon in young discs. Its radial extent can exceed that of the larger nitriles.", "refs": ["mapsLarge"], "placement": [["mapsLarge", "Fig. 1"]]},
+      "h13cop": {"label": "H¹³CO⁺", "name": "Formyl ion with carbon-13", "environment": "ionDeep", "color": "#eab0e6", "note": "This rarer formyl ion probes gas where the main HCO⁺ transition may be optically thick. Its illustrative lower layer uses the HCO⁺ model as a guide.", "refs": ["mapsIon"], "placement": [["mapsIon", "Fig. 11"]]},
+      "dcop": {"label": "DCO⁺", "name": "Deuterated formyl ion", "environment": "outerRing", "color": "#eab0e6", "note": "Resolved DCO⁺ rings trace deuterium chemistry. Both warm and cold formation channels can contribute.", "refs": ["dco", "mapsD"], "placement": [["dco", "Fig. 2"]]},
+      "n2hp": {"label": "N₂H⁺", "name": "Diazenylium", "environment": "coldCOIon", "color": "#eab0e6", "note": "Gas-phase CO destroys N₂H⁺, so it can brighten beyond the CO snowline. The bright emission ring can also be offset from the midplane snowline.", "refs": ["n2h", "nh3"], "placement": [["n2h", "Fig. 2"], ["mapsIon", "Fig. 11"]]},
+      "n2dp": {"label": "N₂D⁺", "name": "Deuterated diazenylium", "environment": "coldDeuterium", "color": "#eab0e6", "note": "MAPS uses N₂D⁺ relative to N₂H⁺ to diagnose low-temperature deuterium fractionation.", "refs": ["mapsD"], "placement": [["mapsD", "§3.3"]]},
+      "dcn": {"label": "DCN", "name": "Deuterated hydrogen cyanide", "environment": "nitrileInner", "color": "#eab0e6", "note": "MAPS resolves DCN/HCN structure. DCN can remain abundant at radii where warm deuterium chemistry contributes.", "refs": ["mapsD"], "placement": [["mapsD", "§3.2"]]},
+      "hc15n": {"label": "HC¹⁵N", "name": "Hydrogen cyanide with nitrogen-15", "environment": "nitrileInner", "color": "#eab0e6", "note": "Disk observations of HC¹⁵N and H¹³CN constrain nitrogen isotope ratios. The inner band uses the measured HCN-family radial profiles as a guide.", "refs": ["cyanide"], "placement": [["cyanide", "§3"], ["mapsD", "Fig. 3"]]},
+      "hnc": {"label": "HNC", "name": "Hydrogen isocyanide", "environment": "outerCool", "color": "#eab0e6", "note": "HNC is seen in TW Hya and HD 163296. The TW Hya ring is consistent with more efficient HNC destruction at warmer inner radii.", "refs": ["hnc"], "placement": [["hnc", "Fig. 1"]]},
+      "dnc": {"label": "DNC", "name": "Deuterated hydrogen isocyanide", "environment": "outerCool", "color": "#eab0e6", "note": "The LkCa 15 and MWC 480 survey reported DNC. Its illustrative cooler band also uses the HNC ring in TW Hya as a guide.", "refs": ["loomis"], "placement": [["hnc", "Fig. 1"], ["loomis", "Fig. 6"]]},
+      "nh3": {"label": "NH₃", "name": "Ammonia gas", "environment": "outerCool", "color": "#eab0e6", "note": "Herschel detected gas-phase ammonia toward the TW Hya disc. The cool shielded region shown here follows one of the vertical abundance models explored for that disc.", "refs": ["nh3"], "placement": [["nh3", "§3.2.1"]]},
+      "no": {"label": "NO", "name": "Nitric oxide", "environment": "iceTrap", "color": "#eab0e6", "note": "NO was detected in the Oph IRS 48 dust trap, where release of nitrogen-bearing ices may contribute to its gas-phase chemistry.", "refs": ["no"], "placement": [["no", "Fig. 5"]]},
+      "c34s": {"label": "C³⁴S", "name": "Carbon monosulfide with sulfur-34", "environment": "sulfurRare", "color": "#efcc8c", "note": "Detected in the LkCa 15 and MWC 480 spectral survey. This rarer CS variant helps probe optical depth and the sulfur reservoir.", "refs": ["loomis", "mapsS"], "placement": [["loomis", "Fig. 7"], ["exoalma", "Fig. 2"]]},
+      "13cs": {"label": "¹³CS", "name": "Carbon monosulfide with carbon-13", "environment": "sulfurRare", "color": "#efcc8c", "note": "The LkCa 15 and MWC 480 survey reported ¹³CS. It is shown sharing the lower CS molecular layer.", "refs": ["loomis", "mapsS"], "placement": [["loomis", "Fig. 7"], ["exoalma", "Fig. 2"]]},
+      "h2cs": {"label": "H₂CS", "name": "Thioformaldehyde", "environment": "outerOrganic", "color": "#efcc8c", "note": "Reported in MWC 480. Its ratio to CS helps probe how sulfur is distributed among gas-phase species.", "refs": ["leGal", "loomis"], "placement": [["loomis", "Fig. 7"]]},
+      "h2s": {"label": "H₂S", "name": "Hydrogen sulfide", "environment": "outerCool", "color": "#6cc9ec", "note": "Detected in the GG Tau A circumbinary ring around young stars, motivating a cooler dense-gas example.", "refs": ["h2s"], "placement": [["h2s", "Fig. 1"]]},
+      "hdo": {"label": "HDO", "name": "Singly deuterated water vapour", "environment": "isotopeWater", "color": "#ffb68e", "note": "Resolved in the outbursting V883 Ori disc. Together with H₂¹⁸O, HDO constrains the deuterium enrichment of water.", "refs": ["waterD"], "placement": [["waterD", "Figs. 1 and 2"]]},
+      "h218o": {"label": "H₂¹⁸O", "name": "Water vapour with oxygen-18", "environment": "isotopeWater", "color": "#ffb68e", "note": "In V883 Ori, this rarer form of water provides an estimate of the gas-phase H₂O column.", "refs": ["waterD"], "placement": [["waterD", "Figs. 1 and 2"]]},
+      "d2o": {"label": "D₂O", "name": "Doubly deuterated water vapour", "environment": "isotopeWater", "color": "#ffb68e", "note": "Detected as gas in outburst-heated V883 Ori. Its deuterium enrichment records the history of the sublimated icy reservoir.", "refs": ["waterD2"], "placement": [["waterD", "Figs. 1 and 2"], ["waterD2", "Fig. 1"]]},
+      "c2h2": {"label": "C₂H₂", "name": "Acetylene", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Infrared acetylene emission is detected in GW Lup and can be especially strong in carbon-rich young inner discs such as J1605−2338.", "refs": ["warmCO2", "acetylene"], "placement": [["acetylene", "Fig. 1"]]},
+      "13cch2": {"label": "¹³CCH₂", "name": "Acetylene with carbon-13", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Detected with acetylene in the JWST spectrum of J1605−2338, helping constrain the abundant parent molecule.", "refs": ["acetylene"], "placement": [["acetylene", "Fig. 1"]]},
+      "ch3": {"label": "CH₃", "name": "Methyl radical", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "JWST detected CH₃ in the unusually carbon-rich inner disc of ISO-ChaI 147.", "refs": ["hydrocarbon"], "placement": [["hydrocarbon", "Fig. 1"]]},
+      "ch4": {"label": "CH₄", "name": "Methane gas", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Methane is part of the warm hydrocarbon inventory inferred from JWST spectroscopy of ISO-ChaI 147.", "refs": ["hydrocarbon"], "placement": [["hydrocarbon", "Fig. 1"]]},
+      "c2h4": {"label": "C₂H₄", "name": "Ethylene", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Detected by JWST in ISO-ChaI 147. The overlay shows a schematic warm inner zone.", "refs": ["hydrocarbon"], "placement": [["hydrocarbon", "Fig. 1"]]},
+      "c2h6": {"label": "C₂H₆", "name": "Ethane", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "JWST detected ethane in the warm carbon-rich inner disc of ISO-ChaI 147.", "refs": ["hydrocarbon"], "placement": [["hydrocarbon", "Fig. 1"]]},
+      "c3h4": {"label": "CH₃CCH", "name": "Propyne", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "The JWST spectrum of ISO-ChaI 147 shows propyne, a three-carbon hydrocarbon.", "refs": ["hydrocarbon"], "placement": [["hydrocarbon", "Fig. 1"]]},
+      "c4h2": {"label": "C₄H₂", "name": "Diacetylene", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Diacetylene is seen in the carbon-rich inner disc of J1605−2338 alongside acetylene and benzene.", "refs": ["acetylene"], "placement": [["acetylene", "Fig. 1"]]},
+      "c6h6": {"label": "C₆H₆", "name": "Benzene", "environment": "hotHydrocarbon", "color": "#ffb68e", "note": "Infrared benzene bands are found in carbon-rich inner discs including ISO-ChaI 147. The highlight shares the warm hydrocarbon zone.", "refs": ["hydrocarbon", "acetylene"], "placement": [["acetylene", "Fig. 1"]]},
+      "h2co": {"label": "H₂CO", "name": "Formaldehyde", "environment": "formaldehyde", "color": "#f1b6c3", "note": "Observed across young discs. HD 163296 shows emission above the midplane, with ice chemistry and gas-phase routes both relevant across systems.", "refs": ["mapsOrganics", "h2co"], "placement": [["h2co", "§3.5"]]},
+      "hdco": {"label": "HDCO", "name": "Singly deuterated formaldehyde", "environment": "deuteratedH2CO", "color": "#f1b6c3", "note": "Maps resolve HDCO emission in the young IRS 63 disc and a streamer feeding it. The shaded height in this illustration is schematic.", "refs": ["dFormaldehyde"], "placement": [["dFormaldehyde", "Fig. 2"]]},
+      "d2co": {"label": "D₂CO", "name": "Doubly deuterated formaldehyde", "environment": "deuteratedH2CO", "color": "#f1b6c3", "note": "Maps resolve D₂CO in the young IRS 63 disc. The shaded height extends the schematic formaldehyde-family layer.", "refs": ["dFormaldehyde"], "placement": [["dFormaldehyde", "Fig. 2"]]},
+      "hc3n": {"label": "HC₃N", "name": "Cyanoacetylene", "environment": "nitrileInner", "color": "#f1b6c3", "note": "MAPS resolves this larger nitrile. The compact band here represents its often centrally concentrated emission.", "refs": ["mapsLarge"], "placement": [["mapsLarge", "Fig. 7"]]},
+      "ch3cn": {"label": "CH₃CN", "name": "Acetonitrile", "environment": "acetonitrile", "color": "#f1b6c3", "note": "MAPS finds acetonitrile at lower relative heights than HC₃N in its analysis, sometimes close to the midplane.", "refs": ["mapsLarge"], "placement": [["mapsLarge", "Fig. 7"]]},
+      "ch3oh": {"label": "CH₃OH", "name": "Methanol gas", "environment": "iceTrap", "color": "#f1b6c3", "note": "Warm gas-phase methanol in HD 100546 has been interpreted as sublimated organic-rich ice. Its illustrated position represents an example release zone.", "refs": ["methanol"], "placement": [["methanol", "Supplementary Fig. 1"]]},
+      "hcooh": {"label": "HCOOH", "name": "Formic acid", "environment": "outerOrganic", "color": "#f1b6c3", "note": "Gas-phase formic acid was reported toward TW Hya. The overlay illustrates a shielded region for molecular organics.", "refs": ["formic"], "placement": [["formic", "Fig. 4a"]]},
+      "ch3och3": {"label": "CH₃OCH₃", "name": "Dimethyl ether", "environment": "iceTrap", "color": "#f1b6c3", "note": "Detected in the Oph IRS 48 dust trap. Ice release is a proposed route to its observed gas-phase emission.", "refs": ["complexTrap"], "placement": [["complexTrap", "Fig. 1"]]},
+      "ch3ocho": {"label": "CH₃OCHO", "name": "Methyl formate", "environment": "burstOrganic", "color": "#f1b6c3", "note": "Detected in outburst-heated V883 Ori, where organic-rich ices release molecules into the gas.", "refs": ["outburstSurvey"], "placement": [["outburstOrganics", "Figs. 1 and 2"]]},
+      "ch3cho": {"label": "CH₃CHO", "name": "Acetaldehyde", "environment": "burstOrganic", "color": "#f1b6c3", "note": "Detected in V883 Ori, where a stellar outburst enables observations of sublimated organics farther out in the disc.", "refs": ["outburstOrganics", "outburstSurvey"], "placement": [["outburstOrganics", "Figs. 1 and 2"]]},
+      "acetone": {"label": "CH₃COCH₃", "name": "Acetone", "environment": "burstOrganic", "color": "#f1b6c3", "note": "Reported in the heated regions of V883 Ori, providing an example of observable organic gas after ice release.", "refs": ["outburstOrganics"], "placement": [["outburstOrganics", "Figs. 1 and 2"]]},
+      "ice-water": {"label": "H₂O ice", "name": "Water ice", "environment": "waterIce", "color": "#b8d5ff", "note": "JWST observed water ice in HH 48 NE. The highlight follows cold shielded grains outside the illustrative water snow surface.", "refs": ["ices", "snowlines"], "placement": [["ices", "§3.3.2"], ["snowlines", "Fig. 1"]]},
+      "ice-co2": {"label": "CO₂ ice", "name": "Carbon dioxide ice", "environment": "co2Ice", "color": "#b8d5ff", "note": "CO₂ ice absorption is observed in HH 48 NE. In this schematic its reservoir starts farther out than water ice.", "refs": ["ices", "snowlines"], "placement": [["ices", "§3.3.2"], ["snowlines", "Fig. 1"]]},
+      "ice-co": {"label": "CO ice", "name": "Carbon monoxide ice", "environment": "coIce", "color": "#b8d5ff", "note": "HH 48 NE shows CO ice absorption. The cold midplane overlay follows the CO snow surface in the TW Hya thermal model.", "refs": ["ices", "nomura"], "placement": [["ices", "§3.3.2"], ["n2h", "Fig. 1"]]},
+      "ice-13co2": {"label": "¹³CO₂ ice", "name": "Carbon dioxide ice with carbon-13", "environment": "co2Ice", "color": "#b8d5ff", "note": "The rarer carbon isotope appears in HH 48 NE ice absorption and provides a less saturated probe of the CO₂ ice column. It shares the schematic CO₂ ice region.", "refs": ["ices"], "placement": [["ices", "§3.3.2"]]},
+      "ice-nh3": {"label": "NH₃ ice", "name": "Ammonia ice", "environment": "mixedIce", "color": "#b8d5ff", "note": "Ammonia ice contributes weak absorption in HH 48 NE. Its highlight illustrates ice on shielded grains.", "refs": ["ices"], "placement": [["ices", "Fig. 2"]]},
+      "ice-ocn": {"label": "OCN⁻ ice", "name": "Cyanate in ice", "environment": "mixedIce", "color": "#b8d5ff", "note": "The OCN⁻ absorption signature in HH 48 NE traces an ion in solid ice mixtures.", "refs": ["ices"], "placement": [["ices", "Fig. 2"]]},
+      "ice-ocs": {"label": "OCS ice", "name": "Carbonyl sulfide ice", "environment": "mixedIce", "color": "#b8d5ff", "note": "HH 48 NE shows a weak feature assigned to solid OCS. The schematic overlay follows the shielded ice reservoir.", "refs": ["ices"], "placement": [["ices", "Fig. 2"]]},
+      "ice-methanol": {"label": "CH₃OH ice", "name": "Methanol ice reservoir", "environment": "mixedIce", "color": "#b8d5ff", "note": "Gas-phase methanol in warm discs has been interpreted as sublimated icy material. The highlight illustrates the shielded precursor reservoir.", "refs": ["methanol", "outburstOrganics"], "placement": [["methanol", "Supplementary Fig. 1"]]}
     };
 
     const discFeatures = {
-      "cavity": {"name": "Inner dust cavity", "style": "zone", "color": "#f6b17d", "radial": [-0.092, 0.003], "height": [-0.8, 1.12], "note": "A depleted dust region interior to the bright rim. Post-AGB transition discs can have dust rims well outside the sublimation radius.", "refs": ["cavity", "rim"]},
-      "sublimation": {"name": "Dust sublimation rim", "style": "zone", "color": "#f6b17d", "radial": [0.003, 0.054], "height": [-0.91, 1.015], "note": "An irradiated inner wall can mark the radius at which solid dust survives. Near-infrared interferometry resolved a hot dust rim around IRAS 08544−4431.", "refs": ["rim", "kama"]},
-      "warm-inner": {"name": "Warm inner disc", "style": "paired", "color": "#f6b17d", "radial": [0.035, 0.23], "height": [0.16, 0.64], "note": "Warm, dense gas near the inner rim can emit water, CO₂ and nitriles. HR 4049 and the Red Rectangle illustrate different tracers of the inner evolved disc.", "refs": ["hr4049", "rectangle"]},
-      "carbon-front": {"name": "Possible carbon-grain destruction front", "style": "snow", "color": "#f6b17d", "radial": [0.06, 0.095], "height": [-0.46, 0.46], "note": "Some carbon-rich young inner discs show strong hydrocarbons consistent with destruction of carbonaceous solids. The location is an illustrative hypothesis.", "refs": ["soot", "acetylene"]},
-      "dust-extent": {"name": "Millimetre dust edge", "style": "zone", "color": "#f6b17d", "radial": [0.84, 0.91], "height": [-0.13, 0.13], "note": "The observable millimetre dust disc can end inward of the CO-emitting region. Grain evolution and line optical depth both affect the apparent size contrast.", "refs": ["taper", "settled"]},
-      "outer-taper": {"name": "Outer gas taper", "style": "zone", "color": "#f6b17d", "radial": [0.88, 0.998], "height": [-0.89, 1.0], "note": "The outer gas disc fades as its column density falls. CO shielding, line opacity and sensitivity influence the observed edge.", "refs": ["taper"]},
-      "flaring": {"name": "Flared disc atmosphere", "style": "paired", "color": "#a1dcf3", "radial": [0.41, 0.986], "height": [0.83, 0.994], "note": "The geometrical thickness of the illustrated disc grows with radius. Scattered-light and CO-emission surfaces sample different parts of that atmosphere.", "refs": ["scattering", "exoalma"]},
-      "uv-surface": {"name": "UV-irradiated surface", "style": "paired", "color": "#a1dcf3", "radial": [0.033, 0.97], "height": [0.903, 1.012], "note": "Ultraviolet radiation processing the surface drives dissociation and photochemistry. Irradiated OH in d203-506 is one example.", "refs": ["review", "oh"]},
-      "scattering": {"name": "Small-grain scattering surface", "style": "paired", "color": "#a1dcf3", "radial": [0.09, 0.92], "height": [0.77, 0.906], "note": "Fine grains above the midplane scatter starlight. SPHERE polarimetry traces illuminated dust around the evolved binary IRAS 08544−4431.", "refs": ["scattering", "settled"]},
-      "co-surface": {"name": "Upper ¹²CO emitting surface", "style": "paired", "color": "#a1dcf3", "radial": [0.04, 0.974], "height": [0.755, 0.895], "note": "The main CO line becomes optically thick relatively high in the young discs studied by exoALMA. The emitting surface is a line-dependent observational layer.", "refs": ["exoalma", "mapsLayers"]},
-      "molecular-layer": {"name": "Shielded molecular layer", "style": "paired", "color": "#a1dcf3", "radial": [0.045, 0.957], "height": [0.36, 0.68], "note": "Shielding lets molecules survive below the exposed surface while gas remains warm enough to emit. ¹³CO and CS trace lower layers than ¹²CO in exoALMA.", "refs": ["review", "exoalma"]},
-      "deep-gas": {"name": "Deep gas traced by rare CO", "style": "paired", "color": "#a1dcf3", "radial": [0.04, 0.83], "height": [0.135, 0.383], "note": "Rarer CO lines can probe deeper layers when the gas is shielded and warm enough to keep CO in the gas phase. The Red Rectangle C¹⁷O map traces its rotating disc.", "refs": ["mapsLayers", "coDouble17", "rectangle"]},
-      "midplane": {"name": "Shielded midplane", "style": "zone", "color": "#a1dcf3", "radial": [0.026, 0.98], "height": [-0.092, 0.092], "note": "Dense gas near the equatorial plane is well shielded from direct UV. Cold parts of this region can hold substantial molecular ice.", "refs": ["review", "ices"]},
-      "settled-dust": {"name": "Settled millimetre grains", "style": "zone", "color": "#a1dcf3", "radial": [0.035, 0.885], "height": [-0.04, 0.04], "note": "Large grains can concentrate in a thin layer around the midplane. Oph 163131 gives an observational example of strong settling.", "refs": ["settled", "birnstiel"]},
-      "disc-wind": {"name": "Molecular surface outflow", "style": "wind", "color": "#a1dcf3", "radial": [0, 1], "height": [0, 1], "note": "The wisps illustrate gas leaving both disc faces. CO traces a rotating disc and outflow in the Red Rectangle. JWST resolves molecular winds from some young discs.", "refs": ["rectangle", "winds"]},
-      "water-snow": {"name": "Water snow surface", "style": "snow", "color": "#b3d8ff", "radial": [0.17, 0.28], "height": [-0.72, 0.72], "note": "The midplane water snowline is the intersection of this surface with the midplane. Outburst-heated V883 Ori enables direct gas-phase water mapping on disc scales.", "refs": ["snowlines", "waterD"]},
-      "co2-snow": {"name": "CO₂ snow surface", "style": "snow", "color": "#b3d8ff", "radial": [0.34, 0.46], "height": [-0.68, 0.68], "note": "CO₂ generally freezes at cooler locations than water under comparable conditions. Mixed ices and local pressure can shift the boundary.", "refs": ["snowlines", "ices"]},
-      "co-snow": {"name": "CO snow surface", "style": "snow", "color": "#b3d8ff", "radial": [0.59, 0.79], "height": [-0.59, 0.59], "note": "CO freezes in the cold lower disc. CO isotopologues and N₂H⁺ offer complementary constraints, and the N₂H⁺ emission peak may lie beyond the midplane snowline.", "refs": ["nomura", "n2h"]},
-      "cold-reservoir": {"name": "Cold ice reservoir", "style": "zone", "color": "#b3d8ff", "radial": [0.6, 0.972], "height": [-0.215, 0.215], "note": "Volatiles on grain surfaces make a distinct solid reservoir. The CO-ice absorption in HH 48 NE motivates this example.", "refs": ["ices", "snowlines"]},
-      "photo-desorb": {"name": "Possible photodesorption layer", "style": "paired", "color": "#b3d8ff", "radial": [0.57, 0.97], "height": [0.29, 0.469], "note": "Photons can release molecules from ice where light reaches grain surfaces. Some exoALMA discs show CO temperature signatures consistent with non-thermal desorption.", "refs": ["exoalma", "review"]},
-      "dust-gap": {"name": "Dust gap", "style": "zone", "color": "#b3d8ff", "radial": [0.327, 0.398], "height": [-0.127, 0.127], "note": "An annulus with reduced dust continuum, inspired by DSHARP gaps. Gas density and dust brightness can vary independently.", "refs": ["dsharpRings"]},
-      "dust-ring": {"name": "Dust rings", "style": "rings", "color": "#b3d8ff", "radial": [0.42, 0.79], "height": [-0.112, 0.112], "note": "Enhanced continuum rings are common in young discs. Scattered-light substructure is also seen around evolved binaries, including IRAS 08544−4431.", "refs": ["dsharpRings", "scattering"]},
-      "pressure-trap": {"name": "Possible pressure trap", "style": "zone", "color": "#b3d8ff", "radial": [0.438, 0.507], "height": [-0.087, 0.087], "note": "A radial pressure maximum can retain drifting grains in a narrow ring. This is one interpretation of some DSHARP rings, illustrated here at the first dust ring.", "refs": ["dsharpTraps"]},
-      "ice-release": {"name": "Warm ice-release zone", "style": "paired", "color": "#b3d8ff", "radial": [0.27, 0.53], "height": [0.236, 0.505], "note": "In Oph IRS 48 a warm, asymmetric dust trap emits molecules including SO₂ and dimethyl ether. The cross-section illustrates a slice through such a local environment.", "refs": ["sulfurTrap", "complexTrap", "no"]}
+      "cavity": {"name": "Inner dust cavity", "style": "zone", "color": "#f6b17d", "radial": [-0.092, 0.003], "height": [-0.8, 1.12], "note": "A depleted dust region interior to the bright rim. Post-AGB transition discs can have dust rims well outside the sublimation radius.", "refs": ["cavity", "rim"], "placement": [["cavity", "Fig. 2"]]},
+      "sublimation": {"name": "Dust sublimation rim", "style": "zone", "color": "#f6b17d", "radial": [0.003, 0.054], "height": [-0.91, 1.015], "note": "An irradiated inner wall can mark the radius at which solid dust survives. Near-infrared interferometry resolved a hot dust rim around IRAS 08544−4431.", "refs": ["rim", "kama"], "placement": [["rim", "Fig. 2"]]},
+      "warm-inner": {"name": "Warm inner disc", "style": "paired", "color": "#f6b17d", "radial": [0.035, 0.23], "height": [0.16, 0.64], "note": "Warm, dense gas near the inner rim can emit water, CO₂ and nitriles. HR 4049 and the Red Rectangle illustrate different tracers of the inner evolved disc.", "refs": ["hr4049", "rectangle"], "placement": [["waterD", "Fig. 1"]]},
+      "carbon-front": {"name": "Possible carbon-grain destruction front", "style": "snow", "color": "#f6b17d", "radial": [0.06, 0.095], "height": [-0.46, 0.46], "note": "Some carbon-rich young inner discs show strong hydrocarbons consistent with destruction of carbonaceous solids. The location is an illustrative hypothesis.", "refs": ["soot", "acetylene"], "placement": [["soot", "§4.3.3"]]},
+      "dust-extent": {"name": "Millimetre dust edge", "style": "zone", "color": "#f6b17d", "radial": [0.84, 0.91], "height": [-0.13, 0.13], "note": "The observable millimetre dust disc can end inward of the CO-emitting region. Grain evolution and line optical depth both affect the apparent size contrast.", "refs": ["taper", "settled"], "placement": [["taper", "§3.1"]]},
+      "outer-taper": {"name": "Outer gas taper", "style": "zone", "color": "#f6b17d", "radial": [0.88, 0.998], "height": [-0.89, 1.0], "note": "The outer gas disc fades as its column density falls. CO shielding, line opacity and sensitivity influence the observed edge.", "refs": ["taper"], "placement": [["taper", "§3.2"]]},
+      "flaring": {"name": "Flared disc atmosphere", "style": "paired", "color": "#a1dcf3", "radial": [0.41, 0.986], "height": [0.83, 0.994], "note": "The geometrical thickness of the illustrated disc grows with radius. Scattered-light and CO-emission surfaces sample different parts of that atmosphere.", "refs": ["scattering", "exoalma"], "placement": [["exoalma", "Fig. 2"]]},
+      "uv-surface": {"name": "UV-irradiated surface", "style": "paired", "color": "#a1dcf3", "radial": [0.033, 0.97], "height": [0.903, 1.012], "note": "Ultraviolet radiation processing the surface drives dissociation and photochemistry. Irradiated OH in d203-506 is one example.", "refs": ["review", "oh"], "placement": [["maps", "Fig. 1"]]},
+      "scattering": {"name": "Small-grain scattering surface", "style": "paired", "color": "#a1dcf3", "radial": [0.09, 0.92], "height": [0.77, 0.906], "note": "Fine grains above the midplane scatter starlight. SPHERE polarimetry traces illuminated dust around the evolved binary IRAS 08544−4431.", "refs": ["scattering", "settled"], "placement": [["scattering", "Fig. 3"]]},
+      "co-surface": {"name": "Upper ¹²CO emitting surface", "style": "paired", "color": "#a1dcf3", "radial": [0.04, 0.974], "height": [0.755, 0.895], "note": "The main CO line becomes optically thick relatively high in the young discs studied by exoALMA. The emitting surface is a line-dependent observational layer.", "refs": ["exoalma", "mapsLayers"], "placement": [["exoalma", "Fig. 2"]]},
+      "molecular-layer": {"name": "Shielded molecular layer", "style": "paired", "color": "#a1dcf3", "radial": [0.045, 0.957], "height": [0.36, 0.68], "note": "Shielding lets molecules survive below the exposed surface while gas remains warm enough to emit. ¹³CO and CS trace lower layers than ¹²CO in exoALMA.", "refs": ["review", "exoalma"], "placement": [["maps", "Fig. 1"]]},
+      "deep-gas": {"name": "Deep gas traced by rare CO", "style": "paired", "color": "#a1dcf3", "radial": [0.04, 0.83], "height": [0.135, 0.383], "note": "Rarer CO lines can probe deeper layers when the gas is shielded and warm enough to keep CO in the gas phase. The Red Rectangle C¹⁷O map traces its rotating disc.", "refs": ["mapsLayers", "coDouble17", "rectangle"], "placement": [["coDouble17", "Fig. 2"]]},
+      "midplane": {"name": "Shielded midplane", "style": "zone", "color": "#a1dcf3", "radial": [0.026, 0.98], "height": [-0.092, 0.092], "note": "Dense gas near the equatorial plane is well shielded from direct UV. Cold parts of this region can hold substantial molecular ice.", "refs": ["review", "ices"], "placement": [["maps", "Fig. 1"]]},
+      "settled-dust": {"name": "Settled millimetre grains", "style": "zone", "color": "#a1dcf3", "radial": [0.035, 0.885], "height": [-0.04, 0.04], "note": "Large grains can concentrate in a thin layer around the midplane. Oph 163131 gives an observational example of strong settling.", "refs": ["settled", "birnstiel"], "placement": [["settled", "Fig. 11"]]},
+      "disc-wind": {"name": "Molecular surface outflow", "style": "wind", "color": "#a1dcf3", "radial": [0, 1], "height": [0, 1], "note": "The wisps illustrate gas leaving both disc faces. Their geometry is inspired by the spatially resolved molecular winds of young discs, with the Red Rectangle providing an evolved-disc comparison.", "refs": ["rectangle", "winds"], "placement": [["winds", "Fig. 2"]]},
+      "water-snow": {"name": "Water snow surface", "style": "snow", "color": "#b3d8ff", "radial": [0.17, 0.28], "height": [-0.72, 0.72], "note": "The midplane water snowline is the intersection of this surface with the midplane. Outburst-heated V883 Ori enables direct gas-phase water mapping on disc scales.", "refs": ["snowlines", "waterD"], "placement": [["waterD", "Fig. 1"]]},
+      "co2-snow": {"name": "CO₂ snow surface", "style": "snow", "color": "#b3d8ff", "radial": [0.34, 0.46], "height": [-0.68, 0.68], "note": "CO₂ generally freezes at cooler locations than water under comparable conditions. Mixed ices and local pressure can shift the boundary.", "refs": ["snowlines", "ices"], "placement": [["snowlines", "Fig. 1"]]},
+      "co-snow": {"name": "CO snow surface", "style": "snow", "color": "#b3d8ff", "radial": [0.59, 0.79], "height": [-0.59, 0.59], "note": "CO freezes in the cold lower disc. CO isotopologues and N₂H⁺ offer complementary constraints, and the N₂H⁺ emission peak may lie beyond the midplane snowline.", "refs": ["nomura", "n2h"], "placement": [["n2h", "Fig. 1"]]},
+      "cold-reservoir": {"name": "Cold ice reservoir", "style": "zone", "color": "#b3d8ff", "radial": [0.6, 0.972], "height": [-0.215, 0.215], "note": "The shaded cold midplane follows the TW Hya thermal model. The spatially resolved HH 48 NE ice absorption provides a complementary example of ice-bearing grains.", "refs": ["ices", "snowlines"], "placement": [["n2h", "Fig. 1"], ["ices", "§3.3.2"]]},
+      "photo-desorb": {"name": "Possible photodesorption layer", "style": "paired", "color": "#b3d8ff", "radial": [0.57, 0.97], "height": [0.29, 0.469], "note": "Photons can release molecules from ice where light reaches grain surfaces. Some exoALMA discs show CO temperature signatures consistent with non-thermal desorption.", "refs": ["exoalma", "review"], "placement": [["exoalma", "§6.3"]]},
+      "dust-gap": {"name": "Dust gap", "style": "zone", "color": "#b3d8ff", "radial": [0.327, 0.398], "height": [-0.127, 0.127], "note": "An annulus with reduced dust continuum, inspired by DSHARP gaps. Gas density and dust brightness can vary independently.", "refs": ["dsharpRings"], "placement": [["dsharpRings", "Fig. 1"]]},
+      "dust-ring": {"name": "Dust rings", "style": "rings", "color": "#b3d8ff", "radial": [0.42, 0.79], "height": [-0.112, 0.112], "note": "Enhanced continuum rings are common in young discs. Scattered-light substructure is also seen around evolved binaries, including IRAS 08544−4431.", "refs": ["dsharpRings", "scattering"], "placement": [["dsharpRings", "Fig. 1"]]},
+      "pressure-trap": {"name": "Possible pressure trap", "style": "zone", "color": "#b3d8ff", "radial": [0.438, 0.507], "height": [-0.087, 0.087], "note": "A radial pressure maximum can retain drifting grains in a narrow ring. This is one interpretation of some DSHARP rings, illustrated here at the first dust ring.", "refs": ["dsharpTraps"], "placement": [["dsharpTraps", "§5 (The rings as dust traps)"]]},
+      "ice-release": {"name": "Warm ice-release zone", "style": "paired", "color": "#b3d8ff", "radial": [0.27, 0.53], "height": [0.236, 0.505], "note": "In Oph IRS 48 a warm, asymmetric dust trap emits molecules including SO₂ and dimethyl ether. The cross-section illustrates a slice through such a local environment.", "refs": ["sulfurTrap", "complexTrap", "no"], "placement": [["complexTrap", "Fig. 1"]]}
     };
 
     // Keep the original seven particle fields for the overview and homepage.
@@ -2268,11 +2280,12 @@
       disc: discFocus
     };
     const hotspots = [...map.querySelectorAll('[data-destination]')];
-    const defaultCaption = discCaption.textContent;
+    const defaultCaption = [...discCaption.childNodes];
     let route = routeFromUrl();
     let camera;
     let transition = null;
     let layout;
+    let homeSceneCentre;
     let ambient;
     let paintedSystemFrame = false;
     let playgroundLayout;
@@ -2294,8 +2307,18 @@
       const compact = layout.compact;
       const centre = (x, y, zoom, u, v) => ({ x, y, zoom, u, v });
       if (destination === 'system') {
-        // Leave room for the homepage intro above the system on phones.
-        const v = layout.width <= 520 ? clamp(395 / layout.height, 0.56, 0.70) : (compact ? 0.49 : 0.54);
+        if (layout.phoneHome) {
+          const { top, height } = map.getBoundingClientRect();
+          if (height > 0) {
+            const jetClearance = (249 - jetFocus[1]) * layout.base + 28;
+            const inset = layout.height < 640 ? Math.min(height / 2, Math.max(76, jetClearance)) : height / 2;
+            homeSceneCentre = top + window.scrollY + inset;
+          }
+          if (homeSceneCentre !== undefined) {
+            return centre(582, 249, 1, 0.50, (homeSceneCentre - window.scrollY) / layout.height);
+          }
+        }
+        const v = compact ? 0.49 : 0.54;
         return centre(582, 249, 1, 0.50, v);
       }
       const [x, y] = point || destinations[destination];
@@ -2322,13 +2345,31 @@
       return [(x - placement.x) / placement.scale, (y - placement.y) / placement.scale];
     }
 
-    function positionHotspots() {
-      const homeCamera = cameraFor('system');
-      for (const link of hotspots) {
-        const [x, y] = worldToClient(destinations[link.dataset.destination], homeCamera);
-        link.style.setProperty('--x', `${x}px`);
-        link.style.setProperty('--y', `${y}px`);
+    function positionHotspots(homeCamera = cameraFor('system')) {
+      const points = Object.fromEntries(hotspots.map(link => [
+        link.dataset.destination, worldToClient(destinations[link.dataset.destination], homeCamera)
+      ]));
+      const { left, top } = layout.phoneHome ? map.getBoundingClientRect() : { left: 0, top: 0 };
+      if (layout.phoneHome) {
+        // Separate the touch targets for neighbouring parts of the binary.
+        const spacing = hotspots[0].offsetWidth + 6;
+        const spread = Math.max(0, (spacing - (points.leisure[0] - points.about[0])) / 2);
+        points.about[0] -= spread;
+        points.leisure[0] += spread;
+        points.cv[1] = Math.min(points.cv[1], points.leisure[1] - spacing);
       }
+      for (const link of hotspots) {
+        const [x, y] = points[link.dataset.destination];
+        link.style.setProperty('--x', `${x - left}px`);
+        link.style.setProperty('--y', `${y - top}px`);
+      }
+    }
+
+    function alignPhoneScene() {
+      if (!layout?.phoneHome || route !== 'system' || transition) return;
+      camera = cameraFor('system');
+      positionHotspots(camera);
+      if (!playing) paintFrame();
     }
 
     function traceHit(x, y) {
@@ -2589,15 +2630,15 @@
       const { width, height } = canvas.getBoundingClientRect();
       if (!width || !height) return false;
       const density = renderDensity();
-      if (layout?.width === width && layout.height === height && layout.density === density) return false;
+      const phoneHome = window.matchMedia('(max-width: 680px)').matches;
+      if (layout?.width === width && layout.height === height && layout.density === density && layout.phoneHome === phoneHome) return false;
       const compact = width <= 820;
       const priorCompact = layout?.compact;
-      const priorHomeV = layout && cameraFor('system').v;
-      layout = { width, height, density, compact, base: Math.min(width / (compact ? 970 : 1020), height / (compact ? 525 : 584)) };
+      layout = { width, height, density, compact, phoneHome, base: Math.min(width / (compact ? 970 : 1020), height / (compact ? 525 : 584)) };
       canvas.width = Math.round(width * density);
       canvas.height = Math.round(height * density);
       ambient = null;
-      if (priorCompact !== compact || (route === 'system' && priorHomeV !== cameraFor('system').v)) {
+      if (priorCompact !== compact || route === 'system') {
         camera = cameraFor(route);
         if (transition) {
           transition = null;
@@ -2657,6 +2698,7 @@
       }
       backLink.hidden = route === 'system';
       skipLink.hidden = route !== 'system';
+      alignPhoneScene();
       if (route === 'disc') fitPlayground();
     }
 
@@ -2671,8 +2713,8 @@
         try { history.pushState(null, '', hash); }
         catch { location.hash = hash; }
       }
-      const to = cameraFor(route, focusPoint);
       window.scrollTo(0, 0);
+      const to = cameraFor(route, focusPoint);
       hoverDestination('');
       description.open = false;
       for (const entry of Object.values(pages)) entry.page.hidden = true;
@@ -2741,25 +2783,40 @@
       if (target) openPage(target, point);
     });
     description.addEventListener('toggle', paintFrame);
-    function showDiscNote(paragraph, entry, fallback = '') {
-      paragraph.hidden = !entry && !fallback;
+    function discSourceLink(reference, locator) {
+      const [title, url] = discSources[reference];
+      const link = document.createElement('a');
+      link.href = url;
+      link.textContent = locator ? `${title} (${locator})` : title;
+      return link;
+    }
+
+    function showDiscNote(paragraph, entry, fallback = []) {
+      paragraph.hidden = !entry && fallback.length === 0;
       if (!entry) {
-        paragraph.textContent = fallback;
+        paragraph.replaceChildren(...fallback);
         return;
       }
 
       const name = document.createElement('strong');
       name.textContent = entry.name;
-      const references = document.createElement('span');
-      references.className = 'note-sources';
-      for (const reference of entry.refs) {
-        const [title, url] = discSources[reference];
-        const link = document.createElement('a');
-        link.href = url;
-        link.textContent = title;
-        references.append(link);
+      const placement = document.createElement('span');
+      placement.className = 'note-placement';
+      placement.append('Placement informed by ');
+      entry.placement.forEach(([reference, locator], index) => {
+        if (index > 0) placement.append(' and ');
+        placement.append(discSourceLink(reference, locator));
+      });
+      placement.append('.');
+      paragraph.replaceChildren(name, `. ${entry.note}`, placement);
+
+      const contextualRefs = entry.refs.filter(reference => !entry.placement.some(([source]) => reference === source));
+      if (contextualRefs.length) {
+        const references = document.createElement('span');
+        references.className = 'note-sources';
+        references.append(...contextualRefs.map(reference => discSourceLink(reference)));
+        paragraph.append(references);
       }
-      paragraph.replaceChildren(name, `. ${entry.note} `, references);
     }
 
     function updateTracer() {
@@ -2793,6 +2850,11 @@
     canvasResize.observe(canvas);
     canvasResize.observe(playgroundCanvas);
     window.addEventListener('resize', fitCanvases, { passive: true });
+    const homeResize = new ResizeObserver(alignPhoneScene);
+    homeResize.observe(document.querySelector('.home-title'));
+    homeResize.observe(map);
+    pages.system.page.addEventListener('animationend', alignPhoneScene);
+    window.addEventListener('scroll', alignPhoneScene, { passive: true });
     document.addEventListener('visibilitychange', () => {
       scheduleFrame();
       if (!document.hidden) scheduleArtwork();
