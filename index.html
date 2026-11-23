@@ -7,6 +7,7 @@
   <meta name="description" content="Maksym Mohorian studies the chemistry of gas and dust in evolved binary systems - from stellar surfaces to circumbinary discs. The site contains all ordinary things you might need to know Maksym, plus animated models of an evolved binary system and a chemical make-up of the circumbinary disc.">
   <title>Personal website of Dr. Mohorian</title>
   <link rel="icon" type="image/svg+xml" href="data:,">
+  <script src="site-footer.js" defer></script>
   <style>
     :root {
       color-scheme: dark;
@@ -23,7 +24,10 @@
     *, *::before, *::after { box-sizing: border-box; }
     [hidden] { display: none !important; }
     html { background: var(--night); }
-    body { margin: 0; color: var(--text); font: 1rem/1.58 var(--sans); min-height: 100svh; }
+    body {
+      display: flex; flex-direction: column; min-height: 100svh;
+      margin: 0; color: var(--text); font: 1rem/1.58 var(--sans);
+    }
     button, summary, a { -webkit-tap-highlight-color: transparent; }
     button { font: inherit; }
     a { color: var(--link); text-underline-offset: 0.22em; }
@@ -76,8 +80,8 @@
       width: 0; height: 0; border: solid transparent; border-width: 0.34rem 0 0.34rem 0.54rem; border-left-color: currentColor;
     }
 
-    main { position: relative; z-index: 2; }
-    .home { min-height: 100svh; display: flex; flex-direction: column; justify-content: space-between; }
+    main { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; }
+    .home { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
     .home-title {
       --home-picture-width: clamp(8rem, 15vw, 13.5rem);
       position: relative; z-index: 2; padding: clamp(5.9rem, 10.5vh, 8rem) var(--gutter) 0; pointer-events: none;
@@ -176,8 +180,8 @@
     .text-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin-top: 0.8rem; }
 
     .detail {
-      display: flex; align-items: flex-start; padding: clamp(8rem, 16vh, 13rem) var(--gutter) 4.5rem;
-      min-height: 100svh; pointer-events: none;
+      display: flex; flex: 1; align-items: flex-start; padding: clamp(8rem, 16vh, 13rem) var(--gutter) 4.5rem;
+      pointer-events: none;
     }
     .reading-panel { width: min(100%, 32.5rem); pointer-events: auto; }
     .detail h1, .disc-title h1 { font-size: clamp(3.25rem, 6.2vw, 6rem); }
@@ -259,6 +263,18 @@
       .disc-controls { grid-template-columns: minmax(0, 1fr); }
     }
     .no-script { position: fixed; z-index: 9; inset: 40% 10% auto; color: var(--text); background: #102035; padding: 1rem; }
+
+    .site-fundraisers {
+      position: relative; z-index: 2; margin-inline: var(--gutter);
+      padding: 0.78rem 0 max(1.05rem, env(safe-area-inset-bottom)); border-top: 1px solid var(--edge);
+      color: var(--quiet); font-size: 0.875rem; line-height: 1.48;
+    }
+    .site-fundraisers h2 { margin-bottom: 0.28rem; color: var(--text); font: 650 0.98rem/1.35 var(--sans); }
+    .fundraiser-links:not([hidden]) {
+      display: flex; flex-wrap: wrap; gap: 0.48rem 1.5rem; list-style: none; padding: 0; margin: 0;
+    }
+    .fundraiser-links li { max-width: min(100%, 27rem); overflow-wrap: anywhere; }
+    .fundraiser-description { display: block; margin-top: 0.12rem; }
 
     .page-enter { animation: page-enter 340ms ease-out both; }
     @keyframes page-enter { from { opacity: 0; translate: 0 0.5rem; } to { opacity: 1; translate: 0 0; } }
@@ -678,6 +694,11 @@
       <div class="no-script">This site uses JavaScript for its interactive binary system.</div>
     </noscript>
   </main>
+  <footer class="site-fundraisers" data-fundraisers aria-labelledby="fundraisers-title">
+    <h2 id="fundraisers-title">Fundraisers I support</h2>
+    <p class="fundraiser-placeholder">Campaign links will be added here.</p>
+    <ul class="fundraiser-links" role="list" hidden></ul>
+  </footer>
   <script>
     'use strict';
 
