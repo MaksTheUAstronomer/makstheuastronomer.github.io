@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const dedication = 'I’m grateful to Ukraine’s defenders for protecting my home and family from Russia’s invasion. '
+  const dedication = 'I am eternally grateful to Ukrainian defenders for protecting my home and family from russian invaders. '
     + 'Please consider supporting Ukraine through these organisations.';
 
   const fundraiserGroups = [
@@ -10,19 +10,18 @@
       fundraisers: [
         {
           name: 'UNITED24',
-          url: 'https://u24.gov.ua/scott-kelly-fundraiser-for-ambulances',
+          url: 'https://u24.gov.ua/',
           description: 'Ambulances for Ukrainian hospitals.',
         },
         {
           name: 'Razom for Ukraine',
-          url: 'https://www.razomforukraine.org/projects/relief/',
+          url: 'https://www.razomforukraine.org/donate-to-ukraine/',
           description: 'Civilian relief and recovery through local organisations.',
         },
         {
-          name: 'Корпорація Монстрів',
-          language: 'uk',
-          url: 'https://monstrov.org/projects/humanitarian/',
-          description: 'In-kind donations of food, clothing and hygiene supplies for civilians in Odesa.',
+          name: 'Australia for UNHCR',
+          url: 'https://www.unrefugees.org.au/emergency-response/ukraine-emergency/',
+          description: 'Supporting civilians by providing emergency cash for essentials, repairing damaged homes, and giving children and parents psychological support.',
         },
       ],
     },
@@ -32,7 +31,7 @@
         {
           name: 'Sternenko Community Foundation',
           url: 'https://www.sternenkofund.org/en',
-          description: 'Equipment for Ukraine’s Defence Forces.',
+          description: 'Equipment and drones for Ukraine’s Defence Forces.',
         },
         {
           name: 'Come Back Alive',
