@@ -136,9 +136,9 @@
     }
     .hotspot-mark {
       display: block; width: 1.18rem; height: auto; pointer-events: none;
-      color: var(--ink);
-      filter: drop-shadow(0 1px 2px #030812);
-      transition: transform 180ms, filter 180ms;
+      color: #000;
+      filter: drop-shadow(0 0 0.8px #ffe8cb) drop-shadow(0 0 1px #ffe8cb94);
+      transition: transform 180ms;
     }
     .hotspot-label {
       position: absolute; bottom: calc(100% + 0.05rem); left: 50%; transform: translateX(var(--label-shift, -50%)) translateY(3px);
@@ -150,7 +150,7 @@
       opacity: 1; transform: translateX(var(--label-shift, -50%)) translateY(0);
     }
     .hotspot.is-hovered .hotspot-mark, .hotspot:hover .hotspot-mark, .hotspot:focus-visible .hotspot-mark {
-      transform: scale(1.12); filter: drop-shadow(0 1px 3px #030812);
+      transform: scale(1.12);
     }
     .system-description { margin-top: 0.8rem; }
     .system-description > summary { list-style: none; justify-content: flex-start; pointer-events: auto; }
@@ -418,16 +418,16 @@
             <use href="#ukraine-arms-half" transform="matrix(-1 0 0 1 658 0)"/>
           </symbol>
         </svg>
-        <a class="hotspot" data-destination="about" href="#about" aria-label="Primary star, About me" style="--ink:#ffc995">
+        <a class="hotspot" data-destination="about" href="#about" aria-label="Primary star, About me">
           <svg class="hotspot-mark" viewBox="0 0 660 922" aria-hidden="true"><use href="#ukraine-arms"/></svg><span class="hotspot-label" aria-hidden="true">About me</span>
         </a>
-        <a class="hotspot" data-destination="leisure" href="#leisure" aria-label="Companion, Leisure" style="--ink:#eba96f">
+        <a class="hotspot" data-destination="leisure" href="#leisure" aria-label="Companion, Leisure">
           <svg class="hotspot-mark" viewBox="0 0 660 922" aria-hidden="true"><use href="#ukraine-arms"/></svg><span class="hotspot-label" aria-hidden="true">Non-research</span>
         </a>
-        <a class="hotspot" data-destination="cv" href="#cv" aria-label="Bipolar jet, Research" style="--ink:#9be4dc">
+        <a class="hotspot" data-destination="cv" href="#cv" aria-label="Bipolar jet, Research">
           <svg class="hotspot-mark" viewBox="0 0 660 922" aria-hidden="true"><use href="#ukraine-arms"/></svg><span class="hotspot-label" aria-hidden="true">Research</span>
         </a>
-        <a class="hotspot" data-destination="disc" href="#disc" aria-label="Circumbinary disc, Disc Chemistry Sandbox" style="--ink:#efc6ae">
+        <a class="hotspot" data-destination="disc" href="#disc" aria-label="Circumbinary disc, Disc Chemistry Sandbox">
           <svg class="hotspot-mark" viewBox="0 0 660 922" aria-hidden="true"><use href="#ukraine-arms"/></svg><span class="hotspot-label" aria-hidden="true">Disc Chemistry Sandbox</span>
         </a>
       </nav>
