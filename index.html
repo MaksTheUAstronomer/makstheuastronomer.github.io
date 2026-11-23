@@ -81,7 +81,7 @@
     }
 
     main { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; }
-    .home { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .home { flex: 1; padding-bottom: 1.25rem; }
     .home-title {
       --home-picture-width: clamp(8rem, 22vw, 20rem);
       position: relative; z-index: 2; padding: clamp(5.9rem, 10.5vh, 8rem) var(--gutter) 0; pointer-events: none;
@@ -91,7 +91,7 @@
     }
     .home-title h1 { grid-area: heading; font-size: clamp(2.3rem, 4.6vw, 4.45rem); }
     .home-intro { grid-area: intro; max-width: 58ch; color: #c5d2df; font-size: clamp(0.94rem, 1.23vw, 1.06rem); }
-    .home-intro p + p { margin-top: 0.52rem; }
+    .home-intro > p + p { margin-top: 0.52rem; }
     .picture-slot {
       inline-size: fit-content; max-inline-size: min(100%, var(--picture-width, 24rem));
       overflow: hidden; margin: 0; border: 1px solid var(--edge); border-radius: 0.65rem;
@@ -151,21 +151,16 @@
     .hotspot.is-hovered .hotspot-mark, .hotspot:hover .hotspot-mark, .hotspot:focus-visible .hotspot-mark {
       transform: scale(1.27); background: #243e52;
     }
-    .home-foot {
-      position: relative; z-index: 3; margin: 0 var(--gutter); padding: 1rem 0 max(1.55rem, env(safe-area-inset-bottom));
-      border-top: 1px solid var(--edge); display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 0.65rem 1.5rem;
-    }
-    .home-hint { color: var(--quiet); font-size: 0.91rem; }
-    .system-description { position: relative; }
-    .system-description > summary { list-style: none; justify-content: flex-start; }
+    .system-description { margin-top: 0.8rem; }
+    .system-description > summary { list-style: none; justify-content: flex-start; pointer-events: auto; }
     .system-description > summary::-webkit-details-marker { display: none; }
     .system-description > summary::before { content: '+'; color: var(--link); font: 1.06rem/1 var(--mono); }
     .system-description[open] > summary::before { content: '−'; }
     .description-panel {
-      position: absolute; bottom: calc(100% + 0.8rem); left: 0; width: min(36rem, calc(100vw - 2 * var(--gutter)));
+      margin-top: 0.8rem; width: min(100%, 36rem); pointer-events: auto;
       max-height: min(60vh, 31rem); overflow: auto; padding: 1.2rem 1.42rem; border: 1px solid #466179;
       border-radius: 0.65rem; background: #101c2ef5; box-shadow: 0 1.5rem 3rem #03070d9c;
+      color: var(--text); font-size: 1rem; line-height: 1.58;
     }
     .description-panel p { margin-top: 0.68rem; color: #c4d2df; }
     .bibliography { margin-top: 0.95rem; padding-top: 0.75rem; border-top: 1px solid var(--edge); }
@@ -306,8 +301,6 @@
       .home-intro { line-height: 1.46; }
       .detail h1, .disc-title h1 { font-size: clamp(2.7rem, 9.95vw, 4rem); }
       .disc-title p { margin-top: 0.58rem; }
-      .home-foot { flex-direction: column; align-items: flex-start; gap: 0.52rem; }
-      .home-hint { font-size: 0.84rem; }
       .description-panel { padding: 0.9rem 1rem; }
       .hotspot { width: 1.55rem; height: 1.55rem; }
       .hotspot-mark { width: 0.55rem; height: 0.55rem; }
@@ -328,7 +321,6 @@
       .home-title { --home-picture-width: clamp(8rem, 13vw, 11rem); }
       .disc-title h1 { font-size: clamp(2.9rem, 6vw, 4.7rem); }
       .disc-title p { margin-top: 0.38rem; }
-      .home-foot { padding-block: 0.5rem 0.62rem; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0ms !important; transition-duration: 0ms !important; }
@@ -370,6 +362,45 @@
         <div class="home-intro">
           <p>I am exploring the possibility of second-generation planet formation by studying chemistry of evolved binary systems from stellar surfaces to circumbinary discs.</p>
           <p>In my research, I analyse high-resolution optical/near-infrared spectra (HERMES/Mercator, UVES/VLT, APOGEE) and mm-cm radio-interferometric maps of molecular gas species and dust continuum (ALMA, ATCA).</p>
+          <details class="system-description" id="system-description">
+            <summary class="control">System description</summary>
+            <div class="description-panel">
+              <h2>A post-AGB binary</h2>
+              <p>The system consists of: i) a post-AGB primary star, ii) main-sequence secondary companion, iii) a circumbinary disc feeding the central binary, iv) a circumsecondary accretion disc, and v) a bipolar non-relativistic jet. Accretion streams supply volatile-rich matter to both binary components through L₂ and L₃.</p>
+              <p>The post-AGB primary is larger (R~50-100Rsun) and brighter (L~10 000Lsun) than the MS companion. Bipolar jet originates in the location of the secondary companion, as concluded form the MS-like escape velocities of the jets (~400 km/s).</p>
+              <p>Sizes, temperatures and times are schematic. The "Disc Chemistry Sandbox" page features molecular tracers and dust processes studied in circumbinary discs of post-AGB systems and also PPDs of younger stars.</p>
+              <details class="bibliography">
+                <summary>Studies and what they informed</summary>
+                <h3>Binary, disc and jet</h3>
+                <dl>
+                  <div><dt>Hanawa, Ochi &amp; Ando (2010)</dt><dd>Binary accretion calculations inspired the two prograde streams through the outer Lagrange points. <a href="https://arxiv.org/abs/0911.2032" aria-label="Paper by Hanawa, Ochi and Ando">Paper</a></dd></div>
+                  <div><dt>Oomen et al. (2019)</dt><dd>Stellar evolution models with gas re-accretion motivated the stream feeding the post-AGB primary. <a href="https://doi.org/10.1051/0004-6361/201935853" aria-label="Paper by Oomen and colleagues">Paper</a></dd></div>
+                  <div><dt>Bollen, Kamath, De Marco, Van Winckel &amp; Wardle (2020)</dt><dd>Their accretion and jet mass-loss estimates motivated the link between re-accretion, a circumsecondary disc and its outflow. <a href="https://doi.org/10.1051/0004-6361/202038414" aria-label="2020 paper by Bollen and colleagues">Paper</a></dd></div>
+                  <div><dt>Bollen et al. (2022)</dt><dd>The fitted jet geometries and angular density contrasts inspired broad lobes with brighter limbs. Both illustrated lobes use the same opening angle. <a href="https://arxiv.org/abs/2208.08752" aria-label="2022 paper by Bollen and colleagues">Paper</a></dd></div>
+                  <div><dt>De Prins et al. (2024)</dt><dd>Magnetohydrodynamic models of a wind launched by the companion’s accretion disc informed the jet’s location and axis. The illustrated cones start just beyond the companion’s poles. <a href="https://doi.org/10.1051/0004-6361/202449631" aria-label="Paper by De Prins and colleagues">Paper</a></dd></div>
+                  <div><dt>Andrych et al. (2024)</dt><dd>Scattered-light images of IRAS 08544−4431 inspired the radial structure in the dusty circumbinary disc. <a href="https://doi.org/10.1093/mnras/stae2406" aria-label="Paper by Andrych and colleagues">Paper</a></dd></div>
+                  <div><dt>Mohorian et al. (2025)</dt><dd>Refractory depletion in stars with faint discs motivates the picture of processed gas returning to the star while solids are retained in the disc. <a href="https://doi.org/10.1017/pasa.2025.10117" aria-label="2025 faint-disc paper by Mohorian and colleagues">Paper</a></dd></div>
+                  <div><dt>Pourmand et al. (2025)</dt><dd>Their study of gravitational instability in post-AGB discs provides the second-generation planet-formation context for showing early grain evolution. <a href="https://doi.org/10.1017/pasa.2025.10125" aria-label="Paper by Pourmand and colleagues">Paper</a></dd></div>
+                </dl>
+                <h3>Dust and the disc wind</h3>
+                <dl>
+                  <div><dt>Kama, Min &amp; Dominik (2009)</dt><dd>Their models of dust sublimation in irradiated discs informed the warm inner rim and the condensation of refractory material just outside it. <a href="https://arxiv.org/abs/0908.1692" aria-label="Paper by Kama, Min and Dominik">Paper</a></dd></div>
+                  <div><dt>Nomura et al. (2016)</dt><dd>The link between features in TW Hya and its CO snow line motivated the cooler CO ice region farther from the binary. <a href="https://arxiv.org/abs/1512.05440" aria-label="Paper by Nomura and colleagues">Paper</a></dd></div>
+                  <div><dt>Birnstiel, Fang &amp; Johansen (2016)</dt><dd>The review informed grain growth, vertical settling, collisions and fragmentation. Turbulent mixing lifts fine fragments for the next cycle. <a href="https://doi.org/10.1007/s11214-016-0256-1" aria-label="Paper by Birnstiel, Fang and Johansen">Paper</a></dd></div>
+                  <div><dt>Dullemond et al. (2018, DSHARP VI)</dt><dd>Narrow millimetre rings studied as possible dust traps motivated the enhanced radial dust bands. <a href="https://arxiv.org/abs/1812.04044" aria-label="DSHARP VI paper by Dullemond and colleagues">Paper</a></dd></div>
+                  <div><dt>Pascucci et al. (2025)</dt><dd>Spatially resolved winds from young discs inspired the faint outward flow from both disc faces in the cross-section. <a href="https://doi.org/10.1038/s41550-024-02385-7" aria-label="Paper by Pascucci and colleagues">Paper</a></dd></div>
+                </dl>
+                <h3>Molecular tracers</h3>
+                <dl>
+                  <div><dt>Galloway-Sprietsma et al. (2025, exoALMA V)</dt><dd>Measured emitting surfaces informed the placement of ¹²CO above ¹³CO in the disc atmosphere. <a href="https://arxiv.org/abs/2504.19902" aria-label="exoALMA V paper by Galloway-Sprietsma and colleagues">Paper</a></dd></div>
+                  <div><dt>Zannese et al. (2024)</dt><dd>OH emission from water photodissociation in d203-506 inspired the OH tracer in the irradiated surface. <a href="https://doi.org/10.1038/s41550-024-02203-0" aria-label="Paper by Zannese and colleagues">Paper</a></dd></div>
+                  <div><dt>Booth et al. (2021)</dt><dd>SO and SO₂ emission linked to sublimating ices in Oph IRS 48 motivated the sulphur-bearing tracers in warm gas. <a href="https://doi.org/10.1051/0004-6361/202141057" aria-label="Paper by Booth and colleagues">Paper</a></dd></div>
+                  <div><dt>Phuong et al. (2018)</dt><dd>H₂S detected in the cold dense ring of GG Tau A motivated its placement in the outer molecular disc. <a href="https://doi.org/10.1051/0004-6361/201833766" aria-label="Paper by Phuong and colleagues">Paper</a></dd></div>
+                  <div><dt>Lee et al. (2007)</dt><dd>SiO in shocked gas in HH 212 inspired SiO as a possible tracer of shocks near the inner rim. <a href="https://arxiv.org/abs/astro-ph/0701284" aria-label="Paper by Lee and colleagues">Paper</a></dd></div>
+                </dl>
+              </details>
+            </div>
+          </details>
         </div>
         <figure class="picture-slot home-picture">
           <img src="images/home.PNG" alt="La Silla Observing School" decoding="async">
@@ -391,48 +422,6 @@
           <span class="hotspot-mark" aria-hidden="true"></span><span class="hotspot-label" aria-hidden="true">Disc Chemistry Sandbox</span>
         </a>
       </nav>
-      <div class="home-foot">
-        <details class="system-description" id="system-description">
-          <summary class="control">System description</summary>
-          <div class="description-panel">
-            <h2>A post-AGB binary</h2>
-            <p>The system consists of: i) a post-AGB primary star, ii) main-sequence secondary companion, iii) a circumbinary disc feeding the central binary, iv) a circumsecondary accretion disc, and v) a bipolar non-relativistic jet. Accretion streams supply volatile-rich matter to both binary components through L₂ and L₃.</p>
-            <p>The post-AGB primary is larger (R~50-100Rsun) and brighter (L~10 000Lsun) than the MS companion. Bipolar jet originates in the location of the secondary companion, as concluded form the MS-like escape velocities of the jets (~400 km/s).</p>
-            <p>Sizes, temperatures and times are schematic. The "Disc Chemistry Sandbox" page features molecular tracers and dust processes studied in circumbinary discs of post-AGB systems and also PPDs of younger stars.</p>
-            <details class="bibliography">
-              <summary>Studies and what they informed</summary>
-              <h3>Binary, disc and jet</h3>
-              <dl>
-                <div><dt>Hanawa, Ochi &amp; Ando (2010)</dt><dd>Binary accretion calculations inspired the two prograde streams through the outer Lagrange points. <a href="https://arxiv.org/abs/0911.2032" aria-label="Paper by Hanawa, Ochi and Ando">Paper</a></dd></div>
-                <div><dt>Oomen et al. (2019)</dt><dd>Stellar evolution models with gas re-accretion motivated the stream feeding the post-AGB primary. <a href="https://doi.org/10.1051/0004-6361/201935853" aria-label="Paper by Oomen and colleagues">Paper</a></dd></div>
-                <div><dt>Bollen, Kamath, De Marco, Van Winckel &amp; Wardle (2020)</dt><dd>Their accretion and jet mass-loss estimates motivated the link between re-accretion, a circumsecondary disc and its outflow. <a href="https://doi.org/10.1051/0004-6361/202038414" aria-label="2020 paper by Bollen and colleagues">Paper</a></dd></div>
-                <div><dt>Bollen et al. (2022)</dt><dd>The fitted jet geometries and angular density contrasts inspired broad lobes with brighter limbs. Both illustrated lobes use the same opening angle. <a href="https://arxiv.org/abs/2208.08752" aria-label="2022 paper by Bollen and colleagues">Paper</a></dd></div>
-                <div><dt>De Prins et al. (2024)</dt><dd>Magnetohydrodynamic models of a wind launched by the companion’s accretion disc informed the jet’s location and axis. The illustrated cones start just beyond the companion’s poles. <a href="https://doi.org/10.1051/0004-6361/202449631" aria-label="Paper by De Prins and colleagues">Paper</a></dd></div>
-                <div><dt>Andrych et al. (2024)</dt><dd>Scattered-light images of IRAS 08544−4431 inspired the radial structure in the dusty circumbinary disc. <a href="https://doi.org/10.1093/mnras/stae2406" aria-label="Paper by Andrych and colleagues">Paper</a></dd></div>
-                <div><dt>Mohorian et al. (2025)</dt><dd>Refractory depletion in stars with faint discs motivates the picture of processed gas returning to the star while solids are retained in the disc. <a href="https://doi.org/10.1017/pasa.2025.10117" aria-label="2025 faint-disc paper by Mohorian and colleagues">Paper</a></dd></div>
-                <div><dt>Pourmand et al. (2025)</dt><dd>Their study of gravitational instability in post-AGB discs provides the second-generation planet-formation context for showing early grain evolution. <a href="https://doi.org/10.1017/pasa.2025.10125" aria-label="Paper by Pourmand and colleagues">Paper</a></dd></div>
-              </dl>
-              <h3>Dust and the disc wind</h3>
-              <dl>
-                <div><dt>Kama, Min &amp; Dominik (2009)</dt><dd>Their models of dust sublimation in irradiated discs informed the warm inner rim and the condensation of refractory material just outside it. <a href="https://arxiv.org/abs/0908.1692" aria-label="Paper by Kama, Min and Dominik">Paper</a></dd></div>
-                <div><dt>Nomura et al. (2016)</dt><dd>The link between features in TW Hya and its CO snow line motivated the cooler CO ice region farther from the binary. <a href="https://arxiv.org/abs/1512.05440" aria-label="Paper by Nomura and colleagues">Paper</a></dd></div>
-                <div><dt>Birnstiel, Fang &amp; Johansen (2016)</dt><dd>The review informed grain growth, vertical settling, collisions and fragmentation. Turbulent mixing lifts fine fragments for the next cycle. <a href="https://doi.org/10.1007/s11214-016-0256-1" aria-label="Paper by Birnstiel, Fang and Johansen">Paper</a></dd></div>
-                <div><dt>Dullemond et al. (2018, DSHARP VI)</dt><dd>Narrow millimetre rings studied as possible dust traps motivated the enhanced radial dust bands. <a href="https://arxiv.org/abs/1812.04044" aria-label="DSHARP VI paper by Dullemond and colleagues">Paper</a></dd></div>
-                <div><dt>Pascucci et al. (2025)</dt><dd>Spatially resolved winds from young discs inspired the faint outward flow from both disc faces in the cross-section. <a href="https://doi.org/10.1038/s41550-024-02385-7" aria-label="Paper by Pascucci and colleagues">Paper</a></dd></div>
-              </dl>
-              <h3>Molecular tracers</h3>
-              <dl>
-                <div><dt>Galloway-Sprietsma et al. (2025, exoALMA V)</dt><dd>Measured emitting surfaces informed the placement of ¹²CO above ¹³CO in the disc atmosphere. <a href="https://arxiv.org/abs/2504.19902" aria-label="exoALMA V paper by Galloway-Sprietsma and colleagues">Paper</a></dd></div>
-                <div><dt>Zannese et al. (2024)</dt><dd>OH emission from water photodissociation in d203-506 inspired the OH tracer in the irradiated surface. <a href="https://doi.org/10.1038/s41550-024-02203-0" aria-label="Paper by Zannese and colleagues">Paper</a></dd></div>
-                <div><dt>Booth et al. (2021)</dt><dd>SO and SO₂ emission linked to sublimating ices in Oph IRS 48 motivated the sulphur-bearing tracers in warm gas. <a href="https://doi.org/10.1051/0004-6361/202141057" aria-label="Paper by Booth and colleagues">Paper</a></dd></div>
-                <div><dt>Phuong et al. (2018)</dt><dd>H₂S detected in the cold dense ring of GG Tau A motivated its placement in the outer molecular disc. <a href="https://doi.org/10.1051/0004-6361/201833766" aria-label="Paper by Phuong and colleagues">Paper</a></dd></div>
-                <div><dt>Lee et al. (2007)</dt><dd>SiO in shocked gas in HH 212 inspired SiO as a possible tracer of shocks near the inner rim. <a href="https://arxiv.org/abs/astro-ph/0701284" aria-label="Paper by Lee and colleagues">Paper</a></dd></div>
-              </dl>
-            </details>
-          </div>
-        </details>
-        <p class="home-hint">Select a part of the system to explore.</p>
-      </div>
     </section>
 
     <section class="detail" id="page-about" aria-labelledby="about-title" hidden>
