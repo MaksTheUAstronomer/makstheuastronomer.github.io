@@ -10,12 +10,12 @@
       fundraisers: [
         {
           name: 'UNITED24',
-          url: 'https://u24.gov.ua/scott-kelly-fundraiser-for-ambulances',
+          url: 'https://u24.gov.ua/',
           description: 'Ambulances for Ukrainian hospitals.',
         },
         {
           name: 'Razom for Ukraine',
-          url: 'https://www.razomforukraine.org/projects/relief/',
+          url: 'https://www.razomforukraine.org/donate-to-ukraine/',
           description: 'Civilian relief and recovery through local organisations.',
         },
         {
@@ -30,12 +30,12 @@
       fundraisers: [
         {
           name: 'Sternenko Community Foundation',
-          url: 'https://www.sternenkofund.org/en',
+          url: 'https://www.sternenkofund.org/en/donate/',
           description: 'Equipment for Ukraine’s Defence Forces.',
         },
         {
           name: 'Come Back Alive',
-          url: 'https://savelife.in.ua/en/about-foundation-en/',
+          url: 'https://savelife.in.ua/en/donate-en/',
           description: 'Military aid and training.',
         },
         {
