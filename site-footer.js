@@ -19,10 +19,9 @@
           description: 'Civilian relief and recovery through local organisations.',
         },
         {
-          name: 'Корпорація Монстрів',
-          language: 'uk',
-          url: 'https://monstrov.org/projects/humanitarian/',
-          description: 'In-kind donations of food, clothing and hygiene supplies for civilians in Odesa.',
+          name: 'Australia for UNHCR',
+          url: 'https://www.unrefugees.org.au/emergency-response/ukraine-emergency/',
+          description: 'Cash funding, home repairing, and psychological support for civilians.',
         },
       ],
     },
