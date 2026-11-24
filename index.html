@@ -53,6 +53,7 @@
     }
     body[data-page='disc'] #disc-scene, body[data-page='disc'] .vignette { visibility: hidden; }
     body[data-page='disc'] .site-header { background: var(--night); }
+    body[data-page='cv'] .site-header { background: #080e1af5; }
     .skip-link {
       position: fixed; z-index: 8; top: 0.5rem; left: 0.65rem; transform: translateY(-160%);
       padding: 0.58rem 0.8rem; background: #152438;
@@ -169,12 +170,24 @@
     .bibliography { margin-top: 0.95rem; padding-top: 0.75rem; border-top: 1px solid var(--edge); }
     .bibliography summary { width: fit-content; cursor: pointer; color: #f2eadf; font-weight: 600; }
     .bibliography summary::marker { color: var(--link); }
-    .bibliography h3 { margin: 1rem 0 0.45rem; color: #eac8aa; font-size: 0.98rem; }
+    .bibliography h3 { margin: 1rem 0 0.45rem; color: var(--link); font-size: 0.98rem; }
+    .bibliography h4 { margin: 0.82rem 0 0.42rem; font-size: 0.89rem; }
     .bibliography dl { margin: 0; font-size: 0.89rem; }
     .bibliography dl > div + div { margin-top: 0.65rem; }
     .bibliography dt { color: #e5edf5; font-weight: 600; }
     .bibliography dd { margin: 0.12rem 0 0; color: #c4d2df; }
     .bibliography a { white-space: nowrap; }
+    .citation-type {
+      color: var(--link); font-weight: 650; cursor: help;
+      text-decoration: underline dotted; text-underline-offset: 0.18em;
+    }
+    .citation-type:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; border-radius: 0.12rem; }
+    .citation-tooltip {
+      position: fixed; z-index: 10; inset: 0 auto auto 0; max-width: min(18rem, calc(100vw - 1rem));
+      padding: 0.38rem 0.6rem; border: 1px solid #728fa284; border-radius: 0.35rem;
+      color: var(--text); background: #101c2e; box-shadow: 0 0.4rem 1.1rem #03070dae;
+      font: 0.85rem/1.4 var(--sans); pointer-events: none;
+    }
     .text-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin-top: 0.8rem; }
 
     .detail {
@@ -189,7 +202,6 @@
     .reading-panel > .text-link { display: inline-block; margin-top: 1rem; }
     .text-link { font-size: 0.93rem; }
     .cv-panel { max-width: 32rem; }
-    .cv-field { color: #a9c6d2; font-size: 0.95rem; }
     .cv-panel h2 { padding-top: 0.86rem; border-top: 1px solid var(--edge); }
     .cv-list { margin: 0.7rem 0 0; }
     .cv-list > div + div { margin-top: 0.8rem; }
@@ -201,6 +213,37 @@
       display: inline-block; margin-top: 1.5rem; color: #f4c796; background: #30242ad9; border: 1px solid #b88f69;
       transform: rotate(-3deg); border-radius: 0.28rem; padding: 0.66rem 0.91rem; text-align: center; font: 0.85rem/1.45 var(--mono);
     }
+
+    .research-page {
+      flex: 1; padding: clamp(6.2rem, 11.8vh, 9.5rem) var(--gutter) 4.5rem;
+      width: min(100%, calc(56rem + 2 * var(--gutter)));
+    }
+    .research-page h1 { font-size: clamp(2.7rem, 6.2vw, 6rem); }
+    .research-intro p { margin-top: 0.78rem; color: #d4e1ec; max-width: 52ch; font-size: 1.08rem; }
+    .research-intro .text-link { display: inline-block; margin-top: 0.65rem; }
+    .publication-filters { display: flex; flex-wrap: wrap; gap: 0.42rem; margin: 1.45rem 0 1.1rem; }
+    .publication-filters .control { min-height: 2.4rem; white-space: normal; text-align: left; }
+    .publication-filters [aria-pressed='true'] { color: #151c25; background: var(--link); border-color: var(--link); }
+    .publication-group + .publication-group { margin-top: 1.75rem; }
+    .publication-group-title {
+      margin: 0 0 0.65rem; color: var(--link); font: 650 0.95rem/1.35 var(--sans); letter-spacing: normal;
+    }
+    .publication {
+      padding: clamp(1rem, 2.4vw, 1.45rem); border: 1px solid var(--edge); border-radius: 0.65rem;
+      background: linear-gradient(150deg, #132136f5, #0d1729f7);
+    }
+    .publication + .publication { margin-top: 0.65rem; }
+    .publication h3 { margin: 0.38rem 0 0.5rem; font: 400 clamp(1.28rem, 2.3vw, 1.7rem)/1.2 var(--serif); text-wrap: pretty; }
+    .publication h3 a { color: var(--text); text-decoration-color: #ffc9958c; text-decoration-thickness: 1px; }
+    .publication h3 a:hover { color: var(--link); }
+    .publication-meta { color: #d6e0eb; font-size: 0.89rem; }
+    .publication-venue { display: inline-block; margin-inline-start: 0.4rem; color: var(--quiet); }
+    .publication-note { color: #cbd7e4; max-width: 69ch; text-wrap: pretty; }
+    .publication:has(.publication-figure) {
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(9rem, 14rem); gap: 1rem; align-items: start;
+    }
+    .publication-figure { --picture-width: 14rem; }
+    .publication-figure img { width: 100%; }
 
     .disc-page {
       width: min(100% - 2 * var(--gutter), 70rem);
@@ -246,20 +289,27 @@
     }
     .disc-notes p + p { margin-top: 0.5rem; }
     .disc-notes strong { color: #f3efea; }
-    .note-placement { display: block; margin-top: 0.22rem; color: #b7c8d5; font-size: 0.84rem; }
-    .note-sources { display: inline-flex; flex-wrap: wrap; column-gap: 0.7rem; font-size: 0.84rem; }
+    .note-sources {
+      display: flex; flex-wrap: wrap; gap: 0.22rem 0.85rem; margin-top: 0.25rem;
+      color: #b7c8d5; font-size: 0.84rem;
+    }
     .disc-science { margin-top: 0.62rem; color: #b7c8d5; }
     .disc-science summary { width: fit-content; cursor: pointer; font-size: 0.85rem; }
     .disc-science summary::marker { color: var(--link); }
     .disc-references { max-width: 87ch; padding-block: 0.62rem 0.15rem; font-size: 0.89rem; }
     .disc-references p + p { margin-top: 0.48rem; }
+    .disc-references h3 {
+      margin: 0.85rem 0 0.36rem; padding-top: 0.6rem; border-top: 1px solid var(--edge);
+      color: var(--link); font-size: 0.94rem;
+    }
     .disc-reference-links {
-      display: flex; flex-wrap: wrap; gap: 0.32rem 1.08rem;
-      list-style: none; padding: 0.62rem 0 0; margin: 0.68rem 0 0; border-top: 1px solid var(--edge);
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr)); gap: 0.32rem 1.08rem;
+      list-style: none; padding: 0; margin: 0;
       font-size: 0.88rem;
     }
     @media (max-width: 680px) {
       .disc-controls { grid-template-columns: minmax(0, 1fr); }
+      .publication:has(.publication-figure) { grid-template-columns: minmax(0, 1fr); }
       .system-links { position: relative; inset: auto; height: clamp(18.5rem, 69vw, 27rem); }
       .hotspot[data-destination='disc'] .hotspot-label { left: auto; right: 0; --label-shift: 0%; }
     }
@@ -376,32 +426,33 @@
               <p>Disclaimer: Sizes, temperatures and times are schematic and not to scale. The "Disc Chemistry Sandbox" page features molecular tracers and dust processes studied in circumbinary discs of post-AGB systems and also PPDs of young stars.</p>
               <details class="bibliography">
                 <summary>Studies and what they informed</summary>
-                <h3>Binary, disc and jet</h3>
+                <h3>Circumbinary discs</h3>
                 <dl>
-                  <div><dt>Hanawa, Ochi &amp; Ando (2010) [CBD]</dt><dd>Binary accretion calculations inspired the two prograde streams through the outer Lagrange points. <a href="https://arxiv.org/abs/0911.2032" aria-label="Paper by Hanawa, Ochi and Ando">Paper</a></dd></div>
-                  <div><dt>Oomen et al. (2019) [CBD]</dt><dd>Stellar evolution models with gas re-accretion motivated the stream feeding the post-AGB primary. <a href="https://doi.org/10.1051/0004-6361/201935853" aria-label="Paper by Oomen and colleagues">Paper</a></dd></div>
-                  <div><dt>Bollen, Kamath, De Marco, Van Winckel &amp; Wardle (2020) [CBD]</dt><dd>Their accretion and jet mass-loss estimates motivated the link between re-accretion, a circumsecondary disc and its outflow. <a href="https://doi.org/10.1051/0004-6361/202038414" aria-label="2020 paper by Bollen and colleagues">Paper</a></dd></div>
-                  <div><dt>Bollen et al. (2022) [CBD]</dt><dd>The fitted jet geometries and angular density contrasts inspired broad lobes with brighter limbs. Both illustrated lobes use the same opening angle. <a href="https://arxiv.org/abs/2208.08752" aria-label="2022 paper by Bollen and colleagues">Paper</a></dd></div>
-                  <div><dt>De Prins et al. (2024) [CBD]</dt><dd>Magnetohydrodynamic models of a wind launched by the companion’s accretion disc informed the jet’s location and axis. The illustrated cones start just beyond the companion’s poles. <a href="https://doi.org/10.1051/0004-6361/202449631" aria-label="Paper by De Prins and colleagues">Paper</a></dd></div>
-                  <div><dt>Andrych et al. (2024) [CBD]</dt><dd>Scattered-light images of IRAS 08544−4431 inspired the radial structure in the dusty circumbinary disc. <a href="https://doi.org/10.1093/mnras/stae2406" aria-label="Paper by Andrych and colleagues">Paper</a></dd></div>
-                  <div><dt>Mohorian et al. (2025) [CBD]</dt><dd>Refractory depletion in stars with faint discs motivates the picture of processed gas returning to the star while solids are retained in the disc. <a href="https://doi.org/10.1017/pasa.2025.10117" aria-label="2025 faint-disc paper by Mohorian and colleagues">Paper</a></dd></div>
-                  <div><dt>Pourmand et al. (2025) [CBD]</dt><dd>Their study of gravitational instability in post-AGB discs provides the second-generation planet-formation context for showing early grain evolution. <a href="https://doi.org/10.1017/pasa.2025.10125" aria-label="Paper by Pourmand and colleagues">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> Oomen et al. (2019)</dt><dd>Stellar evolution models with gas re-accretion motivated the stream feeding the post-AGB primary. <a href="https://doi.org/10.1051/0004-6361/201935853" aria-label="Paper by Oomen and colleagues">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> Bollen et al. (2020)</dt><dd>Their accretion and jet mass-loss estimates motivated the link between re-accretion, a circumsecondary disc and its outflow. <a href="https://doi.org/10.1051/0004-6361/202038414" aria-label="2020 paper by Bollen and colleagues">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> Bollen et al. (2022)</dt><dd>The fitted jet geometries and angular density contrasts inspired broad lobes with brighter limbs. Both illustrated lobes use the same opening angle. <a href="https://arxiv.org/abs/2208.08752" aria-label="2022 paper by Bollen and colleagues">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> De Prins et al. (2024)</dt><dd>Magnetohydrodynamic models of a wind launched by the companion’s accretion disc informed the jet’s location and axis. The illustrated cones start just beyond the companion’s poles. <a href="https://doi.org/10.1051/0004-6361/202449631" aria-label="Paper by De Prins and colleagues">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> Andrych et al. (2024)</dt><dd>Scattered-light images of IRAS 08544−4431 inspired the radial structure in the dusty circumbinary disc. <a href="https://doi.org/10.1093/mnras/stae2406" aria-label="Paper by Andrych and colleagues">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> Mohorian et al. (2025)</dt><dd>Refractory depletion in stars with faint discs motivates the picture of processed gas returning to the star while solids are retained in the disc. <a href="https://doi.org/10.1017/pasa.2025.10117" aria-label="2025 faint-disc paper by Mohorian and colleagues">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> Pourmand et al. (2025)</dt><dd>Their study of gravitational instability in post-AGB discs provides the second-generation planet-formation context for showing early grain evolution. <a href="https://doi.org/10.1017/pasa.2025.10125" aria-label="Paper by Pourmand and colleagues">Paper</a></dd></div>
                 </dl>
-                <h3>Dust and the disc wind</h3>
+                <h3>Protoplanetary discs</h3>
+                <h4>Accretion, dust and disc winds</h4>
                 <dl>
-                  <div><dt>Kama, Min &amp; Dominik (2009) [PPD]</dt><dd>Their models of dust sublimation in irradiated discs informed the warm inner rim and the condensation of refractory material just outside it. <a href="https://arxiv.org/abs/0908.1692" aria-label="Paper by Kama, Min and Dominik">Paper</a></dd></div>
-                  <div><dt>Nomura et al. (2016) [PPD]</dt><dd>The link between features in TW Hya and its CO snow line motivated the cooler CO ice region farther from the binary. <a href="https://arxiv.org/abs/1512.05440" aria-label="Paper by Nomura and colleagues">Paper</a></dd></div>
-                  <div><dt>Birnstiel, Fang &amp; Johansen (2016) [PPD]</dt><dd>The review informed grain growth, vertical settling, collisions and fragmentation. Turbulent mixing lifts fine fragments for the next cycle. <a href="https://doi.org/10.1007/s11214-016-0256-1" aria-label="Paper by Birnstiel, Fang and Johansen">Paper</a></dd></div>
-                  <div><dt>Dullemond et al. (2018) [PPD], DSHARP VI</dt><dd>Narrow millimetre rings studied as possible dust traps motivated the enhanced radial dust bands. <a href="https://arxiv.org/abs/1812.04044" aria-label="DSHARP VI paper by Dullemond and colleagues">Paper</a></dd></div>
-                  <div><dt>Pascucci et al. (2025) [PPD]</dt><dd>Spatially resolved winds from young discs inspired the faint outward flow from both disc faces in the cross-section. <a href="https://doi.org/10.1038/s41550-024-02385-7" aria-label="Paper by Pascucci and colleagues">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> Hanawa et al. (2010)</dt><dd>Accretion calculations for young binaries inspired the two prograde streams through the outer Lagrange points. <a href="https://arxiv.org/abs/0911.2032" aria-label="Paper by Hanawa, Ochi and Ando">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> Kama et al. (2009)</dt><dd>Their models of dust sublimation in irradiated discs informed the warm inner rim and the condensation of refractory material just outside it. <a href="https://arxiv.org/abs/0908.1692" aria-label="Paper by Kama, Min and Dominik">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> Nomura et al. (2016)</dt><dd>The link between features in TW Hya and its CO snow line motivated the cooler CO ice region farther from the binary. <a href="https://arxiv.org/abs/1512.05440" aria-label="Paper by Nomura and colleagues">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> Birnstiel et al. (2016)</dt><dd>The review informed grain growth, vertical settling, collisions and fragmentation. Turbulent mixing lifts fine fragments for the next cycle. <a href="https://doi.org/10.1007/s11214-016-0256-1" aria-label="Paper by Birnstiel, Fang and Johansen">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> Dullemond et al. (2018), DSHARP VI</dt><dd>Narrow millimetre rings studied as possible dust traps motivated the enhanced radial dust bands. <a href="https://arxiv.org/abs/1812.04044" aria-label="DSHARP VI paper by Dullemond and colleagues">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> Pascucci et al. (2025)</dt><dd>Spatially resolved winds from young discs inspired the faint outward flow from both disc faces in the cross-section. <a href="https://doi.org/10.1038/s41550-024-02385-7" aria-label="Paper by Pascucci and colleagues">Paper</a></dd></div>
                 </dl>
-                <h3>Molecular tracers</h3>
+                <h4>Molecular tracers</h4>
                 <dl>
-                  <div><dt>Galloway-Sprietsma et al. (2025) [PPD], exoALMA V</dt><dd>Measured emitting surfaces informed the placement of ¹²CO above ¹³CO in the disc atmosphere. <a href="https://arxiv.org/abs/2504.19902" aria-label="exoALMA V paper by Galloway-Sprietsma and colleagues">Paper</a></dd></div>
-                  <div><dt>Zannese et al. (2024) [PPD]</dt><dd>OH emission from water photodissociation in d203-506 inspired the OH tracer in the irradiated surface. <a href="https://doi.org/10.1038/s41550-024-02203-0" aria-label="Paper by Zannese and colleagues">Paper</a></dd></div>
-                  <div><dt>Booth et al. (2021) [PPD]</dt><dd>SO and SO₂ emission linked to sublimating ices in Oph IRS 48 motivated the sulphur-bearing tracers in warm gas. <a href="https://doi.org/10.1051/0004-6361/202141057" aria-label="Paper by Booth and colleagues">Paper</a></dd></div>
-                  <div><dt>Phuong et al. (2018) [PPD]</dt><dd>H₂S detected in the cold dense ring of GG Tau A motivated its placement in the outer molecular disc. <a href="https://doi.org/10.1051/0004-6361/201833766" aria-label="Paper by Phuong and colleagues">Paper</a></dd></div>
-                  <div><dt>Lee et al. (2007) [Jet]</dt><dd>SiO in shocked gas in HH 212 inspired SiO as a possible tracer of shocks near the inner rim. <a href="https://arxiv.org/abs/astro-ph/0701284" aria-label="Paper by Lee and colleagues">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> Galloway-Sprietsma et al. (2025), exoALMA V</dt><dd>Measured emitting surfaces informed the placement of ¹²CO above ¹³CO in the disc atmosphere. <a href="https://arxiv.org/abs/2504.19902" aria-label="exoALMA V paper by Galloway-Sprietsma and colleagues">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> Zannese et al. (2024)</dt><dd>OH emission from water photodissociation in d203-506 inspired the OH tracer in the irradiated surface. <a href="https://doi.org/10.1038/s41550-024-02203-0" aria-label="Paper by Zannese and colleagues">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> Booth et al. (2021)</dt><dd>SO and SO₂ emission linked to sublimating ices in Oph IRS 48 motivated the sulphur-bearing tracers in warm gas. <a href="https://doi.org/10.1051/0004-6361/202141057" aria-label="Paper by Booth and colleagues">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> Phuong et al. (2018)</dt><dd>H₂S detected in the cold dense ring of GG Tau A motivated its placement in the outer molecular disc. <a href="https://doi.org/10.1051/0004-6361/201833766" aria-label="Paper by Phuong and colleagues">Paper</a></dd></div>
+                  <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> Lee et al. (2007)</dt><dd>SiO in shocked gas in the young HH 212 disc–jet system inspired SiO as a possible tracer of shocks near the inner rim. <a href="https://arxiv.org/abs/astro-ph/0701284" aria-label="Paper by Lee and colleagues">Paper</a></dd></div>
                 </dl>
               </details>
             </div>
@@ -447,7 +498,36 @@
         </figure>
         <p>I study how disc-binary interactions affect the chemistry of evolved binary systems. As originally gaseous disc matter condenses into dust through chemically inhomogeneous way, gas and dust phases fractionate due to poorly constrained processes disc processes (irradiation, dust trapping, etc.). When gas re-accretes onto the central binary, it dominates over the original surface composition. Hence, when the surface of the primary star is observed with a high-resolution spectrograph, the primary's chemical composition shows a record of the inner disc composition.</p>
         <p>I combine high-resolution stellar spectroscopy, radio-interferometry and chemical modelling to connect the observed chemical patterns and distributions to the processes that shape the disc.</p>
-        <a class="text-link" href="https://researchers.mq.edu.au/en/persons/maksym-mohorian/">Macquarie University profile</a>
+        <div class="text-links">
+          <a class="text-link" href="https://researchers.mq.edu.au/en/persons/maksym-mohorian/">Macquarie University profile</a>
+          <a class="text-link" href="https://orcid.org/0000-0002-7453-2945">ORCID and publications</a>
+          <a class="text-link" href="#cv">Research notes</a>
+        </div>
+        <div class="cv-panel">
+          <figure class="picture-slot research-picture">
+            <img src="images/research.jpg" alt="Research photograph" loading="lazy" decoding="async">
+            <span class="picture-placeholder" aria-hidden="true">Research image</span>
+            <!-- <figcaption>Add a caption for the research image.</figcaption> -->
+          </figure>
+          <h2>Work and education</h2>
+          <dl class="cv-list">
+            <div><dt>2026-present</dt><dd>Postdoctoral Researcher, Macquarie University</dd></div>
+            <div><dt>2025-2026</dt><dd>Research Assistant, Macquarie University</dd></div>
+            <div><dt>2021-2025</dt><dd>PhD in Astrophysics, Macquarie University</dd></div>
+          </dl>
+          <h2>Selected observing programmes</h2>
+          <dl class="cv-list">
+            <div><dt>Australia Telescope Compact Array (2025)</dt><dd>Co-led ATCA-BRIDGES, a 148.5-hour programme on gas and dust around evolved systems.</dd></div>
+            <div><dt>Anglo-Australian Telescope (2023)</dt><dd>Led a 2dF+HERMES search for post-AGB stars.</dd></div>
+          </dl>
+          <h2>Teaching and citizenship</h2>
+          <dl class="cv-list">
+            <div><dt>2023-2025</dt><dd>Scientific project instructor, New UA Astronomy Renaissance</dd></div>
+            <div><dt>2022-2024</dt><dd>Chair, Macquarie University AstroCoffee</dd></div>
+            <div><dt>2023</dt><dd>Deputy Chair, Harley Wood School of Astronomy organising committee</dd></div>
+          </dl>
+          <div class="construction-sign">under construction</div> <!-- .<br>do not disturb -->
+        </div>
       </article>
     </section>
 
@@ -466,37 +546,149 @@
       </article>
     </section>
 
-    <section class="detail" id="page-cv" aria-labelledby="cv-title" hidden>
-      <article class="reading-panel cv-panel">
+    <section class="research-page" id="page-cv" aria-labelledby="cv-title" hidden>
+      <header class="research-intro">
         <h1 id="cv-title" tabindex="-1">Research</h1>
-        <div class="text-links">
-          <a class="text-link" href="https://orcid.org/0000-0002-7453-2945">ORCID and publications</a>
-          <a class="text-link" href="https://researchers.mq.edu.au/en/persons/maksym-mohorian/">University profile</a>
-        </div>
-        <figure class="picture-slot research-picture">
-          <img src="images/research.jpg" alt="Describe the research image" loading="lazy" decoding="async">
-          <span class="picture-placeholder" aria-hidden="true">Research image</span>
-          <!-- <figcaption>Add a caption for the research image.</figcaption> -->
-        </figure>
-        <h2>Work and education</h2>
-        <dl class="cv-list">
-          <div><dt>2026-present</dt><dd>Postdoctoral Researcher, Macquarie University</dd></div>
-          <div><dt>2025-2026</dt><dd>Research Assistant, Macquarie University</dd></div>
-          <div><dt>2021-2025</dt><dd>PhD in Astrophysics, Macquarie University</dd></div>
-        </dl>
-        <h2>Selected observing programmes</h2>
-        <dl class="cv-list">
-          <div><dt>Australia Telescope Compact Array (2025)</dt><dd>Co-led ATCA-BRIDGES, a 148.5-hour programme on gas and dust around evolved systems.</dd></div>
-          <div><dt>Anglo-Australian Telescope (2023)</dt><dd>Led a 2dF+HERMES search for post-AGB stars.</dd></div>
-        </dl>
-        <h2>Teaching and citizenship</h2>
-        <dl class="cv-list">
-          <div><dt>2023-2025</dt><dd>Scientific project instructor, New UA Astronomy Renaissance</dd></div>
-          <div><dt>2022-2024</dt><dd>Chair, Macquarie University AstroCoffee</dd></div>
-          <div><dt>2023</dt><dd>Deputy Chair, Harley Wood School of Astronomy organising committee</dd></div>
-        </dl>
-        <div class="construction-sign">under construction</div> <!-- .<br>do not disturb -->
-      </article>
+        <p>Short notes on my publications, from evolved stars and circumbinary discs to blazar variability.</p>
+        <a class="text-link" href="https://scixplorer.org/public-libraries/kTqvXLWLRHmkgF5KRB9G3A">My publication library on SciX</a>
+      </header>
+      <div class="publication-filters" role="group" aria-label="Filter publications">
+        <button class="control" type="button" data-topic="all" aria-pressed="true">All publications</button>
+        <button class="control" type="button" data-topic="evolved" aria-pressed="false">Evolved stars &amp; discs</button>
+        <button class="control" type="button" data-topic="stellar" aria-pressed="false">Other stellar studies</button>
+        <button class="control" type="button" data-topic="blazars" aria-pressed="false">Blazars</button>
+      </div>
+      <div id="publication-feed">
+        <section class="publication-group" aria-labelledby="publication-cbd-title">
+          <h2 class="publication-group-title" id="publication-cbd-title">Circumbinary discs</h2>
+          <article class="publication" data-topic="evolved">
+            <div>
+              <p class="publication-meta"><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> Mohorian et al. (2026) <span class="publication-venue">arXiv preprint</span></p>
+              <h3><a href="https://arxiv.org/abs/2609.27997">ALMA’s sharpest view of IRAS 08544-4431: Unveiling the dust distribution asymmetries in the circumbinary disk</a></h3>
+              <p class="publication-note">At 10 milliarcsecond resolution, the ALMA continuum map resolves the inner dust rim and a bright asymmetry in the disc around this evolved binary. The CO emission extends farther out than the compact dust emission, giving us a complementary view of the gas.</p>
+            </div>
+            <figure class="picture-slot publication-figure">
+              <img src="images/disc.png" alt="ALMA 0.9 mm dust continuum map of the circumbinary disc" loading="lazy" decoding="async">
+              <!-- <figcaption>Asymmetries in the ALMA dust continuum map of IRAS 08544−4431.</figcaption> -->
+            </figure>
+          </article>
+          <article class="publication" data-topic="evolved">
+            <div>
+              <p class="publication-meta"><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> Mohorian et al. (2025) <span class="publication-venue">PASA</span></p>
+              <h3><a href="https://scixplorer.org/abs/2025PASA...42..151M/abstract">Abundance analysis of chemically depleted post-AGB/post-RGB binaries with faint discs</a></h3>
+              <p class="publication-note">We measured stellar abundances in nine chemically depleted binaries with weak infrared excesses. Their depletion patterns vary widely, showing that a faint dust disc can still leave a strong chemical imprint on its host star.</p>
+            </div>
+          </article>
+          <article class="publication" data-topic="evolved">
+            <div>
+              <p class="publication-meta"><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> Mohorian (2025) <span class="publication-venue">PhD thesis</span></p>
+              <h3><a href="https://arxiv.org/abs/2510.21070">Photospheric Chemical Depletion in Post-AGB/Post-RGB Binaries with Second-Generation Protoplanetary Discs</a></h3>
+              <p class="publication-note">My thesis brings together the full, transition and faint disc samples. It uses photospheric abundances to trace how gas and dust separate in evolved binaries and to ask what those systems can tell us about second-generation planet formation.</p>
+            </div>
+          </article>
+          <article class="publication" data-topic="evolved">
+            <div>
+              <p class="publication-meta"><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> Mohorian et al. (2025) <span class="publication-venue">MNRAS</span></p>
+              <h3><a href="https://scixplorer.org/abs/2025MNRAS.538.1339M/abstract">Tracing chemical depletion in evolved binaries hosting second-generation transition discs</a></h3>
+              <p class="publication-note">High-resolution spectra of twelve evolved binaries reveal strong surface depletion of refractory elements, which readily condense into solids. Comparing the abundances with those in young systems and the interstellar medium shows where the patterns agree and where elements such as Mg and Si behave differently.</p>
+            </div>
+          </article>
+          <article class="publication" data-topic="evolved">
+            <div>
+              <p class="publication-meta"><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> Mohorian et al. (2024) <span class="publication-venue">MNRAS</span></p>
+              <h3><a href="https://scixplorer.org/abs/2024MNRAS.530..761M/abstract">The first measurements of carbon isotopic ratios in post-RGB stars: SZ Mon and DF Cyg</a></h3>
+              <p class="publication-note">We developed E-iSpec to analyse the spectra of evolved stars and obtained ¹²C/¹³C ratios of 8 ± 4 for SZ Mon and 12 ± 3 for DF Cyg. Together with the carbon, nitrogen and oxygen abundances, these ratios are consistent with dredge-up followed by extra mixing.</p>
+            </div>
+          </article>
+          <article class="publication" data-topic="evolved">
+            <div>
+              <p class="publication-meta"><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> Menon et al. (2024) <span class="publication-venue">PASA</span></p>
+              <h3><a href="https://scixplorer.org/abs/2024PASA...41...25M/abstract">s-Process Enriched Evolved Binaries in the Galaxy and the Magellanic Clouds</a></h3>
+              <p class="publication-note">Some dusty post-AGB binaries show excess carbon and elements made by slow neutron capture. Comparing their luminosities and abundances with stellar evolution models supports an origin in the stars’ own AGB evolution.</p>
+            </div>
+          </article>
+        </section>
+        <section class="publication-group" aria-labelledby="publication-other-title">
+          <h2 class="publication-group-title" id="publication-other-title">Other publications</h2>
+          <article class="publication" data-topic="evolved">
+            <div>
+              <p class="publication-meta">Khouri et al. (2026) <span class="publication-venue">ALMA2040 white paper</span></p>
+              <h3><a href="https://arxiv.org/abs/2610.21827">Evolved stars, multiplicity and planets: Shaping and Being Shaped by Stellar Evolution</a></h3>
+              <p class="publication-note">We outline how a more sensitive, higher-resolution ALMA could reveal accreting companions around evolved stars and search for the signatures of engulfed planets. A larger sample would let us test how often these interactions occur.</p>
+            </div>
+          </article>
+          <article class="publication" data-topic="evolved">
+            <div>
+              <p class="publication-meta">Menon et al. (2025) <span class="publication-venue">PASA</span></p>
+              <h3><a href="https://scixplorer.org/abs/2025PASA...42..122M/abstract">s-process enriched post-AGB star J003643.94−723722.1 in the SMC with an extreme C/O ratio and the first precise detection of lead</a></h3>
+              <p class="publication-note">High-resolution spectroscopy of this single star in the Small Magellanic Cloud yielded an unusually high carbon-to-oxygen ratio and a precise lead abundance. Together they put new constraints on how low-metallicity AGB stars produce and dredge up heavy elements.</p>
+            </div>
+          </article>
+          <article class="publication" data-topic="blazars">
+            <div>
+              <p class="publication-meta">Pánis et al. (2025) <span class="publication-venue">ApJ</span></p>
+              <h3><a href="https://scixplorer.org/abs/2025ApJ...989..106P/abstract">Deterministic and Stochastic Study of the X-Ray Emission from the TeV Blazar Mrk 421</a></h3>
+              <p class="publication-note">We compared 50 XMM-Newton light curves of Mrk 421 across 17 years. Recurrence and time-series analyses revealed stronger deterministic patterns on short timescales alongside stochastic variability with memory across timescales.</p>
+            </div>
+          </article>
+          <article class="publication" data-topic="blazars">
+            <div>
+              <p class="publication-meta">Bhatta et al. (2025) <span class="publication-venue">ApJ</span></p>
+              <h3><a href="https://scixplorer.org/abs/2025ApJ...981..118B/abstract">Probing X-Ray Timing and Spectral Variability in the Blazar PKS 2155−304 over a Decade of XMM-Newton Observations</a></h3>
+              <p class="publication-note">Across 22 XMM-Newton epochs, seven observations showed two distinct flux levels. Most spectra were best fitted by a broken power law, which captures a change in slope within the observed X-ray band.</p>
+            </div>
+          </article>
+          <article class="publication" data-topic="blazars">
+            <div>
+              <p class="publication-meta">Dinesh et al. (2023) <span class="publication-venue">ApJ</span></p>
+              <h3><a href="https://scixplorer.org/abs/2023ApJ...955..121D/abstract">Constraining X-Ray Variability of the Blazar 3C 273 Using XMM-Newton Observations over Two Decades</a></h3>
+              <p class="publication-note">The X-ray flux of 3C 273 changed by about a factor of three over two decades, with more moderate variation within a day. A curved power law plus a thermal component fitted most epochs best, consistent with contributions from both the jet and the accretion flow.</p>
+            </div>
+          </article>
+          <article class="publication" data-topic="blazars">
+            <div>
+              <p class="publication-meta">Mohorian et al. (2022) <span class="publication-venue">MNRAS</span></p>
+              <h3><a href="https://scixplorer.org/abs/2022MNRAS.510.5280M/abstract">X-ray timing and spectral variability properties of blazars S5 0716 + 714, OJ 287, Mrk 501, and RBS 2070</a></h3>
+              <p class="publication-note">We compared X-ray light curves and spectra of four blazars with XMM-Newton, looking at how the brightness and spectral shape change within observations and across years. The comparison traces the diversity of X-ray variability among sources with relativistic jets.</p>
+            </div>
+          </article>
+          <article class="publication" data-topic="evolved">
+            <div>
+              <p class="publication-meta">Kamath et al. (2022) <span class="publication-venue">ApJL</span></p>
+              <h3><a href="https://scixplorer.org/abs/2022ApJ...927L..13K/abstract">Luminosities and Masses of Single Galactic Post-asymptotic Giant Branch Stars with Distances from Gaia EDR3: The Revelation of an s-process Diversity</a></h3>
+              <p class="publication-note">Gaia distances let us compare the luminosities and inferred initial masses of single evolved stars. Stars with and without strong slow-neutron-capture enrichment occupy similar ranges in both, sharpening the question of what drives the difference in their surface chemistry.</p>
+            </div>
+          </article>
+          <article class="publication" data-topic="stellar">
+            <div>
+              <p class="publication-meta">Mohorian &amp; Pavlenko (2021) <span class="publication-venue">Advances in Astronomy and Space Physics</span></p>
+              <h3><a href="https://scixplorer.org/abs/2021AASP...11....8M/abstract">On the determination of elemental abundances in three stars</a></h3>
+              <p class="publication-note">We tested synthetic spectrum fitting against the Sun and Arcturus, then used HARPS spectra to derive atmospheric parameters and abundances for HD 126535, HD 127423 and HD 128356.</p>
+            </div>
+          </article>
+          <article class="publication" data-topic="stellar">
+            <div>
+              <p class="publication-meta">Pavlenko et al. (2019) <span class="publication-venue">A&amp;A</span></p>
+              <h3><a href="https://scixplorer.org/abs/2019A%26A...626A.111P/abstract">Temporal changes of the flare activity of Proxima Centauri</a></h3>
+              <p class="publication-note">More than 13 years of HARPS spectra let us compare how different emission lines respond to flares on Proxima Centauri. During strong flares, an enhanced red wing in Hα points to hot material moving back into the chromosphere.</p>
+            </div>
+          </article>
+          <article class="publication" data-topic="blazars">
+            <div>
+              <p class="publication-meta">Bhatta et al. (2018) <span class="publication-venue">A&amp;A</span></p>
+              <h3><a href="https://scixplorer.org/abs/2018A%26A...619A..93B/abstract">Hard X-ray properties of NuSTAR blazars</a></h3>
+              <p class="publication-note">We analysed 31 NuSTAR observations of 13 blazars. Most of their hard X-ray spectra were better described by a curved shape, with a tendency for brighter emission to have a harder spectrum within blazar subclasses.</p>
+            </div>
+          </article>
+          <article class="publication" data-topic="stellar">
+            <div>
+              <p class="publication-meta">Virnina et al. (2011) <span class="publication-venue">Journal of Physical Studies</span></p>
+              <h3><a href="https://scixplorer.org/abs/2011JPhSt..15.2901V/abstract">A Hot Spot and Mass Transfer of the Algol-type Binary System WZ Crv</a></h3>
+              <p class="publication-note">Two-colour photometry revealed unequal brightness maxima between the eclipses of WZ Crv. The asymmetry is consistent with a hot spot where material from one star streams onto the other.</p>
+            </div>
+          </article>
+        </section>
+      </div>
     </section>
 
     <section class="disc-page" id="page-disc" aria-labelledby="disc-title" hidden>
@@ -657,7 +849,7 @@
         </div>
         <div class="disc-notes">
           <p id="disc-caption" aria-live="polite">The dust excess in the infrared part of the spectral energy distribution decreases with time due to two major processes: i) gas condenses into dust, dust grains settle in the midplane, grow, and fragment, ii) a disc outflow removes 10-90% of the nebular mass from the disc.
-            <span class="note-placement">Disc structure informed by <a href="https://arxiv.org/abs/2109.06268">Öberg et al. (2021) [PPD], Fig. 1</a>.</span>
+            <span class="note-sources"><span>Disc structure informed by <abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> <a href="https://arxiv.org/abs/2109.06268">Öberg et al. (2021), Fig. 1</a>.</span></span>
           </p>
           <p id="disc-region-caption" aria-live="polite" hidden></p>
         </div>
@@ -667,24 +859,27 @@
             <p>The figure combines examples from protoplanetary discs and evolved post-AGB binaries. Positions, widths and colours represent schematic emitting layers or ice reservoirs (not to scale!). Actual locations depend on the system, molecular transition data and local temperature, shielding and optical depth.</p>
             <p>The placement links identify the figures or subsections behind each overlay. They can point to a direct measurement, a chemical model, or an observational analogue for a schematic layer.</p>
             <p>In this schematic, fine grains settle and stick together near the midplane. The slider sets the fraction that break up at the first crossing. Surviving aggregates swing across the midplane with a gradually decreasing amplitude before breaking apart. Fine fragments drift back into the upper layers, closing the animation loop.</p>
-            <p>[CBD] marks evolved circumbinary systems and binary-disc models. [PPD] marks protoplanetary-disc studies. [Jet] marks the HH 212 protostellar jet study.</p>
+            <h3>Circumbinary discs</h3>
             <ul class="disc-reference-links" role="list">
-              <li><a href="https://arxiv.org/abs/2309.05685">Öberg, Facchini &amp; Anderson (2023) [PPD]</a></li>
-              <li><a href="https://arxiv.org/abs/2504.19902">Galloway-Sprietsma et al. (2025) [PPD]</a></li>
-              <li><a href="https://arxiv.org/abs/2109.06268">Öberg et al. (2021) [PPD]</a></li>
-              <li><a href="https://doi.org/10.1051/0004-6361/202556445">Gallardo Cava et al. (2026) [CBD]</a></li>
-              <li><a href="https://arxiv.org/abs/2202.02106">Gallardo Cava et al. (2022) [CBD]</a></li>
-              <li><a href="https://arxiv.org/abs/1606.07238">Bujarrabal et al. (2016) [CBD]</a></li>
-              <li><a href="https://arxiv.org/abs/1310.6361">Malek &amp; Cami (2014) [CBD]</a></li>
-              <li><a href="https://arxiv.org/abs/2304.12028">Corporaal et al. (2023) [CBD]</a></li>
-              <li><a href="https://arxiv.org/abs/1603.03023">Hillen et al. (2016) [CBD]</a></li>
-              <li><a href="https://arxiv.org/abs/1812.04041">Huang et al. (2018) [PPD]</a></li>
-              <li><a href="https://arxiv.org/abs/1812.04044">Dullemond et al. (2018) [PPD]</a></li>
-              <li><a href="https://arxiv.org/abs/2309.07817">Sturm et al. (2023) [PPD]</a></li>
-              <li><a href="https://arxiv.org/abs/1110.5567">Öberg, Murray-Clay &amp; Bergin (2011) [PPD]</a></li>
-              <li><a href="https://doi.org/10.1038/s41550-024-02385-7">Pascucci et al. (2025) [PPD]</a></li>
-              <li><a href="https://doi.org/10.1007/s11214-016-0256-1">Birnstiel, Fang &amp; Johansen (2016) [PPD]</a></li>
-              <li><a href="https://arxiv.org/abs/2108.00878">Vericel et al. (2021) [PPD]</a></li>
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> <a href="https://doi.org/10.1051/0004-6361/202556445">Gallardo Cava et al. (2026)</a></li>
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> <a href="https://arxiv.org/abs/2202.02106">Gallardo Cava et al. (2022)</a></li>
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> <a href="https://arxiv.org/abs/1606.07238">Bujarrabal et al. (2016)</a></li>
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> <a href="https://arxiv.org/abs/1310.6361">Malek &amp; Cami (2014)</a></li>
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> <a href="https://arxiv.org/abs/2304.12028">Corporaal et al. (2023)</a></li>
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> <a href="https://arxiv.org/abs/1603.03023">Hillen et al. (2016)</a></li>
+            </ul>
+            <h3>Protoplanetary discs</h3>
+            <ul class="disc-reference-links" role="list">
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> <a href="https://arxiv.org/abs/2309.05685">Öberg et al. (2023)</a></li>
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> <a href="https://arxiv.org/abs/2504.19902">Galloway-Sprietsma et al. (2025)</a></li>
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> <a href="https://arxiv.org/abs/2109.06268">Öberg et al. (2021)</a></li>
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> <a href="https://arxiv.org/abs/1812.04041">Huang et al. (2018)</a></li>
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> <a href="https://arxiv.org/abs/1812.04044">Dullemond et al. (2018)</a></li>
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> <a href="https://arxiv.org/abs/2309.07817">Sturm et al. (2023)</a></li>
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> <a href="https://arxiv.org/abs/1110.5567">Öberg et al. (2011)</a></li>
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> <a href="https://doi.org/10.1038/s41550-024-02385-7">Pascucci et al. (2025)</a></li>
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> <a href="https://doi.org/10.1007/s11214-016-0256-1">Birnstiel et al. (2016)</a></li>
+              <li><abbr class="citation-type" tabindex="0" aria-describedby="citation-ppd">PPD</abbr> <a href="https://arxiv.org/abs/2108.00878">Vericel et al. (2021)</a></li>
             </ul>
           </div>
         </details>
@@ -704,6 +899,9 @@
     <p class="fundraiser-placeholder">Fundraiser links will be added here.</p>
     <ul class="fundraiser-links" role="list" hidden></ul>
   </footer>
+  <span id="citation-cbd" hidden>CBD = (second-generation) circumbinary disc</span>
+  <span id="citation-ppd" hidden>PPD = protoplanetary disc</span>
+  <div class="citation-tooltip" id="citation-tooltip" aria-hidden="true" hidden></div>
   <script>
     'use strict';
 
@@ -1759,6 +1957,9 @@
       "evolvedSurvey": ["Gallardo Cava et al. (2022)", "https://doi.org/10.1051/0004-6361/202142339", "CBD"],
       "rectangle": ["Bujarrabal et al. (2016)", "https://doi.org/10.1051/0004-6361/201628546", "CBD"],
       "hr4049": ["Malek & Cami (2014)", "https://doi.org/10.1088/0004-637X/780/1/41", "CBD"],
+      "rim": ["Hillen et al. (2016)", "https://arxiv.org/abs/1603.03023", "CBD"],
+      "cavity": ["Corporaal et al. (2023)", "https://arxiv.org/abs/2304.12028", "CBD"],
+      "scattering": ["Andrych et al. (2024)", "https://doi.org/10.1093/mnras/stae2406", "CBD"],
       "exoalma": ["Galloway-Sprietsma et al. (2025)", "https://arxiv.org/html/2504.19902v1", "PPD"],
       "maps": ["Öberg et al. (2021)", "https://doi.org/10.3847/1538-4365/ac1432", "PPD"],
       "mapsLayers": ["Law et al. (2021)", "https://doi.org/10.3847/1538-4365/ac1439", "PPD"],
@@ -1768,7 +1969,7 @@
       "mapsCN": ["Bergner et al. (2021)", "https://doi.org/10.3847/1538-4365/ac143a", "PPD"],
       "mapsS": ["Le Gal et al. (2021)", "https://doi.org/10.3847/1538-4365/ac2583", "PPD"],
       "mapsIon": ["Aikawa et al. (2021)", "https://doi.org/10.3847/1538-4365/ac143c", "PPD"],
-      "review": ["Öberg, Facchini & Anderson (2023)", "https://doi.org/10.1146/annurev-astro-022823-040820", "PPD"],
+      "review": ["Öberg et al. (2023)", "https://doi.org/10.1146/annurev-astro-022823-040820", "PPD"],
       "loomis": ["Loomis et al. (2020)", "https://arxiv.org/abs/2006.16187", "PPD"],
       "leGal": ["Le Gal et al. (2019)", "https://arxiv.org/abs/1903.11105", "PPD"],
       "coDouble17": ["Booth et al. (2019)", "https://arxiv.org/abs/1908.05045", "PPD"],
@@ -1777,7 +1978,7 @@
       "digitH2": ["Meeus et al. (2012)", "https://doi.org/10.1051/0004-6361/201219225", "PPD"],
       "digitch": ["Fedele et al. (2013)", "https://doi.org/10.1051/0004-6361/201321118", "PPD"],
       "oh": ["Zannese et al. (2024)", "https://doi.org/10.1038/s41550-024-02203-0", "PPD"],
-      "sio": ["Lee et al. (2007)", "https://arxiv.org/abs/astro-ph/0701284", "Jet"],
+      "sio": ["Lee et al. (2007)", "https://arxiv.org/abs/astro-ph/0701284", "PPD"],
       "cyanide": ["Guzmán et al. (2017)", "https://arxiv.org/abs/1701.07510", "PPD"],
       "cn15": ["Hily-Blant et al. (2017)", "https://arxiv.org/abs/1706.10095", "PPD"],
       "dco": ["Huang et al. (2017)", "https://arxiv.org/abs/1701.01735", "PPD"],
@@ -1802,18 +2003,15 @@
       "outburstSurvey": ["Yamato et al. (2024)", "https://arxiv.org/abs/2312.01300", "PPD"],
       "ices": ["Sturm et al. (2023)", "https://arxiv.org/abs/2309.07817", "PPD"],
       "soot": ["van Dishoeck et al. (2023)", "https://arxiv.org/abs/2307.11817", "PPD"],
-      "snowlines": ["Öberg, Murray-Clay & Bergin (2011)", "https://arxiv.org/abs/1110.5567", "PPD"],
+      "snowlines": ["Öberg et al. (2011)", "https://arxiv.org/abs/1110.5567", "PPD"],
       "nomura": ["Nomura et al. (2016)", "https://arxiv.org/abs/1512.05440", "PPD"],
-      "rim": ["Hillen et al. (2016)", "https://arxiv.org/abs/1603.03023", "CBD"],
-      "kama": ["Kama, Min & Dominik (2009)", "https://arxiv.org/abs/0908.1692", "PPD"],
-      "cavity": ["Corporaal et al. (2023)", "https://arxiv.org/abs/2304.12028", "CBD"],
-      "scattering": ["Andrych et al. (2024)", "https://doi.org/10.1093/mnras/stae2406", "CBD"],
+      "kama": ["Kama et al. (2009)", "https://arxiv.org/abs/0908.1692", "PPD"],
       "dsharpRings": ["Huang et al. (2018)", "https://arxiv.org/abs/1812.04041", "PPD"],
       "dsharpTraps": ["Dullemond et al. (2018)", "https://arxiv.org/abs/1812.04044", "PPD"],
       "settled": ["Villenave et al. (2022)", "https://arxiv.org/abs/2204.00640", "PPD"],
       "taper": ["Trapman et al. (2019)", "https://arxiv.org/abs/1903.06190", "PPD"],
       "winds": ["Pascucci et al. (2025)", "https://doi.org/10.1038/s41550-024-02385-7", "PPD"],
-      "birnstiel": ["Birnstiel, Fang & Johansen (2016)", "https://doi.org/10.1007/s11214-016-0256-1", "PPD"],
+      "birnstiel": ["Birnstiel et al. (2016)", "https://doi.org/10.1007/s11214-016-0256-1", "PPD"],
       "damping": ["Vericel et al. (2021)", "https://arxiv.org/abs/2108.00878", "PPD"]
     };
 
@@ -2787,15 +2985,82 @@
       if (target) openPage(target, point);
     });
     description.addEventListener('toggle', paintFrame);
+
+    const citationTooltip = document.getElementById('citation-tooltip');
+    let activeCitationType = null;
+
+    function showCitationTooltip(label) {
+      activeCitationType = label;
+      const definition = document.getElementById(label.getAttribute('aria-describedby'));
+      citationTooltip.textContent = definition.textContent;
+      citationTooltip.hidden = false;
+      const anchor = label.getBoundingClientRect();
+      const tooltip = citationTooltip.getBoundingClientRect();
+      const rightLimit = document.documentElement.clientWidth - tooltip.width - 8;
+      citationTooltip.style.left = `${Math.max(8, Math.min(anchor.left, rightLimit))}px`;
+      const above = anchor.top - tooltip.height - 7;
+      citationTooltip.style.top = `${above >= 8 ? above : anchor.bottom + 7}px`;
+    }
+
+    function hideCitationTooltip() {
+      if (!activeCitationType) return;
+      citationTooltip.hidden = true;
+      activeCitationType = null;
+    }
+
+    document.addEventListener('pointerover', event => {
+      if (event.pointerType !== 'touch' && event.target.matches?.('.citation-type')) showCitationTooltip(event.target);
+    });
+    document.addEventListener('pointerout', event => {
+      if (event.target === activeCitationType && event.target !== document.activeElement) hideCitationTooltip();
+    });
+    document.addEventListener('focusin', event => {
+      if (event.target.matches?.('.citation-type')) showCitationTooltip(event.target);
+    });
+    document.addEventListener('focusout', event => {
+      if (event.target === activeCitationType) hideCitationTooltip();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') hideCitationTooltip();
+    });
+    window.addEventListener('scroll', hideCitationTooltip, { capture: true, passive: true });
+    window.addEventListener('resize', hideCitationTooltip);
+
+    const publicationFilters = document.querySelector('.publication-filters');
+    const publicationGroups = document.querySelectorAll('.publication-group');
+    publicationFilters.addEventListener('click', event => {
+      const button = event.target.closest('button[data-topic]');
+      if (!button) return;
+      const topic = button.dataset.topic;
+      for (const filter of publicationFilters.querySelectorAll('button')) {
+        filter.setAttribute('aria-pressed', String(filter === button));
+      }
+      for (const group of publicationGroups) {
+        for (const post of group.querySelectorAll('.publication')) {
+          post.hidden = topic !== 'all' && post.dataset.topic !== topic;
+        }
+        group.hidden = !group.querySelector('.publication:not([hidden])');
+      }
+    });
+
     function discSourceLink(reference, locator) {
       const [citation, url, category] = discSources[reference];
+      const label = document.createElement('abbr');
+      label.className = 'citation-type';
+      label.tabIndex = 0;
+      label.setAttribute('aria-describedby', `citation-${category.toLowerCase()}`);
+      label.textContent = category;
       const link = document.createElement('a');
       link.href = url;
-      link.textContent = `${citation} [${category}]${locator ? `, ${locator}` : ''}`;
-      return link;
+      link.textContent = `${citation}${locator ? `, ${locator}` : ''}`;
+      const item = document.createElement('span');
+      item.setAttribute('role', 'listitem');
+      item.append(label, ' ', link);
+      return item;
     }
 
     function showDiscNote(paragraph, entry, fallback = []) {
+      hideCitationTooltip();
       paragraph.hidden = !entry && fallback.length === 0;
       if (!entry) {
         paragraph.replaceChildren(...fallback);
@@ -2804,23 +3069,15 @@
 
       const name = document.createElement('strong');
       name.textContent = entry.name;
-      const placement = document.createElement('span');
-      placement.className = 'note-placement';
-      placement.append('Placement informed by ');
-      entry.placement.forEach(([reference, locator], index) => {
-        if (index > 0) placement.append(' and ');
-        placement.append(discSourceLink(reference, locator));
-      });
-      placement.append('.');
-      paragraph.replaceChildren(name, `. ${entry.note}`, placement);
-
-      const contextualRefs = entry.refs.filter(reference => !entry.placement.some(([source]) => reference === source));
-      if (contextualRefs.length) {
-        const references = document.createElement('span');
-        references.className = 'note-sources';
-        references.append(...contextualRefs.map(reference => discSourceLink(reference)));
-        paragraph.append(references);
-      }
+      const contextualRefs = entry.refs.filter(reference => !entry.placement.some(([source]) => source === reference));
+      const citations = [...entry.placement, ...contextualRefs.map(reference => [reference])];
+      citations.sort(([first], [second]) => discSources[first][2].localeCompare(discSources[second][2]));
+      const references = document.createElement('span');
+      references.className = 'note-sources';
+      references.setAttribute('role', 'list');
+      references.setAttribute('aria-label', 'Sources and placement references');
+      references.append(...citations.map(([reference, locator]) => discSourceLink(reference, locator)));
+      paragraph.replaceChildren(name, `. ${entry.note}`, references);
     }
 
     function updateTracer() {
