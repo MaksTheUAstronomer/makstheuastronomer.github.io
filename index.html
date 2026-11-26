@@ -16,6 +16,8 @@
       --quiet: #adbdce;
       --link: #ffc995;
       --edge: #8da6bd3d;
+      --panel-surface: #101c2e;
+      --panel-border: #466179;
       --gutter: clamp(1.25rem, 5.1vw, 6rem);
       --serif: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', 'Bitstream Charter', Georgia, serif;
       --sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -52,22 +54,21 @@
                   linear-gradient(180deg, #070d1985, transparent 35%, transparent 75%, #070d1969);
     }
     body[data-page='disc'] #disc-scene, body[data-page='disc'] .vignette { visibility: hidden; }
-    body[data-page='disc'] .site-header { background: var(--night); }
-    body[data-page='cv'] .site-header { background: #080e1af5; }
     .skip-link {
       position: fixed; z-index: 8; top: 0.5rem; left: 0.65rem; transform: translateY(-160%);
       padding: 0.58rem 0.8rem; background: #152438;
     }
     .skip-link:focus { transform: none; }
     .site-header {
-      position: fixed; z-index: 6; top: 0; inset-inline: var(--gutter);
+      --header-inset: var(--gutter);
+      position: fixed; z-index: 6; top: 0; inset-inline: 0;
       min-height: 4.55rem; display: flex; justify-content: space-between; align-items: center;
-      gap: 0.6rem; border-bottom: 1px solid var(--edge);
+      gap: 0.6rem; padding: 0.35rem var(--header-inset);
+      border-bottom: 1px solid var(--panel-border); background: var(--panel-surface);
     }
     .wordmark, .header-controls { display: inline-flex; align-items: center; gap: 0.7rem; }
-    .wordmark { color: var(--text); font-size: 0.89rem; font-weight: 650; white-space: nowrap; text-decoration: none; }
-    .header-controls { gap: clamp(0.65rem, 2.1vw, 1.8rem); }
-    .back-link { color: #c6d3e2; text-decoration: none; font-size: 0.9rem; white-space: nowrap; }
+    .wordmark { flex: none; color: var(--text); font-size: 0.89rem; font-weight: 650; white-space: nowrap; text-decoration: none; }
+    .header-controls { gap: clamp(0.65rem, 2.1vw, 1.8rem); min-width: 0; }
     .system-mark { display: block; inline-size: 2rem; block-size: auto; flex: none; }
     .control {
       display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem;
@@ -75,11 +76,35 @@
       padding: 0.42rem 0.82rem; background: #121e2ee8; color: #e6eef6;
       font-size: 0.86rem; white-space: nowrap; cursor: pointer;
     }
-    .control:hover, .system-description[open] > summary { color: #f4fffd; background: #20364b; border-color: #82aabd84; }
+    .control:hover, .system-description[open] > summary, .site-navigation[open] > summary {
+      color: #f4fffd; background: #20364b; border-color: #82aabd84;
+    }
+    .back-link { color: #c6d3e2; text-decoration: none; }
+    .play-button, .site-navigation { flex: none; }
     .play-icon { display: inline-block; width: 0.49rem; height: 0.63rem; border-inline: 2px solid currentColor; }
     .play-button.is-paused .play-icon {
       width: 0; height: 0; border: solid transparent; border-width: 0.34rem 0 0.34rem 0.54rem; border-left-color: currentColor;
     }
+    .site-navigation { position: relative; }
+    .site-navigation > summary { list-style: none; }
+    .navigation-compact-label { display: none; }
+    .site-navigation > summary::-webkit-details-marker { display: none; }
+    .site-navigation > summary::after {
+      content: ''; width: 0.46rem; height: 0.46rem; border: solid var(--link); border-width: 0 1px 1px 0;
+      transform: translateY(-0.1rem) rotate(45deg);
+    }
+    .site-navigation[open] > summary::after { transform: translateY(0.1rem) rotate(225deg); }
+    .navigation-links {
+      position: absolute; inset-inline-end: 0; top: calc(100% + 0.55rem);
+      width: max-content; max-width: calc(100vw - 2 * var(--header-inset)); max-height: 60svh; overflow: auto;
+      display: grid; gap: 0.12rem; padding: 0.4rem; border: 1px solid var(--panel-border);
+      border-radius: 0.65rem; background: var(--panel-surface); box-shadow: 0 1.5rem 3rem #03070d9c;
+    }
+    .navigation-links a {
+      padding: 0.5rem 0.7rem; border-radius: 0.35rem; color: var(--text); text-decoration: none; font-size: 0.9rem;
+    }
+    .navigation-links a:hover, .navigation-links a[aria-current='page'] { background: #20364b; color: var(--link); }
+    .navigation-links a:focus-visible { outline-offset: -2px; }
 
     main { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; }
     .home { flex: 1; padding-bottom: 1.25rem; }
@@ -162,7 +187,7 @@
     .system-description[open] > summary::before { content: '−'; }
     .description-panel {
       margin-top: 0.8rem; width: min(100%, 36rem); pointer-events: auto;
-      max-height: min(60vh, 31rem); overflow: auto; padding: 1.2rem 1.42rem; border: 1px solid #466179;
+      max-height: min(60vh, 31rem); overflow: auto; padding: 1.2rem 1.42rem; border: 1px solid var(--panel-border);
       border-radius: 0.65rem; background: #101c2ef5; box-shadow: 0 1.5rem 3rem #03070d9c;
       color: var(--text); font-size: 1rem; line-height: 1.58;
     }
@@ -344,13 +369,16 @@
         background: linear-gradient(180deg, #080e1a65, transparent 36%, transparent 46%, #080e1af3 82%);
       }
     }
+    @media (max-width: 720px) {
+      .site-header { --header-inset: 0.8rem; min-height: 3.72rem; gap: 0.48rem; }
+      .wordmark { gap: 0.42rem; font-size: 0.8rem; }
+      .system-mark { inline-size: 1.6rem; }
+      .header-controls { gap: 0.4rem; }
+      .header-controls .control { gap: 0.35rem; padding-inline: 0.44rem; min-height: 2.25rem; font-size: 0.78rem; }
+      .header-controls .back-link { padding-block: 0.2rem; line-height: 1.12; text-align: center; white-space: normal; }
+      .navigation-prefix { display: none; }
+    }
     @media (max-width: 520px) {
-      .site-header { min-height: 3.72rem; }
-      .wordmark { gap: 0.42rem; }
-      .system-mark { inline-size: 1.7rem; }
-      .header-controls { gap: 0.6rem; }
-      .back-link { font-size: 0.78rem; line-height: 1.2; white-space: normal; }
-      .play-button { padding-inline: 0.55rem; min-height: 2.25rem; }
       .disc-page { padding-top: 5.8rem; }
       h1 { font-size: clamp(2.75rem, 10.8vw, 4.1rem); }
       .home-title {
@@ -365,9 +393,15 @@
       .description-panel { padding: 0.9rem 1rem; }
       .disc-foot { padding: 0.72rem 0.75rem; }
     }
+    @media (max-width: 420px) {
+      .back-link:not([hidden]) + .play-button { min-width: 2.25rem; }
+      .back-link:not([hidden]) + .play-button #play-label { display: none; }
+    }
     @media (max-width: 350px) {
-      .site-header { inset-inline: 0.85rem; }
-      .back-link { font-size: 0.72rem; }
+      .site-header { --header-inset: 0.65rem; }
+      .header-controls .back-link { font-size: 0.72rem; }
+      .navigation-label { display: none; }
+      .navigation-compact-label { display: inline; }
       .home-title { --home-picture-width: 3.25rem; column-gap: 0.6rem; }
       .home-title h1 { font-size: clamp(1.65rem, 8.1vw, 1.78rem); }
       .home-picture .picture-placeholder { gap: 0.2rem; font-size: 0.74rem; }
@@ -392,7 +426,7 @@
   <a class="skip-link" href="#system-links">Skip to the system links</a>
 
   <header class="site-header">
-    <a class="wordmark" href="#system" aria-label="Dr. Maksym Mohorian, return to the binary system">
+    <a class="wordmark" href="./" aria-label="Dr. Maksym Mohorian, back to main">
       <svg class="system-mark" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
         <rect width="32" height="32" rx="6" fill="#141f30"/>
         <path d="M20.8 21.7 24.8 29h-8Z" fill="#76aebe"/>
@@ -407,10 +441,23 @@
       <span>Dr. Mohorian</span>
     </a>
     <div class="header-controls">
-      <a class="back-link" href="#system" id="back-link" hidden>Back to the system</a>
+      <a class="control back-link" href="./" id="back-link" hidden>Back to main</a>
       <button type="button" class="control play-button" id="playback" aria-label="Pause animation">
         <span class="play-icon" aria-hidden="true"></span><span id="play-label">Pause</span>
       </button>
+      <details class="site-navigation" id="site-navigation">
+        <summary class="control" aria-label="Non-animated navigation menu">
+          <span class="navigation-label"><span class="navigation-prefix">Non-animated </span>Navigation</span>
+          <span class="navigation-compact-label">Menu</span>
+        </summary>
+        <nav class="navigation-links" aria-label="Site pages">
+          <a href="./">Main page</a>
+          <a href="#about">About me</a>
+          <a href="#leisure">Hobbies</a>
+          <a href="#cv">Publications</a>
+          <a href="#disc">Disc Chemistry Sandbox</a>
+        </nav>
+      </details>
     </div>
   </header>
 
@@ -432,7 +479,7 @@
               <p>The majority of these systems is expected to consist of: i) a post-AGB primary star (see below), ii) a main-sequence (MS) secondary companion, iii) a circumbinary disc (CBD) feeding the central binary, iv) a circumsecondary accretion disc (CSD), and v) a bipolar non-relativistic outflow (to avoid confusion with the outflows from the disc surface, the bipolar outflows launched from the location of the MS companion are referred to as jets). Accretion streams supply volatile-rich matter to both binary components through L₂ and L₃. Bipolar jet originates in the location of the secondary companion, as concluded form the MS-like escape velocities of the jets (~400 km/s).</p>
               <p>Disclaimer: Sizes, temperatures and times of this animation are schematic and not to scale. The "Disc Chemistry Sandbox" page features molecular tracers and dust processes studied in circumbinary discs of post-AGB systems and also PPDs of young stars. For more details on these sytems, including the photospheric chemical depletion, optical interferometry, and polarimetry, see the literature below.</p>
               <details class="bibliography">
-                <summary>Selected studies and what they informed</summary>
+                <summary>Studies and what they informed</summary>
                 <h3>Circumbinary discs</h3>
                 <dl>
                   <div><dt><abbr class="citation-type" tabindex="0" aria-describedby="citation-cbd">CBD</abbr> Oomen et al. (2019)</dt><dd>Stellar evolution models with gas re-accretion motivated the stream feeding the post-AGB primary. <a href="https://doi.org/10.1051/0004-6361/201935853" aria-label="Paper by Oomen and colleagues">Paper</a></dd></div>
@@ -2552,7 +2599,12 @@
     const playgroundContext = playgroundCanvas.getContext('2d', { alpha: false });
     const map = document.querySelector('#system-links');
     const description = document.querySelector('#system-description');
+    const header = document.querySelector('.site-header');
     const backLink = document.querySelector('#back-link');
+    const navigation = document.querySelector('#site-navigation');
+    const navigationToggle = navigation.querySelector('summary');
+    const navigationLinks = navigation.querySelectorAll('nav a');
+    const mainHref = location.protocol === 'file:' ? location.pathname : backLink.getAttribute('href');
     const playbackButton = document.querySelector('#playback');
     const playbackLabel = document.querySelector('#play-label');
     const discCaption = document.querySelector('#disc-caption');
@@ -2605,6 +2657,10 @@
     function routeFromUrl() {
       const hash = location.hash.slice(1);
       return Object.hasOwn(pages, hash) ? hash : 'system';
+    }
+
+    function linkDestination(link) {
+      return link.getAttribute('href') === './' ? 'system' : link.hash.slice(1);
     }
 
     function cameraFor(destination, point = null) {
@@ -2983,7 +3039,7 @@
       }
     }
 
-    function showPage(focus = false) {
+    function showPage(focus = false, enter = focus) {
       const { page, title } = pages[route];
       document.body.dataset.page = route;
       document.title = title;
@@ -2991,9 +3047,11 @@
         entry.page.hidden = entry !== pages[route];
         entry.page.classList.remove('page-enter');
       }
-      if (focus) {
-        page.classList.add('page-enter');
-        page.querySelector('h1').focus({ preventScroll: true });
+      if (enter) page.classList.add('page-enter');
+      if (focus) page.querySelector('h1').focus({ preventScroll: true });
+      for (const link of navigationLinks) {
+        if (linkDestination(link) === route) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
       }
       backLink.hidden = route === 'system';
       skipLink.hidden = route !== 'system';
@@ -3001,34 +3059,37 @@
       if (route === 'disc') fitPlayground();
     }
 
-    function openPage(next, point = null, record = true) {
-      if (next === route) return;
+    function openPage(next, { point = null, record = true, animate = true } = {}) {
+      navigation.open = false;
+      if (record) {
+        const url = new URL(next === 'system' ? mainHref : `#${next}`, location.href);
+        if (url.href !== location.href) {
+          try { history.pushState(null, '', url); }
+          catch { location.href = url.href; }
+        }
+      }
+      if (next === route && (animate || !record)) return;
       const from = camera;
       const duration = next === 'disc' || route === 'disc' ? 1050 : 910;
       const focusPoint = next === 'cv' || next === 'disc' ? point : null;
       route = next;
-      if (record) {
-        const hash = `#${route}`;
-        try { history.pushState(null, '', hash); }
-        catch { location.hash = hash; }
-      }
       window.scrollTo(0, 0);
       const to = cameraFor(route, focusPoint);
       hoverDestination('');
       description.open = false;
       for (const entry of Object.values(pages)) entry.page.hidden = true;
       backLink.hidden = route === 'system';
-      if (motionPreference.matches) {
+      if (!animate || motionPreference.matches) {
         transition = null;
         camera = to;
-        showPage(true);
+        showPage(true, false);
         paintFrame();
       } else {
         // Zoom on the system canvas before showing the inline Playground.
         if (document.body.dataset.page === 'disc') document.body.dataset.page = route;
         transition = { start: performance.now(), from, to, duration };
-        scheduleFrame();
       }
+      scheduleFrame();
     }
 
     function animationTick(timestamp) {
@@ -3060,19 +3121,25 @@
       scheduleFrame();
     }
 
-    for (const link of document.querySelectorAll('a[href^="#"]')) {
-      const target = link.hash.slice(1);
+    for (const link of document.querySelectorAll('a[href^="#"], .site-header a[href="./"]')) {
+      const target = linkDestination(link);
       if (!Object.hasOwn(pages, target)) continue;
       link.addEventListener('click', event => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         event.preventDefault();
-        openPage(target);
+        openPage(target, { animate: !header.contains(link) });
       });
     }
+    navigation.addEventListener('focusout', event => {
+      if (event.relatedTarget && !navigation.contains(event.relatedTarget)) navigation.open = false;
+    });
+    document.addEventListener('click', event => {
+      if (navigation.open && !navigation.contains(event.target)) navigation.open = false;
+    });
     map.addEventListener('focusin', event => {
       if (!layout?.phoneHome || !event.target.matches('.hotspot:focus-visible')) return;
       const { top, bottom } = event.target.getBoundingClientRect();
-      const headerBottom = document.querySelector('.site-header').getBoundingClientRect().bottom;
+      const headerBottom = header.getBoundingClientRect().bottom;
       if (top < headerBottom || bottom > layout.height) map.scrollIntoView({ block: 'center' });
     });
     map.addEventListener('pointermove', event => {
@@ -3085,7 +3152,7 @@
       if (event.defaultPrevented || event.target.closest('a') || transition) return;
       const point = clientToWorld(event.clientX, event.clientY);
       const target = traceHit(...point);
-      if (target) openPage(target, point);
+      if (target) openPage(target, { point });
     });
     description.addEventListener('toggle', paintFrame);
 
@@ -3124,7 +3191,12 @@
       if (event.target === activeCitationType) hideCitationTooltip();
     });
     document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') hideCitationTooltip();
+      if (event.key !== 'Escape') return;
+      if (navigation.open) {
+        navigation.open = false;
+        navigationToggle.focus();
+      }
+      hideCitationTooltip();
     });
     window.addEventListener('scroll', hideCitationTooltip, { capture: true, passive: true });
     window.addEventListener('resize', hideCitationTooltip);
@@ -3204,7 +3276,7 @@
     tracerSelect.addEventListener('change', updateTracer);
     featureSelect.addEventListener('change', updateDiscFeature);
     breakupControl.addEventListener('input', updateBreakupChance);
-    function syncHash() { openPage(routeFromUrl(), null, false); }
+    function syncHash() { openPage(routeFromUrl(), { record: false, animate: false }); }
     window.addEventListener('popstate', syncHash);
     window.addEventListener('hashchange', syncHash);
     const canvasResize = new ResizeObserver(fitCanvases);
@@ -3225,7 +3297,7 @@
       if (event.matches && transition) {
         camera = transition.to;
         transition = null;
-        showPage(true);
+        showPage(true, false);
         paintFrame();
       }
       setPlayback(!event.matches);
